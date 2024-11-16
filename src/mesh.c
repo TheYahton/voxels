@@ -1,4 +1,6 @@
 #include "mesh.h"
+#include "chunk.h"
+
 #include <string.h>
 
 #define FloatVector_rgb(r, g, b)                                               \
@@ -12,7 +14,7 @@
 	FloatVector_append(&mesh.vertices, z);                                     \
 	FloatVector_rgb(0.0, 0.9, 0.0)
 
-Mesh chunk_genmesh(Chunk chunk) {
+Mesh chunk_genmesh(const Chunk *chunk) {
 	Mesh mesh;
 	mesh.vertices = FloatVector_init(0, 64);
 	mesh.indices = UnsignedIntVector_init(0, 64);
@@ -155,7 +157,7 @@ Mesh chunk_genmesh(Chunk chunk) {
 	return mesh;
 }
 
-void mesh_free(Mesh mesh) {
-	free(mesh.vertices.data);
-	free(mesh.indices.data);
+void mesh_free(Mesh *mesh) {
+	free(mesh->vertices.data);
+	free(mesh->indices.data);
 }

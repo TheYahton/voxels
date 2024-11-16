@@ -4,6 +4,7 @@
 #include "render.h"
 #include "shader.h"
 #include "utils.h"
+#include "world.h"
 
 unsigned int render_create_shader(void) {
 	unsigned int vertex_shader =
@@ -31,9 +32,9 @@ unsigned int render_create_shader(void) {
 	return shader_program;
 }
 
-unsigned int render_create_vao(Mesh mesh, int width, int height) {
-	FloatVector *vertices = &mesh.vertices;
-	UnsignedIntVector *indices = &mesh.indices;
+unsigned int render_create_vao(Mesh *mesh) {
+	FloatVector *vertices = &mesh->vertices;
+	UnsignedIntVector *indices = &mesh->indices;
 
 	// WARNING: A DUNGER STARTS!
 	unsigned int VAO; // Vertex Attribute Object(?)
@@ -63,15 +64,17 @@ unsigned int render_create_vao(Mesh mesh, int width, int height) {
 	glBindVertexArray(0);
 	// WARNING: THE DUNGER ENDS!
 
+	return VAO;
+}
+
+void pre_render(int width, int height) {
 	glViewport(0, 0, width, height);
 
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
-
-	return VAO;
 }
 
-void render(Renderer *renderer, Mesh *mesh, Player *player, Camera *camera) {
+void render(Renderer *renderer, World *world, Player *player, Camera *camera) {
 	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -87,11 +90,6 @@ void render(Renderer *renderer, Mesh *mesh, Player *player, Camera *camera) {
 	int projection_location =
 		glGetUniformLocation(renderer->shader_program, "projection");
 
-	mat4 model;
-	vec4 translation = {player->position.x, -player->position.y,
-						player->position.z, 0.0f};
-	glm_mat4_identity(model);
-	glm_translate(model, translation);
 	int model_location =
 		glGetUniformLocation(renderer->shader_program, "model");
 
@@ -106,11 +104,20 @@ void render(Renderer *renderer, Mesh *mesh, Player *player, Camera *camera) {
 	glUseProgram(renderer->shader_program);
 	glUniformMatrix4fv(projection_location, 1, GL_FALSE, projection[0]);
 	glUniformMatrix4fv(view_location, 1, GL_FALSE, view[0]);
-	glUniformMatrix4fv(model_location, 1, GL_FALSE, model[0]);
 
-	glBindVertexArray(renderer->VAO);
-	glDrawElements(GL_TRIANGLES, mesh->indices.size, GL_UNSIGNED_INT,
-				   0); // With EBO
+	for (unsigned int i = 0; i < world->chunks.size; i++) {
+		mat4 model;
+		Vec3i chunkPos = world->chunks.data[i].position;
+		//printf("x: %d, y: %d, z: %d", chunkPos.x, chunkPos.y, chunkPos.z);
+		vec4 translation = {player->position.x + 32 * chunkPos.x, -player->position.y + 32 * chunkPos.y,
+							player->position.z + 32 * chunkPos.z, 0.0f};
+		glm_mat4_identity(model);
+		glm_translate(model, translation);
+		glUniformMatrix4fv(model_location, 1, GL_FALSE, model[0]);
+		glBindVertexArray(world->chunks.data[i].VAO);
+		glDrawElements(GL_TRIANGLES, world->chunks.data[i].mesh.indices.size, GL_UNSIGNED_INT,
+					   0); // With EBO
 
-	glBindVertexArray(0);
+		glBindVertexArray(0);
+	}
 }
