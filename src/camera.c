@@ -6,7 +6,8 @@
 
 #define M_PI_2 1.57079632679489661923 /* pi/2 */
 
-void camera_update(Camera *camera, bool keys[1024], float dx, float dy, float dt) {
+void camera_update(Camera *camera, bool keys[1024], float dx, float dy,
+				   float dt) {
 	int up = keys[GLFW_KEY_UP] - keys[GLFW_KEY_DOWN];
 	int left = keys[GLFW_KEY_LEFT] - keys[GLFW_KEY_RIGHT];
 

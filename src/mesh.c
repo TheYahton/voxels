@@ -74,8 +74,8 @@ Mesh chunk_genmesh(Chunk chunk) {
 						UnsignedIntVector_append(&mesh.indices, size / 6 + 1);
 						UnsignedIntVector_append(&mesh.indices, size / 6 + 2);
 						UnsignedIntVector_append(&mesh.indices, size / 6 + 3);
-						UnsignedIntVector_append(&mesh.indices, size / 6 + 1);
 						UnsignedIntVector_append(&mesh.indices, size / 6 + 2);
+						UnsignedIntVector_append(&mesh.indices, size / 6 + 1);
 					}
 					if ((curr & 0b00010000)) {
 						unsigned int size = mesh.vertices.size;
@@ -85,8 +85,8 @@ Mesh chunk_genmesh(Chunk chunk) {
 						FloatVector_addVertex(x, 1.0 + y, 1.0 + z);
 
 						UnsignedIntVector_append(&mesh.indices, size / 6 + 0);
-						UnsignedIntVector_append(&mesh.indices, size / 6 + 1);
 						UnsignedIntVector_append(&mesh.indices, size / 6 + 2);
+						UnsignedIntVector_append(&mesh.indices, size / 6 + 1);
 						UnsignedIntVector_append(&mesh.indices, size / 6 + 3);
 						UnsignedIntVector_append(&mesh.indices, size / 6 + 1);
 						UnsignedIntVector_append(&mesh.indices, size / 6 + 2);
@@ -99,8 +99,8 @@ Mesh chunk_genmesh(Chunk chunk) {
 						FloatVector_addVertex(1.0 + x, 1.0 + y, 1.0 + z);
 
 						UnsignedIntVector_append(&mesh.indices, size / 6 + 0);
-						UnsignedIntVector_append(&mesh.indices, size / 6 + 1);
 						UnsignedIntVector_append(&mesh.indices, size / 6 + 2);
+						UnsignedIntVector_append(&mesh.indices, size / 6 + 1);
 						UnsignedIntVector_append(&mesh.indices, size / 6 + 3);
 						UnsignedIntVector_append(&mesh.indices, size / 6 + 1);
 						UnsignedIntVector_append(&mesh.indices, size / 6 + 2);
@@ -116,8 +116,8 @@ Mesh chunk_genmesh(Chunk chunk) {
 						UnsignedIntVector_append(&mesh.indices, size / 6 + 1);
 						UnsignedIntVector_append(&mesh.indices, size / 6 + 2);
 						UnsignedIntVector_append(&mesh.indices, size / 6 + 3);
-						UnsignedIntVector_append(&mesh.indices, size / 6 + 1);
 						UnsignedIntVector_append(&mesh.indices, size / 6 + 2);
+						UnsignedIntVector_append(&mesh.indices, size / 6 + 1);
 					}
 					if ((curr & 0b00000010)) {
 						unsigned int size = mesh.vertices.size;
@@ -127,8 +127,8 @@ Mesh chunk_genmesh(Chunk chunk) {
 						FloatVector_addVertex(1.0 + x, 1.0 + y, 1.0 + z);
 
 						UnsignedIntVector_append(&mesh.indices, size / 6 + 0);
-						UnsignedIntVector_append(&mesh.indices, size / 6 + 1);
 						UnsignedIntVector_append(&mesh.indices, size / 6 + 2);
+						UnsignedIntVector_append(&mesh.indices, size / 6 + 1);
 						UnsignedIntVector_append(&mesh.indices, size / 6 + 3);
 						UnsignedIntVector_append(&mesh.indices, size / 6 + 1);
 						UnsignedIntVector_append(&mesh.indices, size / 6 + 2);
@@ -144,8 +144,8 @@ Mesh chunk_genmesh(Chunk chunk) {
 						UnsignedIntVector_append(&mesh.indices, size / 6 + 1);
 						UnsignedIntVector_append(&mesh.indices, size / 6 + 2);
 						UnsignedIntVector_append(&mesh.indices, size / 6 + 3);
-						UnsignedIntVector_append(&mesh.indices, size / 6 + 1);
 						UnsignedIntVector_append(&mesh.indices, size / 6 + 2);
+						UnsignedIntVector_append(&mesh.indices, size / 6 + 1);
 					}
 				}
 			}
