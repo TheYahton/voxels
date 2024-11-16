@@ -6,5 +6,5 @@ typedef struct {
 	Vec3 direction;
 } Camera;
 
-void camera_update(Camera *camera, bool keys[1024], float dt);
+void camera_update(Camera *camera, bool keys[1024], float dx, float dy, float dt);
 #endif // _camera

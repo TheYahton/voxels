@@ -65,7 +65,7 @@ int initWindow(Window *window) {
 
 	glfwGetFramebufferSize(window->window, &window->width, &window->height);
 
-	// glfwSetInputMode(window->window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	glfwSetInputMode(window->window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	info("Курсор был выключен");
 
 	if (glfwRawMouseMotionSupported()) {

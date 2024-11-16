@@ -58,6 +58,8 @@ int main() {
 	float start = 0.0f;
 	float end = 0.0f;
 	float dt = 0.0f;
+	double lastX = window.width / 2.0f;
+	double lastY = window.height / 2.0f;
 	while (!windowShouldClose(&window)) {
 		dt = end - start;
 		start = glfwGetTime();
@@ -65,7 +67,15 @@ int main() {
 		// LOGIC
 		glfwPollEvents();
 
-		camera_update(&camera, window.keys, dt);
+		// Mouse rotate camera
+		double xpos, ypos;
+		getCursorPos(&window, &xpos, &ypos);
+		float dx = (xpos - lastX);
+		float dy = (ypos - lastY);
+		lastX = xpos;
+		lastY = ypos;
+
+		camera_update(&camera, window.keys, dx, dy, dt);
 		player_move(&player, window.keys, camera.direction, dt);
 
 		// RENDER
@@ -80,7 +90,6 @@ int main() {
 	return 0;
 }
 
-// TODO: rotate camera using mouse
 // TODO: optimize Mesh generating. Сейчас мы генерируем по 4 вершины на каждую
 // грань вокселя. Это 24 вершины на воксель в худшем случае. Но воксель это куб
 // и можно обойтись 8 вершинами
