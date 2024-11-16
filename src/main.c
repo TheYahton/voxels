@@ -19,7 +19,6 @@ int main() {
 		glfwTerminate();
 		return -1;
 	}
-	info("Окно было инициализировано");
 
 	if (!glewInit()) {
 		error("Не удалось инициализировать GLEW");
