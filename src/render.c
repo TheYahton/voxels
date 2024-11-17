@@ -108,14 +108,16 @@ void render(Renderer *renderer, World *world, Player *player, Camera *camera) {
 	for (unsigned int i = 0; i < world->chunks.size; i++) {
 		mat4 model;
 		Vec3i chunkPos = world->chunks.data[i].position;
-		//printf("x: %d, y: %d, z: %d", chunkPos.x, chunkPos.y, chunkPos.z);
-		vec4 translation = {player->position.x + 32 * chunkPos.x, -player->position.y + 32 * chunkPos.y,
+		// printf("x: %d, y: %d, z: %d", chunkPos.x, chunkPos.y, chunkPos.z);
+		vec4 translation = {player->position.x + 32 * chunkPos.x,
+							-player->position.y + 32 * chunkPos.y,
 							player->position.z + 32 * chunkPos.z, 0.0f};
 		glm_mat4_identity(model);
 		glm_translate(model, translation);
 		glUniformMatrix4fv(model_location, 1, GL_FALSE, model[0]);
 		glBindVertexArray(world->chunks.data[i].VAO);
-		glDrawElements(GL_TRIANGLES, world->chunks.data[i].mesh.indices.size, GL_UNSIGNED_INT,
+		glDrawElements(GL_TRIANGLES, world->chunks.data[i].mesh.indices.size,
+					   GL_UNSIGNED_INT,
 					   0); // With EBO
 
 		glBindVertexArray(0);

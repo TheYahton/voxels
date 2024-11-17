@@ -1,8 +1,8 @@
 #ifndef _chunk
 #define _chunk
 
-#include "utils.h"
 #include "mesh.h"
+#include "utils.h"
 
 #define CSIZE 32
 #define CQSIZE (CSIZE * CSIZE * CSIZE)

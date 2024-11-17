@@ -6,8 +6,8 @@
 
 Vectorize(Chunk, ChunkVector)
 
-typedef struct {
-  ChunkVector chunks;
+	typedef struct {
+	ChunkVector chunks;
 } World;
 
 World world_init(void);
