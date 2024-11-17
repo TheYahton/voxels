@@ -51,6 +51,9 @@ Module.symvers
 Mkfile.old
 dkms.conf
 
+# build folder
+build/
+
 # clangd (lsp) config
 .cache
 compile_commands.json
@@ -58,3 +61,9 @@ compile_commands.json
 # nob
 nob
 nob.old
+
+# for compilation on Windows
+cglm/
+glew/
+glfw/
+*.zip
