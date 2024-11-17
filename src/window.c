@@ -52,38 +52,38 @@ int initWindow(Window *window) {
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_RESIZABLE, true);
-	info("GLFW был инициализирован");
+	info("GLFW has been initialized.");
 
 	window->window =
 		glfwCreateWindow(window->width, window->height, "Voxels", NULL, NULL);
 	if (window->window == NULL) {
-		error("Не удалось создать GLFW окно");
+		error("Failed to create GLFW window.");
 		return -1;
 	}
-	info("Окно было инициализировано");
+	info("The window has been initialized.");
 
 	glfwSetWindowUserPointer(window->window, window);
 
 	glfwGetFramebufferSize(window->window, &window->width, &window->height);
 
 	glfwSetInputMode(window->window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-	info("Курсор был выключен");
+	info("The cursor has been disabled.");
 
 	if (glfwRawMouseMotionSupported()) {
 		glfwSetInputMode(window->window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
-		info("Включен параметр raw mouse motion");
+		info("Raw mouse motion mode enabled.");
 	} else {
-		warning("Система не поддерживает raw mouse motion");
+		warning("The system does not support raw mouse motion mode.");
 	}
 
 	glfwMakeContextCurrent(window->window);
-	info("Контекст OpenGL был привязан к окну");
+	info("The OpenGL context has been attached to the window.");
 
 	glfwSetKeyCallback(window->window, key_callback);
-	info("Функция key_callback отлавливает пользовательский ввод");
+	info("The key_callback function handles user input.");
 
 	glfwSetFramebufferSizeCallback(window->window, resize_callback);
-	info("Функция resize_callback отлавливает изменения размера окна");
+	info("The resize_callback function handles window size changes.");
 
 	return 0;
 }

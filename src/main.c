@@ -14,17 +14,17 @@
 int main() {
 	Window window = createWindow(800, 600);
 	if (initWindow(&window) != 0) {
-		error("Окно не было инициализировано ,_,");
+		error("The window was not initialized.");
 		glfwTerminate();
 		return -1;
 	}
 
 	if (!glewInit()) {
-		error("Не удалось инициализировать GLEW");
+		error("Failed to initialize GLEW.");
 		glfwTerminate();
 		return -1;
 	}
-	info("GLEW был инициализирован");
+	info("GLEW has been initialized.");
 
 	unsigned int shader_program = render_create_shader();
 
@@ -44,7 +44,7 @@ int main() {
 
 	pre_render(window.width, window.height);
 
-	info("Программа была полностью инициализирована. Запуск игрового цикла...");
+	info("The program has been fully initialized. Starting the game loop...");
 
 	float start = 0.0f;
 	float end = 0.0f;
@@ -77,7 +77,7 @@ int main() {
 	}
 	world_free(&world);
 	glfwTerminate();
-	info("Программа завершена");
+	info("The program has terminated.");
 
 	return 0;
 }

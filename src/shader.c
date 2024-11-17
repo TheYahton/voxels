@@ -32,10 +32,11 @@ GLuint compile_shader(const char *path, GLenum shader_type) {
 	const char *shader_source = read_file(path);
 	if (!shader_source) {
 		char *string;
-		if (0 > asprintf(
-					&string,
-					"Компиляция шейдера не удалась. Файл \"%s\" не существует.",
-					path))
+		if (0 >
+			asprintf(
+				&string,
+				"Shader compilation failed. The file \"%s\" does not exist.",
+				path))
 			return 0;
 		error(string);
 		free(string);
@@ -54,7 +55,7 @@ GLuint compile_shader(const char *path, GLenum shader_type) {
 	if (!success) {
 		glGetShaderInfoLog(shader, 512, NULL, infoLog);
 		char *string;
-		if (0 > asprintf(&string, "Компиляция шейдера %s не удалась.\n%s", path,
+		if (0 > asprintf(&string, "Shader compilation for %s failed.\n%s", path,
 						 infoLog))
 			return 0;
 		error(string);
@@ -63,8 +64,8 @@ GLuint compile_shader(const char *path, GLenum shader_type) {
 	}
 
 	char *string;
-	if (0 > asprintf(&string, "Компиляция шейдера %s удалась. ID: %d", path,
-					 shader))
+	if (0 > asprintf(&string, "Shader compilation for %s succeeded. ID: %d",
+					 path, shader))
 		return 0;
 	info(string);
 	free(string);
@@ -84,8 +85,7 @@ GLuint compile_shader_program(GLuint vertex_shader, GLuint fragment_shader) {
 	if (!success) {
 		glGetShaderInfoLog(shader_program, 512, NULL, infoLog);
 		char *string;
-		if (0 > asprintf(&string,
-						 "Компиляция шейдерной программы не удалась.\n%s",
+		if (0 > asprintf(&string, "Shader program compilation failed.\n%s",
 						 infoLog))
 			return 0;
 		error(string);
@@ -94,7 +94,7 @@ GLuint compile_shader_program(GLuint vertex_shader, GLuint fragment_shader) {
 	}
 
 	char *string;
-	if (0 > asprintf(&string, "Компиляция шейдерной программы удалась. ID: %d",
+	if (0 > asprintf(&string, "Shader program compilation succeeded. ID: %d",
 					 shader_program))
 		return 0;
 	info(string);
