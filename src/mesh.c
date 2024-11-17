@@ -1,5 +1,6 @@
 #include "mesh.h"
 #include "chunk.h"
+#include "world.h"
 
 #include <string.h>
 
@@ -14,7 +15,13 @@
 	FloatVector_append(&mesh.vertices, z);                                     \
 	FloatVector_rgb(0.0, 0.9, 0.0)
 
-Mesh chunk_genmesh(const Chunk *chunk) {
+Mesh chunk_genmesh(const struct Chunk *chunk) {
+	int chunkX = chunk->position.x;
+	int chunkY = chunk->position.y;
+	int chunkZ = chunk->position.z;
+	// printf("chunkX: %d\n", chunkX);
+	// printf("chunkY: %d\n", chunkY);
+	// printf("chunkZ: %d\n", chunkZ);
 	Mesh mesh;
 	mesh.vertices = FloatVector_init(0, 64);
 	mesh.indices = UnsignedIntVector_init(0, 64);
@@ -30,27 +37,41 @@ Mesh chunk_genmesh(const Chunk *chunk) {
 				char curr = chunk_get(chunk, x, y, z);
 				if (curr != 0) {
 					unsigned char result = 0;
-					char Xinc = chunk_get(chunk, x + 1, y, z);
+					char Xinc =
+						world_block_get(chunk->world, chunkX * 32 + x + 1,
+										chunkY * 32 + y, chunkZ * 32 + z);
+					// printf("Xinc: %d\n", Xinc);
+					// _exit(-1);
 					if (Xinc == 0 || Xinc == -1) {
 						result = 0b00100000 | result;
 					}
-					char Xdec = chunk_get(chunk, x - 1, y, z);
+					char Xdec =
+						world_block_get(chunk->world, chunkX * 32 + x - 1,
+										chunkY * 32 + y, chunkZ * 32 + z);
 					if (Xdec == 0 || Xdec == -1) {
 						result = 0b00010000 | result;
 					}
-					char Yinc = chunk_get(chunk, x, y + 1, z);
+					char Yinc =
+						world_block_get(chunk->world, chunkX * 32 + x,
+										chunkY * 32 + y + 1, z + 32 * chunkZ);
 					if (Yinc == 0 || Yinc == -1) {
 						result = 0b00001000 | result;
 					}
-					char Ydec = chunk_get(chunk, x, y - 1, z);
+					char Ydec =
+						world_block_get(chunk->world, chunkX * 32 + x,
+										chunkY * 32 + y - 1, z + 32 * chunkZ);
 					if (Ydec == 0 || Ydec == -1) {
 						result = 0b00000100 | result;
 					}
-					char Zinc = chunk_get(chunk, x, y, z + 1);
+					char Zinc =
+						world_block_get(chunk->world, chunkX * 32 + x,
+										chunkY * 32 + y, chunkZ * 32 + z + 1);
 					if (Zinc == 0 || Zinc == -1) {
 						result = 0b00000010 | result;
 					}
-					char Zdec = chunk_get(chunk, x, y, z - 1);
+					char Zdec =
+						world_block_get(chunk->world, chunkX * 32 + x,
+										chunkY * 32 + y, chunkZ * 32 + z - 1);
 					if (Zdec == 0 || Zdec == -1) {
 						result = 0b00000001 | result;
 					}

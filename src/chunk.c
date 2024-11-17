@@ -3,8 +3,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-Chunk chunk_init(int x, int y, int z) {
-	Chunk chunk = {
+struct Chunk chunk_init(World *world, int x, int y, int z) {
+	struct Chunk chunk = {
+		world,
 		{x, y, z},
 		malloc(CQSIZE * sizeof(char)),
 		//{{NULL, 0, 0, 64}, {NULL, 0, 0, 64}},
@@ -15,23 +16,23 @@ Chunk chunk_init(int x, int y, int z) {
 	return chunk;
 }
 
-void chunk_set(Chunk *chunk, unsigned int x, unsigned int y, unsigned int z,
-			   char value) {
+void chunk_set(struct Chunk *chunk, unsigned int x, unsigned int y,
+			   unsigned int z, char value) {
 	if (x >= CSIZE || y >= CSIZE || z >= CSIZE) {
 		return;
 	}
 	chunk->data[x + y * CSIZE + z * CSIZE * CSIZE] = value;
 }
 
-unsigned char chunk_get(const Chunk *chunk, unsigned int x, unsigned int y,
-						unsigned int z) {
-	if (x >= CSIZE || y >= CSIZE || z >= CSIZE) {
+unsigned char chunk_get(const struct Chunk *chunk, unsigned int x,
+						unsigned int y, unsigned int z) {
+	if (chunk == NULL || x >= CSIZE || y >= CSIZE || z >= CSIZE) {
 		return -1;
 	}
 	return chunk->data[x + y * CSIZE + z * CSIZE * CSIZE];
 }
 
-void chunk_worldgen(Chunk *chunk) {
+void chunk_worldgen(struct Chunk *chunk) {
 	for (int x = 0; x < CSIZE; x++) {
 		for (int z = 0; z < CSIZE; z++) {
 			chunk_set(chunk, x, 0, z, 1);
@@ -39,4 +40,4 @@ void chunk_worldgen(Chunk *chunk) {
 	}
 }
 
-void chunk_free(Chunk *chunk) { free(chunk->data); }
+void chunk_free(struct Chunk *chunk) { free(chunk->data); }

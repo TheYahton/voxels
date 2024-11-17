@@ -1,5 +1,6 @@
 #include <GL/glew.h>
 
+#include "chunk.h"
 #include "mesh.h"
 #include "render.h"
 #include "shader.h"

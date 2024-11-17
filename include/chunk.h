@@ -7,20 +7,24 @@
 #define CSIZE 32
 #define CQSIZE (CSIZE * CSIZE * CSIZE)
 
-typedef struct {
+typedef struct World World;
+
+struct Chunk {
+	World *world;
 	Vec3i position;
 	unsigned char *data;
 	Mesh mesh;
 	unsigned int VAO;
-} Chunk;
+};
 
-Chunk chunk_init(int x, int y, int z);
-void chunk_set(Chunk *chunk, unsigned int x, unsigned int y, unsigned int z,
+struct Chunk chunk_init(World *world, int x, int y, int z);
+void chunk_set(struct Chunk *chunk, unsigned int x, unsigned int y,
+			   unsigned int z,
 			   char value); // void chunk set x, y and z (крутая рифма)
-unsigned char chunk_get(const Chunk *chunk, unsigned int x, unsigned int y,
-						unsigned int z);
-void chunk_worldgen(Chunk *chunk);
-void chunk_free(Chunk *chunk);
+unsigned char chunk_get(const struct Chunk *chunk, unsigned int x,
+						unsigned int y, unsigned int z);
+void chunk_worldgen(struct Chunk *chunk);
+void chunk_free(struct Chunk *chunk);
 
-Mesh chunk_genmesh(const Chunk *chunk);
+Mesh chunk_genmesh(const struct Chunk *chunk);
 #endif // _chunk

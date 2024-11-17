@@ -3,7 +3,7 @@
 #include <GLFW/glfw3.h>
 
 #include "camera.h"
-#include "chunk.h"
+// #include "chunk.h"
 #include "logs.h"
 #include "mesh.h"
 #include "player.h"
@@ -30,7 +30,7 @@ int main() {
 
 	unsigned int shader_program = render_create_shader();
 
-	World world = world_init();
+	struct World world = world_init();
 
 	Player player = {
 		{0.0f, 2.0f, 0.0f},
