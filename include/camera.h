@@ -1,11 +1,12 @@
 #include "utils.h"
 
-#ifndef _camera
-#define _camera
+#ifndef _CAMERA_H
+#define _CAMERA_H
 typedef struct {
-	Vec3 direction;
+	Vec3 *position;
+	Vec3 *direction;
 } Camera;
 
 void camera_update(Camera *camera, bool keys[1024], float dx, float dy,
 				   float dt);
-#endif // _camera
+#endif // _CAMERA_H

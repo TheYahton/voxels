@@ -4,9 +4,9 @@
 #include "world.h"
 
 typedef struct {
-	bool *polygon_mode;
-	unsigned int shader_program;
-	int *width, *height;
+	bool *polygon_mode;			 // 1 byte
+	unsigned int shader_program; // 4 byte
+	int *width, *height;		 // 8 + 8 = 16 bytes
 } Renderer;
 
 unsigned int render_create_shader(void);

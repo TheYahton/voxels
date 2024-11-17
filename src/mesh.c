@@ -19,9 +19,6 @@ Mesh chunk_genmesh(const struct Chunk *chunk) {
 	int chunkX = chunk->position.x;
 	int chunkY = chunk->position.y;
 	int chunkZ = chunk->position.z;
-	// printf("chunkX: %d\n", chunkX);
-	// printf("chunkY: %d\n", chunkY);
-	// printf("chunkZ: %d\n", chunkZ);
 	Mesh mesh;
 	mesh.vertices = FloatVector_init(0, 64);
 	mesh.indices = UnsignedIntVector_init(0, 64);
@@ -29,19 +26,17 @@ Mesh chunk_genmesh(const struct Chunk *chunk) {
 	// I want to create an array of air voxels intersect solid voxels
 	// One byte in this array is: 0 0 X+ X- Y+ Y- Z+ Z-
 	// where X Y Z are coordinates and + - are representing inc and dec
-	unsigned char array[CQSIZE];
-	memset(array, 0, CQSIZE);
-	for (int x = 0; x < CSIZE; x++) {
-		for (int y = 0; y < CSIZE; y++) {
-			for (int z = 0; z < CSIZE; z++) {
+	unsigned char array[CHUNK_CSIZE];
+	memset(array, 0, CHUNK_CSIZE);
+	for (int x = 0; x < CHUNK_SIZE; x++) {
+		for (int y = 0; y < CHUNK_SIZE; y++) {
+			for (int z = 0; z < CHUNK_SIZE; z++) {
 				char curr = chunk_get(chunk, x, y, z);
 				if (curr != 0) {
 					unsigned char result = 0;
 					char Xinc =
 						world_block_get(chunk->world, chunkX * 32 + x + 1,
 										chunkY * 32 + y, chunkZ * 32 + z);
-					// printf("Xinc: %d\n", Xinc);
-					// _exit(-1);
 					if (Xinc == 0 || Xinc == -1) {
 						result = 0b00100000 | result;
 					}
@@ -75,16 +70,18 @@ Mesh chunk_genmesh(const struct Chunk *chunk) {
 					if (Zdec == 0 || Zdec == -1) {
 						result = 0b00000001 | result;
 					}
-					array[x + y * CSIZE + z * CSIZE * CSIZE] = result;
+					array[x + y * CHUNK_SIZE + z * CHUNK_SIZE * CHUNK_SIZE] =
+						result;
 				}
 			}
 		}
 	}
 
-	for (int x = 0; x < CSIZE; x++) {
-		for (int y = 0; y < CSIZE; y++) {
-			for (int z = 0; z < CSIZE; z++) {
-				char curr = array[x + y * CSIZE + z * CSIZE * CSIZE];
+	for (int x = 0; x < CHUNK_SIZE; x++) {
+		for (int y = 0; y < CHUNK_SIZE; y++) {
+			for (int z = 0; z < CHUNK_SIZE; z++) {
+				char curr =
+					array[x + y * CHUNK_SIZE + z * CHUNK_SIZE * CHUNK_SIZE];
 				if (curr) {
 					if ((curr & 0b00100000)) {
 						unsigned int size = mesh.vertices.size;

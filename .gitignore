@@ -54,3 +54,7 @@ dkms.conf
 # clangd (lsp) config
 .cache
 compile_commands.json
+
+# nob
+nob
+nob.old

@@ -15,8 +15,9 @@ void getCursorPos(Window *window, double *xpos, double *ypos) {
 	glfwGetCursorPos(window->window, xpos, ypos);
 }
 
-static void key_callback(GLFWwindow *window, int key, int scancode, int action,
-						 int mode) {
+static void key_callback(GLFWwindow *window, int key,
+						 int scancode __attribute__((unused)), int action,
+						 int mode __attribute__((unused))) {
 	Window *my_window = glfwGetWindowUserPointer(window);
 
 	if (key >= 0 && key < 1024) {

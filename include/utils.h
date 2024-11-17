@@ -1,7 +1,7 @@
 #include <cglm/cglm.h>
 
-#ifndef _utils
-#define _utils
+#ifndef _UTILS_H
+#define _UTILS_H
 typedef struct {
 	float x, y, z;
 } Vec3;
@@ -25,7 +25,7 @@ Vec3 vec3_norm(Vec3);
 	name name##_init(unsigned int capacity, unsigned int step);                \
 	void name##_append(name *vec, type value);
 
-#ifdef _vector_impl
+#ifdef _VECTOR_IMPL
 #include <stdlib.h>
 #define VectorImpl(type, name)                                                 \
 	name name##_init(unsigned int capacity, unsigned int step) {               \
@@ -46,9 +46,9 @@ Vec3 vec3_norm(Vec3);
 		vec->data[vec->size] = value;                                          \
 		vec->size++;                                                           \
 	}
-#endif // _vector_impl
+#endif // _VECTOR_IMPL
 
 Vectorize(float, FloatVector) Vectorize(unsigned int, UnsignedIntVector)
 
 	void print_mat4(mat4 mat);
-#endif // _utils
+#endif // _UTILS_H

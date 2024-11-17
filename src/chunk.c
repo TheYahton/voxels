@@ -7,34 +7,34 @@ struct Chunk chunk_init(World *world, int x, int y, int z) {
 	struct Chunk chunk = {
 		world,
 		{x, y, z},
-		malloc(CQSIZE * sizeof(char)),
-		//{{NULL, 0, 0, 64}, {NULL, 0, 0, 64}},
-		NULL,
+		malloc(CHUNK_CSIZE * sizeof(char)),
+		{{NULL, 0, 0, 64}, {NULL, 0, 0, 64}},
 		0,
 	};
-	memset(chunk.data, 0, CQSIZE * sizeof(char));
+	memset(chunk.data, 0, CHUNK_CSIZE * sizeof(char));
 	return chunk;
 }
 
 void chunk_set(struct Chunk *chunk, unsigned int x, unsigned int y,
 			   unsigned int z, char value) {
-	if (x >= CSIZE || y >= CSIZE || z >= CSIZE) {
+	if (x >= CHUNK_SIZE || y >= CHUNK_SIZE || z >= CHUNK_SIZE) {
 		return;
 	}
-	chunk->data[x + y * CSIZE + z * CSIZE * CSIZE] = value;
+	chunk->data[x + y * CHUNK_SIZE + z * CHUNK_SIZE * CHUNK_SIZE] = value;
 }
 
 unsigned char chunk_get(const struct Chunk *chunk, unsigned int x,
 						unsigned int y, unsigned int z) {
-	if (chunk == NULL || x >= CSIZE || y >= CSIZE || z >= CSIZE) {
+	if (chunk == NULL || x >= CHUNK_SIZE || y >= CHUNK_SIZE ||
+		z >= CHUNK_SIZE) {
 		return -1;
 	}
-	return chunk->data[x + y * CSIZE + z * CSIZE * CSIZE];
+	return chunk->data[x + y * CHUNK_SIZE + z * CHUNK_SIZE * CHUNK_SIZE];
 }
 
 void chunk_worldgen(struct Chunk *chunk) {
-	for (int x = 0; x < CSIZE; x++) {
-		for (int z = 0; z < CSIZE; z++) {
+	for (int x = 0; x < CHUNK_SIZE; x++) {
+		for (int z = 0; z < CHUNK_SIZE; z++) {
 			chunk_set(chunk, x, 0, z, 1);
 		}
 	}

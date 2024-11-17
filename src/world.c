@@ -1,20 +1,17 @@
-#define _vector_impl
+#define _VECTOR_IMPL
 #include "world.h"
 #include "chunk.h"
 #include "render.h"
 #include "utils.h"
-
-#define WORLD_SIZE 1024
-#define WORLD_QSIZE (WORLD_SIZE * WORLD_SIZE * WORLD_SIZE)
 
 VectorImpl(Chunk, ChunkVector)
 
 	struct World world_init() {
 	World world = {ChunkVector_init(0, 64)};
 
-	for (int i = 0; i < 64; i++) {
-		unsigned int x = i % 8 - 4;
-		unsigned int z = i / 8 - 4;
+	for (int i = 0; i < 4; i++) {
+		unsigned int x = i % 2 - 1;
+		unsigned int z = i / 2 - 1;
 		world_chunk_generate(&world, x, 0, z);
 	}
 
@@ -49,10 +46,11 @@ Chunk *world_chunk_get(World *world, int x, int y, int z) {
 	return NULL;
 }
 
-inline int mod(int a, int b) {
+int mod(int a, int b) {
 	int r = a % b;
 	return r < 0 ? r + b : r;
 }
+
 unsigned char world_block_get(World *world, int x, int y, int z) {
 	unsigned int blockX = mod(x, 32);
 	unsigned int blockY = mod(y, 32);

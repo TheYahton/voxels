@@ -2,8 +2,8 @@
 
 #include <stdbool.h>
 
-#ifndef _window_h
-#define _window_h
+#ifndef _WINDOW_H
+#define _WINDOW_H
 typedef struct {
 	GLFWwindow *window;
 	int width, height;
@@ -17,4 +17,4 @@ void getWindowSize(Window *window, int *width, int *height);
 void swapBuffer(Window *window);
 bool windowShouldClose(Window *window);
 void getCursorPos(Window *window, double *xpos, double *ypos);
-#endif // _window_h
+#endif // _WINDOW_H

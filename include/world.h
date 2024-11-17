@@ -1,5 +1,5 @@
-#ifndef _world
-#define _world
+#ifndef _WORLD_H
+#define _WORLD_H
 
 #include "utils.h"
 
@@ -19,4 +19,4 @@ void world_block_set(struct World *world, int x, int y, int z,
 					 unsigned int value);
 void world_free(struct World *world);
 
-#endif // _world
+#endif // _WORLD_H

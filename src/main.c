@@ -3,9 +3,7 @@
 #include <GLFW/glfw3.h>
 
 #include "camera.h"
-// #include "chunk.h"
 #include "logs.h"
-#include "mesh.h"
 #include "player.h"
 #include "render.h"
 #include "shader.h"
@@ -33,16 +31,10 @@ int main() {
 	struct World world = world_init();
 
 	Player player = {
-		{0.0f, 2.0f, 0.0f},
+		{0.0f, 2.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, 5.0f,
 		{0.0f, 0.0f, 0.0f},
-		{0.0f, 0.0f, 0.0f},
-		5.0f,
 	};
-	Camera camera = {
-		0.0f,
-		0.0f,
-		0.0f,
-	};
+	Camera camera = {&player.position, &player.direction};
 	Renderer renderer = {
 		&window.polygon_mode,
 		shader_program,
@@ -75,7 +67,7 @@ int main() {
 		lastY = ypos;
 
 		camera_update(&camera, window.keys, dx, dy, dt);
-		player_move(&player, window.keys, camera.direction, dt);
+		player_move(&player, window.keys, dt);
 
 		// RENDER
 		render(&renderer, &world, &player, &camera);

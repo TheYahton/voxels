@@ -97,9 +97,9 @@ void render(Renderer *renderer, World *world, Player *player, Camera *camera) {
 	mat4 view;
 	glm_mat4_identity(view);
 	vec3 up = {1.0f, 0.0f, 0.0f};
-	glm_rotate(view, -camera->direction.y, up);
+	glm_rotate(view, -camera->direction->y, up);
 	vec3 left = {0.0f, 1.0f, 0.0f};
-	glm_rotate(view, -camera->direction.x, left);
+	glm_rotate(view, -camera->direction->x, left);
 	int view_location = glGetUniformLocation(renderer->shader_program, "view");
 
 	glUseProgram(renderer->shader_program);
@@ -109,7 +109,6 @@ void render(Renderer *renderer, World *world, Player *player, Camera *camera) {
 	for (unsigned int i = 0; i < world->chunks.size; i++) {
 		mat4 model;
 		Vec3i chunkPos = world->chunks.data[i].position;
-		// printf("x: %d, y: %d, z: %d", chunkPos.x, chunkPos.y, chunkPos.z);
 		vec4 translation = {player->position.x + 32 * chunkPos.x,
 							-player->position.y + 32 * chunkPos.y,
 							player->position.z + 32 * chunkPos.z, 0.0f};
