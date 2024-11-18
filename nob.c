@@ -70,7 +70,7 @@ int main(int argc, char **argv) {
 	}
 	// Non-MinGW
 	else {
-		nob_cmd_append(&cmd, "-lGLEW", "-lglfw", "-lGL", "-lm", "-I./include");
+		nob_cmd_append(&cmd, "-lglfw", "-lGL", "-lm", "-I./include");
 
 		nob_cmd_append(&cmd, "-o", "./build/voxels");
 	}

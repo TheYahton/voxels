@@ -1,5 +1,5 @@
-#define GLEW_STATIC
-#include <GL/glew.h>
+#define GLAD_GL_IMPLEMENTATION
+#include <glad/gl.h>
 #include <GLFW/glfw3.h>
 
 #include "camera.h"
@@ -19,12 +19,12 @@ int main() {
 		return -1;
 	}
 
-	if (!glewInit()) {
-		error("Failed to initialize GLEW.");
-		glfwTerminate();
-		return -1;
-	}
-	info("GLEW has been initialized.");
+	int version = gladLoadGL(glfwGetProcAddress);
+  if (version == 0) {
+      error("Failed to initialize OpenGL context.");
+      return -1;
+  }
+  info("OpenGL loaded successfully.");
 
 	unsigned int shader_program = render_create_shader();
 
