@@ -4,9 +4,10 @@
 
 #include <glad/gl.h>
 
+#include "shader.h"
 #include "logs.h"
 
-char *read_file(const char *path) {
+static char *read_file(const char *path) {
 	FILE *fptr = fopen(path, "r");
 	if (fptr == NULL) {
 		return NULL;

@@ -1,3 +1,8 @@
+#ifndef _GLAD_H
+#define _GLAD_H
+#include <glad/gl.h>
+#endif // _GLAD_H
+
 #include "camera.h"
 #include "mesh.h"
 #include "player.h"
@@ -14,3 +19,4 @@ unsigned int render_create_vao(Mesh *mesh);
 void pre_render(int width, int height);
 void render(Renderer *renderer, struct World *world, Player *player,
 			Camera *camera);
+int loadGL(GLADloadfunc func);

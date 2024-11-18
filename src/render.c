@@ -1,11 +1,9 @@
-#include <glad/gl.h>
+#define GLAD_GL_IMPLEMENTATION
 
-#include "chunk.h"
-#include "mesh.h"
 #include "render.h"
+#include "chunk.h"
+#include "logs.h"
 #include "shader.h"
-#include "utils.h"
-#include "world.h"
 
 unsigned int render_create_shader(void) {
 	unsigned int vertex_shader =
@@ -122,4 +120,14 @@ void render(Renderer *renderer, World *world, Player *player, Camera *camera) {
 
 		glBindVertexArray(0);
 	}
+}
+
+int loadGL(GLADloadfunc func) {
+	int version = gladLoadGL(func);
+	if (version == 0) {
+		error("Failed to initialize OpenGL context.");
+		return -1;
+	}
+	info("OpenGL loaded successfully.");
+	return 0;
 }

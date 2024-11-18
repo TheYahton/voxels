@@ -1,7 +1,3 @@
-#define GLAD_GL_IMPLEMENTATION
-#include <glad/gl.h>
-#include <GLFW/glfw3.h>
-
 #include "camera.h"
 #include "logs.h"
 #include "player.h"
@@ -14,17 +10,13 @@
 int main() {
 	Window window = createWindow(800, 600);
 	if (initWindow(&window) != 0) {
-		error("The window was not initialized.");
-		glfwTerminate();
 		return -1;
 	}
 
-	int version = gladLoadGL(glfwGetProcAddress);
-  if (version == 0) {
-      error("Failed to initialize OpenGL context.");
-      return -1;
-  }
-  info("OpenGL loaded successfully.");
+	if (loadGL(glfwGetProcAddress) != 0) {
+		windowClose(&window);
+		return -1;
+	}
 
 	unsigned int shader_program = render_create_shader();
 
@@ -46,17 +38,17 @@ int main() {
 
 	info("The program has been fully initialized. Starting the game loop...");
 
-	float start = 0.0f;
-	float end = 0.0f;
-	float dt = 0.0f;
+	double start = 0.0f;
+	double end = 0.0f;
+	double dt = 0.0f;
 	double lastX = window.width / 2.0f;
 	double lastY = window.height / 2.0f;
 	while (!windowShouldClose(&window)) {
 		dt = end - start;
-		start = glfwGetTime();
+		start = getTime();
 
 		// LOGIC
-		glfwPollEvents();
+		windowPollEvents(&window);
 
 		// Mouse rotate camera
 		double xpos, ypos;
@@ -73,10 +65,10 @@ int main() {
 		render(&renderer, &world, &player, &camera);
 		swapBuffer(&window);
 
-		end = glfwGetTime();
+		end = getTime();
 	}
 	world_free(&world);
-	glfwTerminate();
+	windowClose(&window);
 	info("The program has terminated.");
 
 	return 0;

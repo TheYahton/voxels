@@ -1,9 +1,14 @@
-#include <GLFW/glfw3.h>
-#include <stdbool.h>
-
+#include "window.h"
 #include "logs.h"
 #include "shader.h"
-#include "window.h"
+
+void windowClose(Window *window __attribute__((unused))) { glfwTerminate(); }
+
+void windowPollEvents(Window *window __attribute__((unused))) {
+	glfwPollEvents();
+}
+
+double getTime(void) { return glfwGetTime(); }
 
 void swapBuffer(Window *window) { glfwSwapBuffers(window->window); }
 
@@ -57,7 +62,7 @@ int initWindow(Window *window) {
 	window->window =
 		glfwCreateWindow(window->width, window->height, "Voxels", NULL, NULL);
 	if (window->window == NULL) {
-		error("Failed to create GLFW window.");
+		error("Failed to create window.");
 		return -1;
 	}
 	info("The window has been initialized.");
