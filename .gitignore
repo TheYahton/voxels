@@ -63,7 +63,5 @@ nob
 nob.old
 
 # for compilation on Windows
-cglm/
-glew/
 glfw/
 *.zip

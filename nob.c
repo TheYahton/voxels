@@ -1,12 +1,6 @@
 #define NOB_IMPLEMENTATION
 #include "nob.h"
 
-#include <stdlib.h>
-
-// -lglfw3 -lglew32 -lglu32 -lopengl32 -lgdi32 -lm
-// -I./include -I./glew-2.1.0/include/ -I./glfw-3.4.bin.WIN64/include -I./cglm/
-// -L./glfw-3.4.bin.WIN64/lib-mingw-w64/ -L./glew-2.1.0/lib/Release/x64/
-
 int main(int argc, char **argv) {
 	NOB_GO_REBUILD_URSELF(argc, argv);
 
@@ -41,30 +35,17 @@ int main(int argc, char **argv) {
 		}
 		closedir(glfw_dir);
 
-		DIR *glew_dir = opendir("glew");
-		if (!glew_dir) {
-			nob_log(
-				NOB_ERROR,
-				"You should download and unpack pre-compiled GLEW as ./glew/");
-			return -1;
-		}
-		closedir(glew_dir);
-
-		DIR *cglm_dir = opendir("cglm");
+		DIR *cglm_dir = opendir("cglm/include");
 		if (!cglm_dir) {
-			Nob_Cmd download_cglm = {0};
-			nob_cmd_append(&download_cglm, "git", "clone",
-						   "https://github.com/recp/cglm.git");
-			nob_cmd_run_sync(download_cglm);
+			nob_log(NOB_ERROR, "The cglm submodule is not initialized. Please, run the following:\n$ git submodule init cglm\n$ git submodule update");
+			return -1;
 		}
 		closedir(cglm_dir);
 
-		nob_cmd_append(&cmd, "-lglfw3", "-lglew32", "-lglu32", "-lopengl32",
-					   "-lgdi32", "-lm");
+		nob_cmd_append(&cmd, "-lglfw3", "-lopengl32", "-lgdi32", "-lm");
 		nob_cmd_append(&cmd, "-I./include", "-I./glew/include/",
 					   "-I./glfw/include", "-I./cglm/include");
-		nob_cmd_append(&cmd, "-L./glfw/lib-mingw-w64/",
-					   "-L./glew/lib/Release/x64/");
+		nob_cmd_append(&cmd, "-L./glfw/lib-mingw-w64/");
 
 		nob_cmd_append(&cmd, "-o", "./build/voxels.exe");
 	}
