@@ -26,7 +26,15 @@ void world_chunk_generate(World *world, int x, int y, int z) {
 	ChunkVector_append(&world->chunks, chunk_init(world, x, y, z));
 	unsigned int index = world->chunks.size - 1;
 	world->chunks.data[index].world = world;
-	chunk_worldgen(&world->chunks.data[index]);
+	Chunk *chunk = &world->chunks.data[index];
+
+	for (int x = 0; x < CHUNK_SIZE; x++) {
+		for (int y = 0; y < 2; y++) {
+			for (int z = 0; z < CHUNK_SIZE; z++) {
+				chunk_set(chunk, x, y, z, 1);
+			}
+		}
+	}
 }
 
 void world_mesh_generate(World *world, unsigned int index) {
@@ -55,9 +63,9 @@ unsigned char world_block_get(World *world, int x, int y, int z) {
 	unsigned int blockX = mod(x, 32);
 	unsigned int blockY = mod(y, 32);
 	unsigned int blockZ = mod(z, 32);
-	int chunkX = x / 32;
-	int chunkY = y / 32;
-	int chunkZ = z / 32;
+	int chunkX = floorf((float)x / 32);
+	int chunkY = floorf((float)y / 32);
+	int chunkZ = floorf((float)z / 32);
 	return chunk_get(world_chunk_get(world, chunkX, chunkY, chunkZ), blockX,
 					 blockY, blockZ);
 }

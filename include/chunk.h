@@ -22,7 +22,6 @@ void chunk_set(struct Chunk *chunk, unsigned int x, unsigned int y,
 			   unsigned int z, char value);
 unsigned char chunk_get(const struct Chunk *chunk, unsigned int x,
 						unsigned int y, unsigned int z);
-void chunk_worldgen(struct Chunk *chunk);
 void chunk_free(struct Chunk *chunk);
 
 Mesh chunk_genmesh(const struct Chunk *chunk);

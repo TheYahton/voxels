@@ -32,12 +32,4 @@ unsigned char chunk_get(const struct Chunk *chunk, unsigned int x,
 	return chunk->data[x + y * CHUNK_SIZE + z * CHUNK_SIZE * CHUNK_SIZE];
 }
 
-void chunk_worldgen(struct Chunk *chunk) {
-	for (int x = 0; x < CHUNK_SIZE; x++) {
-		for (int z = 0; z < CHUNK_SIZE; z++) {
-			chunk_set(chunk, x, 0, z, 1);
-		}
-	}
-}
-
 void chunk_free(struct Chunk *chunk) { free(chunk->data); }
