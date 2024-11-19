@@ -19,7 +19,7 @@ int main(int argc, char **argv) {
 		nob_cmd_append(&cmd, CFLAGS);
 	}
 
-	nob_cmd_append(&cmd, "-std=c2x", "-Wall", "-Wextra", "-Wpedantic");
+	nob_cmd_append(&cmd, "-std=c99", "-Wall", "-Wextra", "-Wpedantic");
 	nob_cmd_append(&cmd, "src/main.c", "src/camera.c", "src/chunk.c",
 				   "src/logs.c", "src/mesh.c", "src/player.c", "src/render.c",
 				   "src/shader.c", "src/utils.c", "src/window.c",

@@ -7,7 +7,7 @@
 #include "window.h"
 #include "world.h"
 
-int main() {
+int main(void) {
 	Window window = createWindow(800, 600);
 	if (initWindow(&window) != 0) {
 		return -1;

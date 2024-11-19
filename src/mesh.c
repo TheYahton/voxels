@@ -38,37 +38,37 @@ Mesh chunk_genmesh(const struct Chunk *chunk) {
 						world_block_get(chunk->world, chunkX * 32 + x + 1,
 										chunkY * 32 + y, chunkZ * 32 + z);
 					if (Xinc == 0 || Xinc == -1) {
-						result = 0b00100000 | result;
+						result = 32 | result;
 					}
 					char Xdec =
 						world_block_get(chunk->world, chunkX * 32 + x - 1,
 										chunkY * 32 + y, chunkZ * 32 + z);
 					if (Xdec == 0 || Xdec == -1) {
-						result = 0b00010000 | result;
+						result = 16 | result;
 					}
 					char Yinc =
 						world_block_get(chunk->world, chunkX * 32 + x,
 										chunkY * 32 + y + 1, z + 32 * chunkZ);
 					if (Yinc == 0 || Yinc == -1) {
-						result = 0b00001000 | result;
+						result = 8 | result;
 					}
 					char Ydec =
 						world_block_get(chunk->world, chunkX * 32 + x,
 										chunkY * 32 + y - 1, z + 32 * chunkZ);
 					if (Ydec == 0 || Ydec == -1) {
-						result = 0b00000100 | result;
+						result = 4 | result;
 					}
 					char Zinc =
 						world_block_get(chunk->world, chunkX * 32 + x,
 										chunkY * 32 + y, chunkZ * 32 + z + 1);
 					if (Zinc == 0 || Zinc == -1) {
-						result = 0b00000010 | result;
+						result = 2 | result;
 					}
 					char Zdec =
 						world_block_get(chunk->world, chunkX * 32 + x,
 										chunkY * 32 + y, chunkZ * 32 + z - 1);
 					if (Zdec == 0 || Zdec == -1) {
-						result = 0b00000001 | result;
+						result = 1 | result;
 					}
 					array[x + y * CHUNK_SIZE + z * CHUNK_SIZE * CHUNK_SIZE] =
 						result;
@@ -83,7 +83,7 @@ Mesh chunk_genmesh(const struct Chunk *chunk) {
 				char curr =
 					array[x + y * CHUNK_SIZE + z * CHUNK_SIZE * CHUNK_SIZE];
 				if (curr) {
-					if ((curr & 0b00100000)) {
+					if ((curr & 32)) {
 						unsigned int size = mesh.vertices.size;
 						FloatVector_addVertex(1.0 + x, 0.0 + y, 0.0 + z);
 						FloatVector_addVertex(1.0 + x, 1.0 + y, 0.0 + z);
@@ -97,7 +97,7 @@ Mesh chunk_genmesh(const struct Chunk *chunk) {
 						UnsignedIntVector_append(&mesh.indices, size / 6 + 2);
 						UnsignedIntVector_append(&mesh.indices, size / 6 + 1);
 					}
-					if ((curr & 0b00010000)) {
+					if ((curr & 16)) {
 						unsigned int size = mesh.vertices.size;
 						FloatVector_addVertex(x, 0.0 + y, 0.0 + z);
 						FloatVector_addVertex(x, 1.0 + y, 0.0 + z);
@@ -111,7 +111,7 @@ Mesh chunk_genmesh(const struct Chunk *chunk) {
 						UnsignedIntVector_append(&mesh.indices, size / 6 + 1);
 						UnsignedIntVector_append(&mesh.indices, size / 6 + 2);
 					}
-					if ((curr & 0b00001000)) {
+					if ((curr & 8)) {
 						unsigned int size = mesh.vertices.size;
 						FloatVector_addVertex(0.0 + x, 1.0 + y, 0.0 + z);
 						FloatVector_addVertex(1.0 + x, 1.0 + y, 0.0 + z);
@@ -125,7 +125,7 @@ Mesh chunk_genmesh(const struct Chunk *chunk) {
 						UnsignedIntVector_append(&mesh.indices, size / 6 + 1);
 						UnsignedIntVector_append(&mesh.indices, size / 6 + 2);
 					}
-					if ((curr & 0b00000100)) {
+					if ((curr & 4)) {
 						unsigned int size = mesh.vertices.size;
 						FloatVector_addVertex(0.0 + x, y, 0.0 + z);
 						FloatVector_addVertex(1.0 + x, y, 0.0 + z);
@@ -139,7 +139,7 @@ Mesh chunk_genmesh(const struct Chunk *chunk) {
 						UnsignedIntVector_append(&mesh.indices, size / 6 + 2);
 						UnsignedIntVector_append(&mesh.indices, size / 6 + 1);
 					}
-					if ((curr & 0b00000010)) {
+					if ((curr & 2)) {
 						unsigned int size = mesh.vertices.size;
 						FloatVector_addVertex(0.0 + x, 0.0 + y, 1.0 + z);
 						FloatVector_addVertex(0.0 + x, 1.0 + y, 1.0 + z);
@@ -153,7 +153,7 @@ Mesh chunk_genmesh(const struct Chunk *chunk) {
 						UnsignedIntVector_append(&mesh.indices, size / 6 + 1);
 						UnsignedIntVector_append(&mesh.indices, size / 6 + 2);
 					}
-					if ((curr & 0b00000001)) {
+					if ((curr & 1)) {
 						unsigned int size = mesh.vertices.size;
 						FloatVector_addVertex(0.0 + x, 0.0 + y, z);
 						FloatVector_addVertex(0.0 + x, 1.0 + y, z);

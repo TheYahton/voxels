@@ -6,7 +6,7 @@
 
 VectorImpl(Chunk, ChunkVector)
 
-	struct World world_init() {
+	struct World world_init(void) {
 	World world = {ChunkVector_init(0, 64)};
 
 	for (int i = 0; i < 4; i++) {
@@ -46,7 +46,7 @@ Chunk *world_chunk_get(World *world, int x, int y, int z) {
 	return NULL;
 }
 
-int mod(int a, int b) {
+static int mod(int a, int b) {
 	int r = a % b;
 	return r < 0 ? r + b : r;
 }

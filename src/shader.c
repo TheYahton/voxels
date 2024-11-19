@@ -4,8 +4,8 @@
 
 #include <glad/gl.h>
 
-#include "shader.h"
 #include "logs.h"
+#include "shader.h"
 
 static char *read_file(const char *path) {
 	FILE *fptr = fopen(path, "r");
