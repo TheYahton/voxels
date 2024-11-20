@@ -19,11 +19,28 @@ int main(int argc, char **argv) {
 		nob_cmd_append(&cmd, CFLAGS);
 	}
 
+	// STANDARD AND WARNINGS
 	nob_cmd_append(&cmd, "-std=c99", "-Wall", "-Wextra", "-Wpedantic");
+
+	// SOURCE FILES
 	nob_cmd_append(&cmd, "src/main.c", "src/camera.c", "src/chunk.c",
 				   "src/logs.c", "src/mesh.c", "src/player.c", "src/render.c",
 				   "src/shader.c", "src/utils.c", "src/window.c",
 				   "src/world.c");
+
+	// LINKING
+	DIR *cglm_dir = opendir("cglm/include");
+	if (!cglm_dir) {
+		nob_log(NOB_ERROR,
+		        "The cglm submodule is not initialized."
+		        "Please, run the following:\n"
+		        "$ git submodule init cglm\n"
+		        "$ git submodule update");
+		return -1;
+	}
+	closedir(cglm_dir);
+
+	nob_cmd_append(&cmd, "-I./include", "-I./cglm/include");
 
 	// MinGW
 	if (CC != NULL && strcmp(CC, "x86_64-w64-mingw32-gcc") == 0) {
@@ -35,23 +52,15 @@ int main(int argc, char **argv) {
 		}
 		closedir(glfw_dir);
 
-		DIR *cglm_dir = opendir("cglm/include");
-		if (!cglm_dir) {
-			nob_log(NOB_ERROR, "The cglm submodule is not initialized. Please, run the following:\n$ git submodule init cglm\n$ git submodule update");
-			return -1;
-		}
-		closedir(cglm_dir);
-
 		nob_cmd_append(&cmd, "-lglfw3", "-lopengl32", "-lgdi32", "-lm");
-		nob_cmd_append(&cmd, "-I./include", "-I./glew/include/",
-					   "-I./glfw/include", "-I./cglm/include");
+		nob_cmd_append(&cmd, "-I./glfw/include");
 		nob_cmd_append(&cmd, "-L./glfw/lib-mingw-w64/");
 
 		nob_cmd_append(&cmd, "-o", "./build/voxels.exe");
 	}
 	// Non-MinGW
 	else {
-		nob_cmd_append(&cmd, "-lglfw", "-lGL", "-lm", "-I./include");
+		nob_cmd_append(&cmd, "-lglfw", "-lGL", "-lm");
 
 		nob_cmd_append(&cmd, "-o", "./build/voxels");
 	}
