@@ -77,11 +77,14 @@ Mesh chunk_genmesh(const struct Chunk *chunk) {
 		}
 	}
 
-	for (int x = 0; x < CHUNK_SIZE; x++) {
-		for (int y = 0; y < CHUNK_SIZE; y++) {
-			for (int z = 0; z < CHUNK_SIZE; z++) {
+	for (int i = 0; i < CHUNK_SIZE; i++) {
+		for (int j = 0; j < CHUNK_SIZE; j++) {
+			for (int k = 0; k < CHUNK_SIZE; k++) {
 				char curr =
-					array[x + y * CHUNK_SIZE + z * CHUNK_SIZE * CHUNK_SIZE];
+					array[i + j * CHUNK_SIZE + k * CHUNK_SIZE * CHUNK_SIZE];
+				int x = i + chunk->position.x * 32;
+				int y = j + chunk->position.y * 32;
+				int z = k + chunk->position.z * 32;
 				if (curr) {
 					if ((curr & 32)) {
 						unsigned int size = mesh.vertices.size;

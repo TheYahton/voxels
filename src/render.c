@@ -106,10 +106,9 @@ void render(Renderer *renderer, World *world, Player *player, Camera *camera) {
 
 	for (unsigned int i = 0; i < world->chunks.size; i++) {
 		mat4 model;
-		Vec3i chunkPos = world->chunks.data[i].position;
-		vec4 translation = {player->position.x + 32 * chunkPos.x,
-							-player->position.y + 32 * chunkPos.y,
-							player->position.z + 32 * chunkPos.z, 0.0f};
+		vec4 translation = {player->position.x,
+							-player->position.y,
+							player->position.z, 0.0f};
 		glm_mat4_identity(model);
 		glm_translate(model, translation);
 		glUniformMatrix4fv(model_location, 1, GL_FALSE, model[0]);
