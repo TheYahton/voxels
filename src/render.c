@@ -1,7 +1,6 @@
 #define GLAD_GL_IMPLEMENTATION
 
 #include "render.h"
-#include "chunk.h"
 #include "logs.h"
 #include "shader.h"
 
@@ -73,7 +72,8 @@ void pre_render(int width, int height) {
 	glEnable(GL_CULL_FACE);
 }
 
-void render(Renderer *renderer, World *world, Player *player, Camera *camera) {
+void render(Renderer *renderer, const MeshVector *meshes,
+			const UnsignedIntVector *VAOs, Player *player, Camera *camera) {
 	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -104,16 +104,15 @@ void render(Renderer *renderer, World *world, Player *player, Camera *camera) {
 	glUniformMatrix4fv(projection_location, 1, GL_FALSE, projection[0]);
 	glUniformMatrix4fv(view_location, 1, GL_FALSE, view[0]);
 
-	for (unsigned int i = 0; i < world->chunks.size; i++) {
+	for (unsigned int i = 0; i < VAOs->size; i++) {
 		mat4 model;
-		vec4 translation = {player->position.x,
-							-player->position.y,
+		vec4 translation = {player->position.x, -player->position.y,
 							player->position.z, 0.0f};
 		glm_mat4_identity(model);
 		glm_translate(model, translation);
 		glUniformMatrix4fv(model_location, 1, GL_FALSE, model[0]);
-		glBindVertexArray(world->chunks.data[i].VAO);
-		glDrawElements(GL_TRIANGLES, world->chunks.data[i].mesh.indices.size,
+		glBindVertexArray(VAOs->data[i]);
+		glDrawElements(GL_TRIANGLES, meshes->data[i].indices.size,
 					   GL_UNSIGNED_INT,
 					   0); // With EBO
 

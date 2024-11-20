@@ -3,13 +3,11 @@
 #include <stdlib.h>
 #include <string.h>
 
-struct Chunk chunk_init(World *world, int x, int y, int z) {
+struct Chunk chunk_init(int x, int y, int z) {
 	struct Chunk chunk = {
-		world,
-		{x, y, z},
-		malloc(CHUNK_CSIZE * sizeof(char)),
-		{{NULL, 0, 0, 64}, {NULL, 0, 0, 64}},
-		0,
+		{x, y, z}, malloc(CHUNK_CSIZE * sizeof(char)),
+		// {{NULL, 0, 0, 64}, {NULL, 0, 0, 64}},
+		// 0,
 	};
 	memset(chunk.data, 0, CHUNK_CSIZE * sizeof(char));
 	return chunk;

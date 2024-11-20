@@ -21,6 +21,16 @@ int main(void) {
 	unsigned int shader_program = render_create_shader();
 
 	struct World world = world_init();
+	MeshVector meshes = MeshVector_init(0, 64);
+	UnsignedIntVector VAOs = UnsignedIntVector_init(0, 64);
+	UnsignedIntVector chunk_indices = world_chunk_circle(&world, 0, 0, 0, 4);
+
+	for (unsigned int i = 0; i < chunk_indices.size; i++) {
+		const Chunk *chunk = &world.chunks.data[chunk_indices.data[i]];
+		MeshVector_append(&meshes, chunk_genmesh(chunk, &world));
+		UnsignedIntVector_append(
+			&VAOs, render_create_vao(&meshes.data[meshes.size - 1]));
+	}
 
 	Player player = {
 		{0.0f, 2.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, 5.0f,
@@ -62,7 +72,7 @@ int main(void) {
 		player_move(&player, window.keys, dt);
 
 		// RENDER
-		render(&renderer, &world, &player, &camera);
+		render(&renderer, &meshes, &VAOs, &player, &camera);
 		swapBuffer(&window);
 
 		end = getTime();
@@ -83,9 +93,14 @@ int main(void) {
 // player
 // TODO: world generation
 // TODO: improve camera rotation (use quaternions O.O)
-// TODO: удалить функцию chunk_worldgen. Генерация мира должна быть реализована в window.c
+// TODO: удалить функцию chunk_worldgen. Генерация мира должна быть реализована
+// в window.c
 // TODO (может быть ненужным и даже вредным):
 // 1. написать обёртку над вводом GLFW
-// 2. иметь несколько window creating backend. Например GLFW, SDL2/SDL3, RGFW или что-то в этом духе
-// TODO: подумать над мультиплеером. Будет ли это главный сервер и клиенты, или что-то типа P2P?
-// TODO: сейчас трудно разглядеть трёхмерность какого-либо чанка - всё одноцветное и монотонное. Ранее от текстур я решил отказаться, поэтому реализую Ambient occlusion
+// 2. иметь несколько window creating backend. Например GLFW, SDL2/SDL3, RGFW
+// или что-то в этом духе
+// TODO: подумать над мультиплеером. Будет ли это главный сервер и клиенты, или
+// что-то типа P2P?
+// TODO: сейчас трудно разглядеть трёхмерность какого-либо чанка - всё
+// одноцветное и монотонное. Ранее от текстур я решил отказаться, поэтому
+// реализую Ambient occlusion
