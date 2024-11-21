@@ -9,9 +9,9 @@ VectorImpl(Chunk, ChunkVector)
 	struct World world_init(void) {
 	struct World world = {ChunkVector_init(0, 64)};
 
-	for (int i = 0; i < 4; i++) {
-		unsigned int x = i % 2 - 1;
-		unsigned int z = i / 2 - 1;
+	for (int i = 0; i < 256; i++) {
+		unsigned int x = i % 16 - 8;
+		unsigned int z = i / 16 - 8;
 		world_chunk_generate(&world, x, 0, z);
 	}
 
@@ -59,32 +59,28 @@ static int mod(int a, int b) {
 }
 
 unsigned char world_block_get(const struct World *world, int x, int y, int z) {
-	unsigned int blockX = mod(x, 32);
-	unsigned int blockY = mod(y, 32);
-	unsigned int blockZ = mod(z, 32);
-	int chunkX = floorf((float)x / 32);
-	int chunkY = floorf((float)y / 32);
-	int chunkZ = floorf((float)z / 32);
+	unsigned int blockX = mod(x, CHUNK_SIZE);
+	unsigned int blockY = mod(y, CHUNK_SIZE);
+	unsigned int blockZ = mod(z, CHUNK_SIZE);
+	int chunkX = floorf((float)x / CHUNK_SIZE);
+	int chunkY = floorf((float)y / CHUNK_SIZE);
+	int chunkZ = floorf((float)z / CHUNK_SIZE);
 	return chunk_get(world_chunk_get(world, chunkX, chunkY, chunkZ), blockX,
 					 blockY, blockZ);
 }
 
-UnsignedIntVector world_chunk_circle(const struct World *world, int x, int y,
-									 int z, int radius) {
-	UnsignedIntVector chunk_indices = UnsignedIntVector_init(0, 64);
-
+void world_chunk_circle(UnsignedIntVector *vec, const struct World *world, float x, float y,
+									 float z, int radius) {
 	for (unsigned int i = 0; i < world->chunks.size; i++) {
 		const Vec3i *chunkPos = &world->chunks.data[i].position;
-		int dx = chunkPos->x - x;
-		int dy = chunkPos->y - y;
-		int dz = chunkPos->z - z;
+		float dx = CHUNK_SIZE * chunkPos->x - x + CHUNK_SIZE / 2.0;
+		float dy = CHUNK_SIZE * chunkPos->y - y + CHUNK_SIZE / 2.0;
+		float dz = CHUNK_SIZE * chunkPos->z - z + CHUNK_SIZE / 2.0;
 		float dist = sqrtf(dx * dx + dy * dy + dz * dz);
-		if (dist < radius) {
-			UnsignedIntVector_append(&chunk_indices, i);
+		if (dist < radius * CHUNK_SIZE) {
+			UnsignedIntVector_append(vec, i);
 		}
 	}
-
-	return chunk_indices;
 }
 
 void world_free(struct World *world) {

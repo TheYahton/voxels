@@ -38,38 +38,38 @@ VectorImpl(Mesh, MeshVector)
 				if (curr != 0) {
 					unsigned char result = 0;
 					char Xinc =
-						world_block_get(world, chunkX * 32 + x + 1,
-										chunkY * 32 + y, chunkZ * 32 + z);
+						world_block_get(world, chunkX * CHUNK_SIZE + x + 1,
+										chunkY * CHUNK_SIZE + y, chunkZ * CHUNK_SIZE + z);
 					if (Xinc == 0 || Xinc == -1) {
 						result = 32 | result;
 					}
 					char Xdec =
-						world_block_get(world, chunkX * 32 + x - 1,
-										chunkY * 32 + y, chunkZ * 32 + z);
+						world_block_get(world, chunkX * CHUNK_SIZE + x - 1,
+										chunkY * CHUNK_SIZE + y, chunkZ * CHUNK_SIZE + z);
 					if (Xdec == 0 || Xdec == -1) {
 						result = 16 | result;
 					}
 					char Yinc =
-						world_block_get(world, chunkX * 32 + x,
-										chunkY * 32 + y + 1, z + 32 * chunkZ);
+						world_block_get(world, chunkX * CHUNK_SIZE + x,
+										chunkY * CHUNK_SIZE + y + 1, z + CHUNK_SIZE * chunkZ);
 					if (Yinc == 0 || Yinc == -1) {
 						result = 8 | result;
 					}
 					char Ydec =
-						world_block_get(world, chunkX * 32 + x,
-										chunkY * 32 + y - 1, z + 32 * chunkZ);
+						world_block_get(world, chunkX * CHUNK_SIZE + x,
+										chunkY * CHUNK_SIZE + y - 1, z + CHUNK_SIZE * chunkZ);
 					if (Ydec == 0 || Ydec == -1) {
 						result = 4 | result;
 					}
 					char Zinc =
-						world_block_get(world, chunkX * 32 + x, chunkY * 32 + y,
-										chunkZ * 32 + z + 1);
+						world_block_get(world, chunkX * CHUNK_SIZE + x, chunkY * CHUNK_SIZE + y,
+										chunkZ * CHUNK_SIZE + z + 1);
 					if (Zinc == 0 || Zinc == -1) {
 						result = 2 | result;
 					}
 					char Zdec =
-						world_block_get(world, chunkX * 32 + x, chunkY * 32 + y,
-										chunkZ * 32 + z - 1);
+						world_block_get(world, chunkX * CHUNK_SIZE + x, chunkY * CHUNK_SIZE + y,
+										chunkZ * CHUNK_SIZE + z - 1);
 					if (Zdec == 0 || Zdec == -1) {
 						result = 1 | result;
 					}
@@ -85,9 +85,9 @@ VectorImpl(Mesh, MeshVector)
 			for (int k = 0; k < CHUNK_SIZE; k++) {
 				char curr =
 					array[i + j * CHUNK_SIZE + k * CHUNK_SIZE * CHUNK_SIZE];
-				int x = i + chunk->position.x * 32;
-				int y = j + chunk->position.y * 32;
-				int z = k + chunk->position.z * 32;
+				int x = i + chunk->position.x * CHUNK_SIZE;
+				int y = j + chunk->position.y * CHUNK_SIZE;
+				int z = k + chunk->position.z * CHUNK_SIZE;
 				if (curr) {
 					if ((curr & 32)) {
 						unsigned int size = mesh.vertices.size;

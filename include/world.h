@@ -16,8 +16,8 @@ void world_chunk_generate(struct World *world, int x, int y, int z);
 unsigned char world_block_get(const struct World *world, int x, int y, int z);
 void world_block_set(struct World *world, int x, int y, int z,
 					 unsigned int value);
-UnsignedIntVector world_chunk_circle(const struct World *world, int x, int y,
-									 int z, int radius);
+void world_chunk_circle(UnsignedIntVector *vec, const struct World *world, float x, float y,
+									 float z, int radius);
 void world_free(struct World *world);
 
 #endif // _WORLD_H

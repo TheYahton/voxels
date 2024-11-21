@@ -7,6 +7,15 @@
 #include "window.h"
 #include "world.h"
 
+unsigned int UnsignedIntVector_find(UnsignedIntVector *vec, unsigned int value) {
+	for (unsigned int i = 0; i < vec->size; i++) {
+		if (vec->data[i] == value) {
+			return i;
+		}
+	}
+	return -1;
+}
+
 int main(void) {
 	Window window = createWindow(800, 600);
 	if (initWindow(&window) != 0) {
@@ -23,14 +32,8 @@ int main(void) {
 	struct World world = world_init();
 	MeshVector meshes = MeshVector_init(0, 64);
 	UnsignedIntVector VAOs = UnsignedIntVector_init(0, 64);
-	UnsignedIntVector chunk_indices = world_chunk_circle(&world, 0, 0, 0, 4);
-
-	for (unsigned int i = 0; i < chunk_indices.size; i++) {
-		const Chunk *chunk = &world.chunks.data[chunk_indices.data[i]];
-		MeshVector_append(&meshes, chunk_genmesh(chunk, &world));
-		UnsignedIntVector_append(
-			&VAOs, render_create_vao(&meshes.data[meshes.size - 1]));
-	}
+	UnsignedIntVector loaded_chunks = UnsignedIntVector_init(0, 64);
+	UnsignedIntVector should_load = UnsignedIntVector_init(0, 64);
 
 	Player player = {
 		{0.0f, 2.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, 5.0f,
@@ -71,6 +74,28 @@ int main(void) {
 		camera_update(&camera, window.keys, dx, dy, dt);
 		player_move(&player, window.keys, dt);
 
+		world_chunk_circle(&should_load, &world, -player.position.x, -player.position.y, -player.position.z, 4);
+
+		for (unsigned int i = 0; i < should_load.size; i++) {
+			unsigned int index = should_load.data[i];
+			if (UnsignedIntVector_find(&loaded_chunks, index) == -1) {
+				const Chunk *chunk = &world.chunks.data[index];
+				MeshVector_append(&meshes, chunk_genmesh(chunk, &world));
+				UnsignedIntVector_append(
+					&VAOs, render_create_vao(&meshes.data[meshes.size - 1]));
+				UnsignedIntVector_append(&loaded_chunks, index);		
+			}
+		}
+
+		for (unsigned int i = 0; i < loaded_chunks.size; i++) {
+			unsigned int loaded_index = loaded_chunks.data[i];
+			if (UnsignedIntVector_find(&should_load, loaded_index) == -1) {
+				// TODO: Chunk unload
+			}
+		}
+
+		should_load.size = 0;
+
 		// RENDER
 		render(&renderer, &meshes, &VAOs, &player, &camera);
 		swapBuffer(&window);
@@ -78,6 +103,8 @@ int main(void) {
 		end = getTime();
 	}
 	world_free(&world);
+	free(should_load.data);
+	free(loaded_chunks.data);
 	windowClose(&window);
 	info("The program has terminated.");
 
