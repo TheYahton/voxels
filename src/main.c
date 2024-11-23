@@ -105,6 +105,11 @@ int main(void) {
 		end = getTime();
 	}
 	world_free(&world);
+	for (unsigned int i = 0; i < meshes.size; i++) {
+		free(meshes.data[i].vertices.data);
+		free(meshes.data[i].indices.data);
+	}
+	free(meshes.data);
 	free(should_load.data);
 	free(loaded_chunks.data);
 	windowClose(&window);

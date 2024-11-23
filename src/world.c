@@ -86,5 +86,5 @@ void world_chunk_circle(UnsignedIntVector *vec, const struct World *world, float
 void world_free(struct World *world) {
 	for (unsigned int i = 0; i < world->chunks.size; i++)
 		chunk_free(&world->chunks.data[i]);
-	// mesh_free(&world->chunks.data->mesh);
+	free(world->chunks.data);
 }
