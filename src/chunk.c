@@ -5,9 +5,8 @@
 
 struct Chunk chunk_init(int x, int y, int z) {
 	struct Chunk chunk = {
-		{x, y, z}, malloc(CHUNK_CSIZE * sizeof(char)),
-		// {{NULL, 0, 0, 64}, {NULL, 0, 0, 64}},
-		// 0,
+		{x, y, z},
+		(unsigned char*)malloc(CHUNK_CSIZE * sizeof(char)),
 	};
 	memset(chunk.data, 0, CHUNK_CSIZE * sizeof(char));
 	return chunk;

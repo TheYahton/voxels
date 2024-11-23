@@ -20,7 +20,7 @@ int main(int argc, char **argv) {
 	}
 
 	// STANDARD AND WARNINGS
-	nob_cmd_append(&cmd, "-std=c99", "-Wall", "-Wextra", "-Wpedantic");
+	nob_cmd_append(&cmd, "-Wall", "-Wextra", "-Wpedantic");
 
 	// SOURCE FILES
 	nob_cmd_append(&cmd, "src/main.c", "src/camera.c", "src/chunk.c",

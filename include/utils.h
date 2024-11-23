@@ -29,7 +29,7 @@ Vec3 vec3_norm(Vec3);
 #include <stdlib.h>
 #define VectorImpl(type, name)                                                 \
 	name name##_init(unsigned int capacity, unsigned int step) {               \
-		type *data = malloc(capacity * sizeof(type));                          \
+		type *data = (type*)malloc(capacity * sizeof(type));                          \
 		return (name){                                                         \
 			data,                                                              \
 			capacity,                                                          \
@@ -41,7 +41,7 @@ Vec3 vec3_norm(Vec3);
 	void name##_append(name *vec, type value) {                                \
 		if (vec->size >= vec->capacity) {                                      \
 			vec->capacity += vec->step;                                        \
-			vec->data = realloc(vec->data, vec->capacity * sizeof(type));      \
+			vec->data = (type*)realloc(vec->data, vec->capacity * sizeof(type));      \
 		}                                                                      \
 		vec->data[vec->size] = value;                                          \
 		vec->size++;                                                           \

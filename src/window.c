@@ -23,7 +23,7 @@ void getCursorPos(Window *window, double *xpos, double *ypos) {
 static void key_callback(GLFWwindow *window, int key,
 						 int scancode __attribute__((unused)), int action,
 						 int mode __attribute__((unused))) {
-	Window *my_window = glfwGetWindowUserPointer(window);
+	Window *my_window = (Window*)glfwGetWindowUserPointer(window);
 
 	if (key >= 0 && key < 1024) {
 		if (action == GLFW_PRESS) {
@@ -41,7 +41,7 @@ static void key_callback(GLFWwindow *window, int key,
 }
 
 static void resize_callback(GLFWwindow *window, int new_width, int new_height) {
-	Window *my_window = glfwGetWindowUserPointer(window);
+	Window *my_window = (Window*)glfwGetWindowUserPointer(window);
 	my_window->width = new_width;
 	my_window->height = new_height;
 	glViewport(0, 0, new_width, new_height);

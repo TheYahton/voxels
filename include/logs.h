@@ -1,3 +1,3 @@
-void info(char *text);
-void warning(char *text);
-void error(char *text);
+void info(const char *text);
+void warning(const char *text);
+void error(const char *text);

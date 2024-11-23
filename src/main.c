@@ -1,3 +1,5 @@
+#include <limits.h>
+
 #include "camera.h"
 #include "logs.h"
 #include "player.h"
@@ -13,7 +15,7 @@ unsigned int UnsignedIntVector_find(UnsignedIntVector *vec, unsigned int value) 
 			return i;
 		}
 	}
-	return -1;
+	return UINT_MAX;
 }
 
 int main(void) {
@@ -78,7 +80,7 @@ int main(void) {
 
 		for (unsigned int i = 0; i < should_load.size; i++) {
 			unsigned int index = should_load.data[i];
-			if (UnsignedIntVector_find(&loaded_chunks, index) == -1) {
+			if (UnsignedIntVector_find(&loaded_chunks, index) == UINT_MAX) {
 				const Chunk *chunk = &world.chunks.data[index];
 				MeshVector_append(&meshes, chunk_genmesh(chunk, &world));
 				UnsignedIntVector_append(
@@ -89,7 +91,7 @@ int main(void) {
 
 		for (unsigned int i = 0; i < loaded_chunks.size; i++) {
 			unsigned int loaded_index = loaded_chunks.data[i];
-			if (UnsignedIntVector_find(&should_load, loaded_index) == -1) {
+			if (UnsignedIntVector_find(&should_load, loaded_index) == UINT_MAX) {
 				// TODO: Chunk unload
 			}
 		}
