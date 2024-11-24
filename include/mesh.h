@@ -8,7 +8,8 @@
 typedef struct {
 	FloatVector vertices;	   // 20 bytes
 	UnsignedIntVector indices; // 20 bytes
-} Mesh;						   // 40 bytes
+	bool visible;              // 8 bytes
+} Mesh;						   // 48 bytes
 
 Mesh chunk_genmesh(const struct Chunk *chunk, const struct World *world);
 void mesh_free(Mesh *mesh);

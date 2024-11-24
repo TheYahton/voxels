@@ -105,6 +105,7 @@ void render(Renderer *renderer, const MeshVector *meshes,
 	glUniformMatrix4fv(view_location, 1, GL_FALSE, view[0]);
 
 	for (unsigned int i = 0; i < VAOs->size; i++) {
+		if (!meshes->data[i].visible) continue;
 		mat4 model;
 		vec4 translation = {player->position.x, -player->position.y,
 							player->position.z, 0.0f};

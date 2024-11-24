@@ -18,13 +18,16 @@ VectorImpl(Mesh, MeshVector)
 	FloatVector_append(&mesh.vertices, z);                                     \
 	FloatVector_rgb(0.0, 0.9, 0.0)
 
-	Mesh chunk_genmesh(const struct Chunk *chunk, const struct World *world) {
+Mesh chunk_genmesh(const struct Chunk *chunk, const struct World *world) {
+	Mesh mesh = {
+		.vertices = FloatVector_init(0, 64),
+		.indices = UnsignedIntVector_init(0, 64),
+		.visible = true,
+	};
+
 	int chunkX = chunk->position.x;
 	int chunkY = chunk->position.y;
 	int chunkZ = chunk->position.z;
-	Mesh mesh;
-	mesh.vertices = FloatVector_init(0, 64);
-	mesh.indices = UnsignedIntVector_init(0, 64);
 
 	// I want to create an array of air voxels intersect solid voxels
 	// One byte in this array is: 0 0 X+ X- Y+ Y- Z+ Z-

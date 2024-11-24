@@ -80,19 +80,24 @@ int main(void) {
 
 		for (unsigned int i = 0; i < should_load.size; i++) {
 			unsigned int index = should_load.data[i];
+			Chunk *chunk = &world.chunks.data[index];
 			if (UnsignedIntVector_find(&loaded_chunks, index) == UINT_MAX) {
-				const Chunk *chunk = &world.chunks.data[index];
 				MeshVector_append(&meshes, chunk_genmesh(chunk, &world));
+				unsigned int mesh_index = meshes.size - 1;
 				UnsignedIntVector_append(
-					&VAOs, render_create_vao(&meshes.data[meshes.size - 1]));
-				UnsignedIntVector_append(&loaded_chunks, index);		
+					&VAOs, render_create_vao(&meshes.data[mesh_index]));
+				UnsignedIntVector_append(&loaded_chunks, index);
+				chunk->mesh_index = mesh_index;
 			}
 		}
 
 		for (unsigned int i = 0; i < loaded_chunks.size; i++) {
 			unsigned int loaded_index = loaded_chunks.data[i];
+			const Chunk *chunk = &world.chunks.data[loaded_index];
 			if (UnsignedIntVector_find(&should_load, loaded_index) == UINT_MAX) {
-				// TODO: Chunk unload
+				meshes.data[chunk->mesh_index].visible = false;
+			} else {
+				meshes.data[chunk->mesh_index].visible = true;
 			}
 		}
 

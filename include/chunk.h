@@ -9,7 +9,8 @@
 struct Chunk {
 	Vec3i position;		 // Vec3i is 3 * 4 bytes = 12 bytes
 	unsigned char *data; // ptr is 8 bytes
-}; // 20 bytes
+	unsigned int mesh_index;  // uint is 4 bytes
+}; // 24 bytes
 
 struct Chunk chunk_init(int x, int y, int z);
 void chunk_set(struct Chunk *chunk, unsigned int x, unsigned int y,
