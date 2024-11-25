@@ -141,3 +141,5 @@ int main(void) {
 // одноцветное и монотонное. Ранее от текстур я решил отказаться, поэтому
 // реализую Ambient occlusion
 // TODO: make world potentially infinite + пусть чанки генерируются тогда, когда это нужно, а не в начале выполнения программы
+// TODO: mesh.c looks ugly. Improve it somehow pwease OwO
+// TODO: separate chunks load-unload system into function

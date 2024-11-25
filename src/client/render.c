@@ -52,13 +52,18 @@ uint32_t render_create_vao(Mesh *mesh) {
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices->capacity * sizeof(float),
 				 indices->data, GL_STATIC_DRAW);
 
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat),
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(GLfloat),
 						  (GLvoid *)0);
 	glEnableVertexAttribArray(0);
 
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat),
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(GLfloat),
 						  (GLvoid *)(3 * sizeof(GLfloat)));
 	glEnableVertexAttribArray(1);
+
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(GLfloat),
+						  (GLvoid *)(6 * sizeof(GLfloat)));
+	glEnableVertexAttribArray(2);
+	
 	glBindVertexArray(0);
 	// WARNING: THE DUNGER ENDS!
 
