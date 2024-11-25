@@ -9,14 +9,13 @@
 #include "window.h"
 #include "world.h"
 
-unsigned int UnsignedIntVector_find(UnsignedIntVector *vec,
-									unsigned int value) {
-	for (unsigned int i = 0; i < vec->size; i++) {
+size_t SizeVector_find(SizeVector *vec, size_t value) {
+	for (size_t i = 0; i < vec->size; i++) {
 		if (vec->data[i] == value) {
 			return i;
 		}
 	}
-	return UINT_MAX;
+	return SIZE_MAX;
 }
 
 int main(void) {
@@ -30,13 +29,13 @@ int main(void) {
 		return -1;
 	}
 
-	unsigned int shader_program = render_create_shader();
+	uint32_t shader_program = render_create_shader();
 
 	struct World world = world_init();
 	MeshVector meshes = MeshVector_init(0, 64);
 	UInt32Vector VAOs = UInt32Vector_init(0, 64);
-	UnsignedIntVector loaded_chunks = UnsignedIntVector_init(0, 64);
-	UnsignedIntVector should_load = UnsignedIntVector_init(0, 64);
+	SizeVector loaded_chunks = SizeVector_init(0, 64);
+	SizeVector should_load = SizeVector_init(0, 64);
 
 	Player player = {
 		{0.0f, 2.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, 5.0f,
@@ -80,24 +79,23 @@ int main(void) {
 		world_chunk_circle(&should_load, &world, -player.position.x,
 						   -player.position.y, -player.position.z, 4);
 
-		for (unsigned int i = 0; i < should_load.size; i++) {
-			unsigned int index = should_load.data[i];
+		for (size_t i = 0; i < should_load.size; i++) {
+			size_t index = should_load.data[i];
 			Chunk *chunk = &world.chunks.data[index];
-			if (UnsignedIntVector_find(&loaded_chunks, index) == UINT_MAX) {
+			if (SizeVector_find(&loaded_chunks, index) == SIZE_MAX) {
 				MeshVector_append(&meshes, chunk_genmesh(chunk, &world));
-				unsigned int mesh_index = meshes.size - 1;
+				size_t mesh_index = meshes.size - 1;
 				UInt32Vector_append(
 					&VAOs, render_create_vao(&meshes.data[mesh_index]));
-				UnsignedIntVector_append(&loaded_chunks, index);
+				SizeVector_append(&loaded_chunks, index);
 				chunk->mesh_index = mesh_index;
 			}
 		}
 
-		for (unsigned int i = 0; i < loaded_chunks.size; i++) {
-			unsigned int loaded_index = loaded_chunks.data[i];
+		for (size_t i = 0; i < loaded_chunks.size; i++) {
+			size_t loaded_index = loaded_chunks.data[i];
 			const Chunk *chunk = &world.chunks.data[loaded_index];
-			if (UnsignedIntVector_find(&should_load, loaded_index) ==
-				UINT_MAX) {
+			if (SizeVector_find(&should_load, loaded_index) == SIZE_MAX) {
 				meshes.data[chunk->mesh_index].visible = false;
 			} else {
 				meshes.data[chunk->mesh_index].visible = true;
@@ -113,7 +111,7 @@ int main(void) {
 		end = getTime();
 	}
 	world_free(&world);
-	for (unsigned int i = 0; i < meshes.size; i++) {
+	for (size_t i = 0; i < meshes.size; i++) {
 		free(meshes.data[i].vertices.data);
 		free(meshes.data[i].indices.data);
 	}

@@ -32,14 +32,14 @@ VectorImpl(Mesh, MeshVector)
 	// I want to create an array of air voxels intersect solid voxels
 	// One byte in this array is: 0 0 X+ X- Y+ Y- Z+ Z-
 	// where X Y Z are coordinates and + - are representing inc and dec
-	unsigned char array[CHUNK_CSIZE];
+	uint8_t array[CHUNK_CSIZE];
 	memset(array, 0, CHUNK_CSIZE);
 	for (int x = 0; x < CHUNK_SIZE; x++) {
 		for (int y = 0; y < CHUNK_SIZE; y++) {
 			for (int z = 0; z < CHUNK_SIZE; z++) {
 				char curr = chunk_get(chunk, x, y, z);
 				if (curr != 0) {
-					unsigned char result = 0;
+					uint8_t result = 0;
 					char Xinc = world_block_get(
 						world, chunkX * CHUNK_SIZE + x + 1,
 						chunkY * CHUNK_SIZE + y, chunkZ * CHUNK_SIZE + z);
@@ -93,7 +93,7 @@ VectorImpl(Mesh, MeshVector)
 				int z = k + chunk->position.z * CHUNK_SIZE;
 				if (curr) {
 					if ((curr & 32)) {
-						unsigned int size = mesh.vertices.size;
+						size_t size = mesh.vertices.size;
 						FloatVector_addVertex(1.0 + x, 0.0 + y, 0.0 + z);
 						FloatVector_addVertex(1.0 + x, 1.0 + y, 0.0 + z);
 						FloatVector_addVertex(1.0 + x, 0.0 + y, 1.0 + z);
@@ -107,7 +107,7 @@ VectorImpl(Mesh, MeshVector)
 						UInt32Vector_append(&mesh.indices, size / 6 + 1);
 					}
 					if ((curr & 16)) {
-						unsigned int size = mesh.vertices.size;
+						size_t size = mesh.vertices.size;
 						FloatVector_addVertex(x, 0.0 + y, 0.0 + z);
 						FloatVector_addVertex(x, 1.0 + y, 0.0 + z);
 						FloatVector_addVertex(x, 0.0 + y, 1.0 + z);
@@ -121,7 +121,7 @@ VectorImpl(Mesh, MeshVector)
 						UInt32Vector_append(&mesh.indices, size / 6 + 2);
 					}
 					if ((curr & 8)) {
-						unsigned int size = mesh.vertices.size;
+						size_t size = mesh.vertices.size;
 						FloatVector_addVertex(0.0 + x, 1.0 + y, 0.0 + z);
 						FloatVector_addVertex(1.0 + x, 1.0 + y, 0.0 + z);
 						FloatVector_addVertex(0.0 + x, 1.0 + y, 1.0 + z);
@@ -135,7 +135,7 @@ VectorImpl(Mesh, MeshVector)
 						UInt32Vector_append(&mesh.indices, size / 6 + 2);
 					}
 					if ((curr & 4)) {
-						unsigned int size = mesh.vertices.size;
+						size_t size = mesh.vertices.size;
 						FloatVector_addVertex(0.0 + x, y, 0.0 + z);
 						FloatVector_addVertex(1.0 + x, y, 0.0 + z);
 						FloatVector_addVertex(0.0 + x, y, 1.0 + z);
@@ -149,7 +149,7 @@ VectorImpl(Mesh, MeshVector)
 						UInt32Vector_append(&mesh.indices, size / 6 + 1);
 					}
 					if ((curr & 2)) {
-						unsigned int size = mesh.vertices.size;
+						size_t size = mesh.vertices.size;
 						FloatVector_addVertex(0.0 + x, 0.0 + y, 1.0 + z);
 						FloatVector_addVertex(0.0 + x, 1.0 + y, 1.0 + z);
 						FloatVector_addVertex(1.0 + x, 0.0 + y, 1.0 + z);
@@ -163,7 +163,7 @@ VectorImpl(Mesh, MeshVector)
 						UInt32Vector_append(&mesh.indices, size / 6 + 2);
 					}
 					if ((curr & 1)) {
-						unsigned int size = mesh.vertices.size;
+						size_t size = mesh.vertices.size;
 						FloatVector_addVertex(0.0 + x, 0.0 + y, z);
 						FloatVector_addVertex(0.0 + x, 1.0 + y, z);
 						FloatVector_addVertex(1.0 + x, 0.0 + y, z);

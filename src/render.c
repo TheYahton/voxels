@@ -4,20 +4,20 @@
 #include "logs.h"
 #include "shader.h"
 
-unsigned int render_create_shader(void) {
-	unsigned int vertex_shader =
+uint32_t render_create_shader(void) {
+	uint32_t vertex_shader =
 		compile_shader("shaders/default.vert", GL_VERTEX_SHADER);
 	if (!vertex_shader) {
 		return 0;
 	}
 
-	unsigned int fragment_shader =
+	uint32_t fragment_shader =
 		compile_shader("shaders/default.frag", GL_FRAGMENT_SHADER);
 	if (!fragment_shader) {
 		return 0;
 	}
 
-	unsigned int shader_program =
+	uint32_t shader_program =
 		compile_shader_program(vertex_shader, fragment_shader);
 	if (!shader_program) {
 		return 0;
@@ -30,14 +30,14 @@ unsigned int render_create_shader(void) {
 	return shader_program;
 }
 
-unsigned int render_create_vao(Mesh *mesh) {
+uint32_t render_create_vao(Mesh *mesh) {
 	FloatVector *vertices = &mesh->vertices;
 	UInt32Vector *indices = &mesh->indices;
 
 	// WARNING: A DUNGER STARTS!
-	unsigned int VAO; // Vertex Attribute Object(?)
-	unsigned int VBO; // Vertex Buffer Object
-	unsigned int EBO; // Element (Index) Buffer Object
+	uint32_t VAO; // Vertex Attribute Object(?)
+	uint32_t VBO; // Vertex Buffer Object
+	uint32_t EBO; // Element (Index) Buffer Object
 
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
@@ -104,7 +104,7 @@ void render(Renderer *renderer, const MeshVector *meshes,
 	glUniformMatrix4fv(projection_location, 1, GL_FALSE, projection[0]);
 	glUniformMatrix4fv(view_location, 1, GL_FALSE, view[0]);
 
-	for (unsigned int i = 0; i < VAOs->size; i++) {
+	for (size_t i = 0; i < VAOs->size; i++) {
 		if (!meshes->data[i].visible)
 			continue;
 		mat4 model;

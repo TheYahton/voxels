@@ -29,7 +29,7 @@ static char *read_file(const char *path) {
 	return buffer;
 }
 
-GLuint compile_shader(const char *path, GLenum shader_type) {
+uint32_t compile_shader(const char *path, GLenum shader_type) {
 	const char *shader_source = read_file(path);
 	if (!shader_source) {
 		char *string;

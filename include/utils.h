@@ -18,17 +18,17 @@ Vec3 vec3_norm(Vec3);
 #define Vectorize(type, name)                                                  \
 	typedef struct {                                                           \
 		type *data;                                                            \
-		size_t capacity;                                                 \
-		size_t size;                                                     \
-		size_t step;                                                     \
+		size_t capacity;                                                       \
+		size_t size;                                                           \
+		size_t step;                                                           \
 	} name;                                                                    \
-	name name##_init(size_t capacity, size_t step);                \
+	name name##_init(size_t capacity, size_t step);                            \
 	void name##_append(name *vec, type value);
 
 #ifdef _VECTOR_IMPL
 #include <stdlib.h>
 #define VectorImpl(type, name)                                                 \
-	name name##_init(size_t capacity, size_t step) {               \
+	name name##_init(size_t capacity, size_t step) {                           \
 		type *data = (type *)malloc(capacity * sizeof(type));                  \
 		return (name){                                                         \
 			data,                                                              \
@@ -51,7 +51,7 @@ Vec3 vec3_norm(Vec3);
 
 #include <stdint.h>
 Vectorize(float, FloatVector) Vectorize(unsigned int, UnsignedIntVector)
-	Vectorize(uint32_t, UInt32Vector)
+	Vectorize(uint32_t, UInt32Vector) Vectorize(size_t, SizeVector)
 
 		void print_mat4(mat4 mat);
 #endif // _UTILS_H
