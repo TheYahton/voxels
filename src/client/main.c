@@ -129,12 +129,8 @@ int main(void) {
 // и можно обойтись 8 вершинами
 // TODO: add ability to change color of voxel.
 // TODO: write a blazingly fast greedy mesher xd lol
-// TODO: a system of loading-unloading chunks depending on the distance from the
-// player
 // TODO: world generation
 // TODO: improve camera rotation (use quaternions O.O)
-// TODO: удалить функцию chunk_worldgen. Генерация мира должна быть реализована
-// в window.c
 // TODO (может быть ненужным и даже вредным):
 // 1. написать обёртку над вводом GLFW
 // 2. иметь несколько window creating backend. Например GLFW, SDL2/SDL3, RGFW
@@ -144,3 +140,4 @@ int main(void) {
 // TODO: сейчас трудно разглядеть трёхмерность какого-либо чанка - всё
 // одноцветное и монотонное. Ранее от текстур я решил отказаться, поэтому
 // реализую Ambient occlusion
+// TODO: make world potentially infinite + пусть чанки генерируются тогда, когда это нужно, а не в начале выполнения программы
