@@ -18,17 +18,17 @@ Vec3 vec3_norm(Vec3);
 #define Vectorize(type, name)                                                  \
 	typedef struct {                                                           \
 		type *data;                                                            \
-		unsigned int capacity;                                                 \
-		unsigned int size;                                                     \
-		unsigned int step;                                                     \
+		size_t capacity;                                                 \
+		size_t size;                                                     \
+		size_t step;                                                     \
 	} name;                                                                    \
-	name name##_init(unsigned int capacity, unsigned int step);                \
+	name name##_init(size_t capacity, size_t step);                \
 	void name##_append(name *vec, type value);
 
 #ifdef _VECTOR_IMPL
 #include <stdlib.h>
 #define VectorImpl(type, name)                                                 \
-	name name##_init(unsigned int capacity, unsigned int step) {               \
+	name name##_init(size_t capacity, size_t step) {               \
 		type *data = (type *)malloc(capacity * sizeof(type));                  \
 		return (name){                                                         \
 			data,                                                              \
