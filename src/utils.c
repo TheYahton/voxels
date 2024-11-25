@@ -28,3 +28,4 @@ void print_mat4(mat4 mat) {
 }
 
 VectorImpl(float, FloatVector) VectorImpl(unsigned int, UnsignedIntVector)
+	VectorImpl(uint32_t, UInt32Vector)

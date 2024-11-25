@@ -6,7 +6,6 @@
 #include "camera.h"
 #include "mesh.h"
 #include "player.h"
-#include "world.h"
 
 typedef struct {
 	bool *polygon_mode;			 // 1 byte
@@ -18,5 +17,5 @@ unsigned int render_create_shader(void);
 unsigned int render_create_vao(Mesh *mesh);
 void pre_render(int width, int height);
 void render(Renderer *renderer, const MeshVector *meshes,
-			const UnsignedIntVector *VAOs, Player *player, Camera *camera);
+			const UInt32Vector *VAOs, Player *player, Camera *camera);
 int loadGL(GLADloadfunc func);

@@ -6,7 +6,7 @@
 struct Chunk chunk_init(int x, int y, int z) {
 	struct Chunk chunk = {
 		.position = {x, y, z},
-		.data = (unsigned char*)malloc(CHUNK_CSIZE * sizeof(char)),
+		.data = (unsigned char *)malloc(CHUNK_CSIZE * sizeof(char)),
 		.mesh_index = -1,
 	};
 	memset(chunk.data, 0, CHUNK_CSIZE * sizeof(char));

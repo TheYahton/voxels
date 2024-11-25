@@ -9,7 +9,8 @@
 #include "window.h"
 #include "world.h"
 
-unsigned int UnsignedIntVector_find(UnsignedIntVector *vec, unsigned int value) {
+unsigned int UnsignedIntVector_find(UnsignedIntVector *vec,
+									unsigned int value) {
 	for (unsigned int i = 0; i < vec->size; i++) {
 		if (vec->data[i] == value) {
 			return i;
@@ -33,7 +34,7 @@ int main(void) {
 
 	struct World world = world_init();
 	MeshVector meshes = MeshVector_init(0, 64);
-	UnsignedIntVector VAOs = UnsignedIntVector_init(0, 64);
+	UInt32Vector VAOs = UInt32Vector_init(0, 64);
 	UnsignedIntVector loaded_chunks = UnsignedIntVector_init(0, 64);
 	UnsignedIntVector should_load = UnsignedIntVector_init(0, 64);
 
@@ -76,7 +77,8 @@ int main(void) {
 		camera_update(&camera, window.keys, dx, dy, dt);
 		player_move(&player, window.keys, dt);
 
-		world_chunk_circle(&should_load, &world, -player.position.x, -player.position.y, -player.position.z, 4);
+		world_chunk_circle(&should_load, &world, -player.position.x,
+						   -player.position.y, -player.position.z, 4);
 
 		for (unsigned int i = 0; i < should_load.size; i++) {
 			unsigned int index = should_load.data[i];
@@ -84,7 +86,7 @@ int main(void) {
 			if (UnsignedIntVector_find(&loaded_chunks, index) == UINT_MAX) {
 				MeshVector_append(&meshes, chunk_genmesh(chunk, &world));
 				unsigned int mesh_index = meshes.size - 1;
-				UnsignedIntVector_append(
+				UInt32Vector_append(
 					&VAOs, render_create_vao(&meshes.data[mesh_index]));
 				UnsignedIntVector_append(&loaded_chunks, index);
 				chunk->mesh_index = mesh_index;
@@ -94,7 +96,8 @@ int main(void) {
 		for (unsigned int i = 0; i < loaded_chunks.size; i++) {
 			unsigned int loaded_index = loaded_chunks.data[i];
 			const Chunk *chunk = &world.chunks.data[loaded_index];
-			if (UnsignedIntVector_find(&should_load, loaded_index) == UINT_MAX) {
+			if (UnsignedIntVector_find(&should_load, loaded_index) ==
+				UINT_MAX) {
 				meshes.data[chunk->mesh_index].visible = false;
 			} else {
 				meshes.data[chunk->mesh_index].visible = true;

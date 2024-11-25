@@ -69,8 +69,8 @@ unsigned char world_block_get(const struct World *world, int x, int y, int z) {
 					 blockY, blockZ);
 }
 
-void world_chunk_circle(UnsignedIntVector *vec, const struct World *world, float x, float y,
-									 float z, int radius) {
+void world_chunk_circle(UnsignedIntVector *vec, const struct World *world,
+						float x, float y, float z, int radius) {
 	for (unsigned int i = 0; i < world->chunks.size; i++) {
 		const Vec3i *chunkPos = &world->chunks.data[i].position;
 		float dx = CHUNK_SIZE * chunkPos->x - x + CHUNK_SIZE / 2.0;

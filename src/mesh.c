@@ -18,10 +18,10 @@ VectorImpl(Mesh, MeshVector)
 	FloatVector_append(&mesh.vertices, z);                                     \
 	FloatVector_rgb(0.0, 0.9, 0.0)
 
-Mesh chunk_genmesh(const struct Chunk *chunk, const struct World *world) {
+	Mesh chunk_genmesh(const struct Chunk *chunk, const struct World *world) {
 	Mesh mesh = {
 		.vertices = FloatVector_init(0, 64),
-		.indices = UnsignedIntVector_init(0, 64),
+		.indices = UInt32Vector_init(0, 64),
 		.visible = true,
 	};
 
@@ -40,39 +40,39 @@ Mesh chunk_genmesh(const struct Chunk *chunk, const struct World *world) {
 				char curr = chunk_get(chunk, x, y, z);
 				if (curr != 0) {
 					unsigned char result = 0;
-					char Xinc =
-						world_block_get(world, chunkX * CHUNK_SIZE + x + 1,
-										chunkY * CHUNK_SIZE + y, chunkZ * CHUNK_SIZE + z);
+					char Xinc = world_block_get(
+						world, chunkX * CHUNK_SIZE + x + 1,
+						chunkY * CHUNK_SIZE + y, chunkZ * CHUNK_SIZE + z);
 					if (Xinc == 0 || Xinc == -1) {
 						result = 32 | result;
 					}
-					char Xdec =
-						world_block_get(world, chunkX * CHUNK_SIZE + x - 1,
-										chunkY * CHUNK_SIZE + y, chunkZ * CHUNK_SIZE + z);
+					char Xdec = world_block_get(
+						world, chunkX * CHUNK_SIZE + x - 1,
+						chunkY * CHUNK_SIZE + y, chunkZ * CHUNK_SIZE + z);
 					if (Xdec == 0 || Xdec == -1) {
 						result = 16 | result;
 					}
-					char Yinc =
-						world_block_get(world, chunkX * CHUNK_SIZE + x,
-										chunkY * CHUNK_SIZE + y + 1, z + CHUNK_SIZE * chunkZ);
+					char Yinc = world_block_get(world, chunkX * CHUNK_SIZE + x,
+												chunkY * CHUNK_SIZE + y + 1,
+												z + CHUNK_SIZE * chunkZ);
 					if (Yinc == 0 || Yinc == -1) {
 						result = 8 | result;
 					}
-					char Ydec =
-						world_block_get(world, chunkX * CHUNK_SIZE + x,
-										chunkY * CHUNK_SIZE + y - 1, z + CHUNK_SIZE * chunkZ);
+					char Ydec = world_block_get(world, chunkX * CHUNK_SIZE + x,
+												chunkY * CHUNK_SIZE + y - 1,
+												z + CHUNK_SIZE * chunkZ);
 					if (Ydec == 0 || Ydec == -1) {
 						result = 4 | result;
 					}
-					char Zinc =
-						world_block_get(world, chunkX * CHUNK_SIZE + x, chunkY * CHUNK_SIZE + y,
-										chunkZ * CHUNK_SIZE + z + 1);
+					char Zinc = world_block_get(world, chunkX * CHUNK_SIZE + x,
+												chunkY * CHUNK_SIZE + y,
+												chunkZ * CHUNK_SIZE + z + 1);
 					if (Zinc == 0 || Zinc == -1) {
 						result = 2 | result;
 					}
-					char Zdec =
-						world_block_get(world, chunkX * CHUNK_SIZE + x, chunkY * CHUNK_SIZE + y,
-										chunkZ * CHUNK_SIZE + z - 1);
+					char Zdec = world_block_get(world, chunkX * CHUNK_SIZE + x,
+												chunkY * CHUNK_SIZE + y,
+												chunkZ * CHUNK_SIZE + z - 1);
 					if (Zdec == 0 || Zdec == -1) {
 						result = 1 | result;
 					}
@@ -99,12 +99,12 @@ Mesh chunk_genmesh(const struct Chunk *chunk, const struct World *world) {
 						FloatVector_addVertex(1.0 + x, 0.0 + y, 1.0 + z);
 						FloatVector_addVertex(1.0 + x, 1.0 + y, 1.0 + z);
 
-						UnsignedIntVector_append(&mesh.indices, size / 6 + 0);
-						UnsignedIntVector_append(&mesh.indices, size / 6 + 1);
-						UnsignedIntVector_append(&mesh.indices, size / 6 + 2);
-						UnsignedIntVector_append(&mesh.indices, size / 6 + 3);
-						UnsignedIntVector_append(&mesh.indices, size / 6 + 2);
-						UnsignedIntVector_append(&mesh.indices, size / 6 + 1);
+						UInt32Vector_append(&mesh.indices, size / 6 + 0);
+						UInt32Vector_append(&mesh.indices, size / 6 + 1);
+						UInt32Vector_append(&mesh.indices, size / 6 + 2);
+						UInt32Vector_append(&mesh.indices, size / 6 + 3);
+						UInt32Vector_append(&mesh.indices, size / 6 + 2);
+						UInt32Vector_append(&mesh.indices, size / 6 + 1);
 					}
 					if ((curr & 16)) {
 						unsigned int size = mesh.vertices.size;
@@ -113,12 +113,12 @@ Mesh chunk_genmesh(const struct Chunk *chunk, const struct World *world) {
 						FloatVector_addVertex(x, 0.0 + y, 1.0 + z);
 						FloatVector_addVertex(x, 1.0 + y, 1.0 + z);
 
-						UnsignedIntVector_append(&mesh.indices, size / 6 + 0);
-						UnsignedIntVector_append(&mesh.indices, size / 6 + 2);
-						UnsignedIntVector_append(&mesh.indices, size / 6 + 1);
-						UnsignedIntVector_append(&mesh.indices, size / 6 + 3);
-						UnsignedIntVector_append(&mesh.indices, size / 6 + 1);
-						UnsignedIntVector_append(&mesh.indices, size / 6 + 2);
+						UInt32Vector_append(&mesh.indices, size / 6 + 0);
+						UInt32Vector_append(&mesh.indices, size / 6 + 2);
+						UInt32Vector_append(&mesh.indices, size / 6 + 1);
+						UInt32Vector_append(&mesh.indices, size / 6 + 3);
+						UInt32Vector_append(&mesh.indices, size / 6 + 1);
+						UInt32Vector_append(&mesh.indices, size / 6 + 2);
 					}
 					if ((curr & 8)) {
 						unsigned int size = mesh.vertices.size;
@@ -127,12 +127,12 @@ Mesh chunk_genmesh(const struct Chunk *chunk, const struct World *world) {
 						FloatVector_addVertex(0.0 + x, 1.0 + y, 1.0 + z);
 						FloatVector_addVertex(1.0 + x, 1.0 + y, 1.0 + z);
 
-						UnsignedIntVector_append(&mesh.indices, size / 6 + 0);
-						UnsignedIntVector_append(&mesh.indices, size / 6 + 2);
-						UnsignedIntVector_append(&mesh.indices, size / 6 + 1);
-						UnsignedIntVector_append(&mesh.indices, size / 6 + 3);
-						UnsignedIntVector_append(&mesh.indices, size / 6 + 1);
-						UnsignedIntVector_append(&mesh.indices, size / 6 + 2);
+						UInt32Vector_append(&mesh.indices, size / 6 + 0);
+						UInt32Vector_append(&mesh.indices, size / 6 + 2);
+						UInt32Vector_append(&mesh.indices, size / 6 + 1);
+						UInt32Vector_append(&mesh.indices, size / 6 + 3);
+						UInt32Vector_append(&mesh.indices, size / 6 + 1);
+						UInt32Vector_append(&mesh.indices, size / 6 + 2);
 					}
 					if ((curr & 4)) {
 						unsigned int size = mesh.vertices.size;
@@ -141,12 +141,12 @@ Mesh chunk_genmesh(const struct Chunk *chunk, const struct World *world) {
 						FloatVector_addVertex(0.0 + x, y, 1.0 + z);
 						FloatVector_addVertex(1.0 + x, y, 1.0 + z);
 
-						UnsignedIntVector_append(&mesh.indices, size / 6 + 0);
-						UnsignedIntVector_append(&mesh.indices, size / 6 + 1);
-						UnsignedIntVector_append(&mesh.indices, size / 6 + 2);
-						UnsignedIntVector_append(&mesh.indices, size / 6 + 3);
-						UnsignedIntVector_append(&mesh.indices, size / 6 + 2);
-						UnsignedIntVector_append(&mesh.indices, size / 6 + 1);
+						UInt32Vector_append(&mesh.indices, size / 6 + 0);
+						UInt32Vector_append(&mesh.indices, size / 6 + 1);
+						UInt32Vector_append(&mesh.indices, size / 6 + 2);
+						UInt32Vector_append(&mesh.indices, size / 6 + 3);
+						UInt32Vector_append(&mesh.indices, size / 6 + 2);
+						UInt32Vector_append(&mesh.indices, size / 6 + 1);
 					}
 					if ((curr & 2)) {
 						unsigned int size = mesh.vertices.size;
@@ -155,12 +155,12 @@ Mesh chunk_genmesh(const struct Chunk *chunk, const struct World *world) {
 						FloatVector_addVertex(1.0 + x, 0.0 + y, 1.0 + z);
 						FloatVector_addVertex(1.0 + x, 1.0 + y, 1.0 + z);
 
-						UnsignedIntVector_append(&mesh.indices, size / 6 + 0);
-						UnsignedIntVector_append(&mesh.indices, size / 6 + 2);
-						UnsignedIntVector_append(&mesh.indices, size / 6 + 1);
-						UnsignedIntVector_append(&mesh.indices, size / 6 + 3);
-						UnsignedIntVector_append(&mesh.indices, size / 6 + 1);
-						UnsignedIntVector_append(&mesh.indices, size / 6 + 2);
+						UInt32Vector_append(&mesh.indices, size / 6 + 0);
+						UInt32Vector_append(&mesh.indices, size / 6 + 2);
+						UInt32Vector_append(&mesh.indices, size / 6 + 1);
+						UInt32Vector_append(&mesh.indices, size / 6 + 3);
+						UInt32Vector_append(&mesh.indices, size / 6 + 1);
+						UInt32Vector_append(&mesh.indices, size / 6 + 2);
 					}
 					if ((curr & 1)) {
 						unsigned int size = mesh.vertices.size;
@@ -169,12 +169,12 @@ Mesh chunk_genmesh(const struct Chunk *chunk, const struct World *world) {
 						FloatVector_addVertex(1.0 + x, 0.0 + y, z);
 						FloatVector_addVertex(1.0 + x, 1.0 + y, z);
 
-						UnsignedIntVector_append(&mesh.indices, size / 6 + 0);
-						UnsignedIntVector_append(&mesh.indices, size / 6 + 1);
-						UnsignedIntVector_append(&mesh.indices, size / 6 + 2);
-						UnsignedIntVector_append(&mesh.indices, size / 6 + 3);
-						UnsignedIntVector_append(&mesh.indices, size / 6 + 2);
-						UnsignedIntVector_append(&mesh.indices, size / 6 + 1);
+						UInt32Vector_append(&mesh.indices, size / 6 + 0);
+						UInt32Vector_append(&mesh.indices, size / 6 + 1);
+						UInt32Vector_append(&mesh.indices, size / 6 + 2);
+						UInt32Vector_append(&mesh.indices, size / 6 + 3);
+						UInt32Vector_append(&mesh.indices, size / 6 + 2);
+						UInt32Vector_append(&mesh.indices, size / 6 + 1);
 					}
 				}
 			}

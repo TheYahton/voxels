@@ -32,7 +32,7 @@ unsigned int render_create_shader(void) {
 
 unsigned int render_create_vao(Mesh *mesh) {
 	FloatVector *vertices = &mesh->vertices;
-	UnsignedIntVector *indices = &mesh->indices;
+	UInt32Vector *indices = &mesh->indices;
 
 	// WARNING: A DUNGER STARTS!
 	unsigned int VAO; // Vertex Attribute Object(?)
@@ -73,7 +73,7 @@ void pre_render(int width, int height) {
 }
 
 void render(Renderer *renderer, const MeshVector *meshes,
-			const UnsignedIntVector *VAOs, Player *player, Camera *camera) {
+			const UInt32Vector *VAOs, Player *player, Camera *camera) {
 	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -105,7 +105,8 @@ void render(Renderer *renderer, const MeshVector *meshes,
 	glUniformMatrix4fv(view_location, 1, GL_FALSE, view[0]);
 
 	for (unsigned int i = 0; i < VAOs->size; i++) {
-		if (!meshes->data[i].visible) continue;
+		if (!meshes->data[i].visible)
+			continue;
 		mat4 model;
 		vec4 translation = {player->position.x, -player->position.y,
 							player->position.z, 0.0f};
