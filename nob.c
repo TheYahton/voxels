@@ -1,9 +1,16 @@
 #define NOB_IMPLEMENTATION
 #include "nob.h"
 
-int main(int argc, char **argv) {
-	NOB_GO_REBUILD_URSELF(argc, argv);
+void append_warnings(Nob_Cmd *cmd) {
+	nob_cmd_append(cmd, "-Wall", "-Wextra", "-Wpedantic");
 
+}
+
+void append_common(Nob_Cmd *cmd) {
+	nob_cmd_append(cmd, "src/common/camera.c", "src/common/chunk.c", "src/common/logs.c", "src/common/player.c", "src/common/utils.c", "src/common/world.c");
+}
+
+int build_client(void) {
 	char *CC = getenv("CC");
 	char *CFLAGS = getenv("CFLAGS");
 
@@ -19,14 +26,11 @@ int main(int argc, char **argv) {
 		nob_cmd_append(&cmd, CFLAGS);
 	}
 
-	// STANDARD AND WARNINGS
-	nob_cmd_append(&cmd, "-Wall", "-Wextra", "-Wpedantic");
+	append_warnings(&cmd);
 
 	// SOURCE FILES
-	nob_cmd_append(&cmd, "src/main.c", "src/camera.c", "src/chunk.c",
-				   "src/logs.c", "src/mesh.c", "src/player.c", "src/render.c",
-				   "src/shader.c", "src/utils.c", "src/window.c",
-				   "src/world.c");
+	append_common(&cmd);
+	nob_cmd_append(&cmd, "src/client/main.c", "src/client/mesh.c", "src/client/render.c", "src/client/shader.c", "src/client/window.c");
 
 	// LINKING
 	DIR *cglm_dir = opendir("cglm/include");
@@ -56,20 +60,30 @@ int main(int argc, char **argv) {
 		nob_cmd_append(&cmd, "-I./glfw/include");
 		nob_cmd_append(&cmd, "-L./glfw/lib-mingw-w64/");
 
-		nob_cmd_append(&cmd, "-o", "./build/voxels.exe");
+		nob_cmd_append(&cmd, "-o", "./build/client.exe");
 	}
 	// Non-MinGW
 	else {
 		nob_cmd_append(&cmd, "-lglfw", "-lGL", "-lm");
 
-		nob_cmd_append(&cmd, "-o", "./build/voxels");
+		nob_cmd_append(&cmd, "-o", "./build/client");
 	}
-
-	if (!nob_mkdir_if_not_exists("build"))
-		return 1;
 
 	if (!nob_cmd_run_sync(cmd))
 		return 1;
+
+	return 0;
+}
+
+int main(int argc, char **argv) {
+	NOB_GO_REBUILD_URSELF(argc, argv);
+
+	if (!nob_mkdir_if_not_exists("build/"))
+		return 1;
+
+	if (build_client() != 0) {
+		return -1;
+	}
 
 	return 0;
 }
