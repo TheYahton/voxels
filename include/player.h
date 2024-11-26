@@ -1,4 +1,5 @@
 #include "utils.h"
+#include <stdbool.h>
 
 #ifndef _PLAYER_H
 #define _PLAYER_H

@@ -1,4 +1,5 @@
-#include <cglm/cglm.h>
+// #include <cglm/cglm.h>
+#include <stddef.h>
 
 #ifndef _UTILS_H
 #define _UTILS_H
@@ -53,5 +54,4 @@ Vec3 vec3_norm(Vec3);
 Vectorize(float, FloatVector) Vectorize(unsigned int, UnsignedIntVector)
 	Vectorize(uint32_t, UInt32Vector) Vectorize(size_t, SizeVector)
 
-		void print_mat4(mat4 mat);
 #endif // _UTILS_H

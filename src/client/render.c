@@ -3,6 +3,7 @@
 #include "render.h"
 #include "logs.h"
 #include "shader.h"
+#include <cglm/cglm.h>
 
 uint32_t render_create_shader(void) {
 	uint32_t vertex_shader =
@@ -63,7 +64,7 @@ uint32_t render_create_vao(Mesh *mesh) {
 	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(GLfloat),
 						  (GLvoid *)(6 * sizeof(GLfloat)));
 	glEnableVertexAttribArray(2);
-	
+
 	glBindVertexArray(0);
 	// WARNING: THE DUNGER ENDS!
 

@@ -9,6 +9,8 @@
 #include "window.h"
 #include "world.h"
 
+#include <stdlib.h>
+
 size_t SizeVector_find(SizeVector *vec, size_t value) {
 	for (size_t i = 0; i < vec->size; i++) {
 		if (vec->data[i] == value) {
@@ -140,6 +142,7 @@ int main(void) {
 // TODO: сейчас трудно разглядеть трёхмерность какого-либо чанка - всё
 // одноцветное и монотонное. Ранее от текстур я решил отказаться, поэтому
 // реализую Ambient occlusion
-// TODO: make world potentially infinite + пусть чанки генерируются тогда, когда это нужно, а не в начале выполнения программы
+// TODO: make world potentially infinite + пусть чанки генерируются тогда, когда
+// это нужно, а не в начале выполнения программы
 // TODO: mesh.c looks ugly. Improve it somehow pwease OwO
 // TODO: separate chunks load-unload system into function

@@ -6,6 +6,7 @@
 #include "camera.h"
 #include "mesh.h"
 #include "player.h"
+#include <stdbool.h>
 
 typedef struct {
 	bool *polygon_mode;		 // 1 byte

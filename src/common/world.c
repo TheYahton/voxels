@@ -4,6 +4,8 @@
 #include "render.h"
 #include "utils.h"
 
+#include <math.h>
+
 VectorImpl(Chunk, ChunkVector)
 
 	struct World world_init(void) {
@@ -25,7 +27,7 @@ void world_chunk_generate(struct World *world, int x, int y, int z) {
 
 	for (int x = 0; x < CHUNK_SIZE; x++) {
 		for (int z = 0; z < CHUNK_SIZE; z++) {
-			int y_level = sin((float)x / 5.0f)*3 + 5.0f;
+			int y_level = sin((float)x / 5.0f) * 3 + 5.0f;
 			for (int y = 0; y < y_level; y++) {
 				chunk_set(chunk, x, y, z, 1);
 			}
@@ -67,8 +69,8 @@ void world_block_set(struct World *world, int x, int y, int z, uint8_t value) {
 	int chunkX = floorf((float)x / CHUNK_SIZE);
 	int chunkY = floorf((float)y / CHUNK_SIZE);
 	int chunkZ = floorf((float)z / CHUNK_SIZE);
-	chunk_set(world_chunk_get(world, chunkX, chunkY, chunkZ), blockX,
-					 blockY, blockZ, value);
+	chunk_set(world_chunk_get(world, chunkX, chunkY, chunkZ), blockX, blockY,
+			  blockZ, value);
 }
 
 void world_chunk_circle(SizeVector *vec, const struct World *world, float x,

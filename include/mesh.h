@@ -5,6 +5,8 @@
 #include "utils.h"
 #include "world.h"
 
+#include <stdbool.h>
+
 typedef struct {
 	FloatVector vertices; // 20 bytes
 	UInt32Vector indices; // 20 bytes

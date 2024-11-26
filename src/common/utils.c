@@ -19,13 +19,13 @@ Vec3 vec3_norm(Vec3 v) {
 	return vec3_divf(v, length);
 }
 
-void print_mat4(mat4 mat) {
-	for (int i = 0; i < 4; i++) {
-		for (int j = 0; j < 4; j++)
-			printf("%f ", mat[i][j]);
-		printf("\n");
-	}
-}
+// void print_mat4(mat4 mat) {
+// 	for (int i = 0; i < 4; i++) {
+// 		for (int j = 0; j < 4; j++)
+// 			printf("%f ", mat[i][j]);
+// 		printf("\n");
+// 	}
+// }
 
 VectorImpl(float, FloatVector) VectorImpl(unsigned int, UnsignedIntVector)
 	VectorImpl(uint32_t, UInt32Vector) VectorImpl(size_t, SizeVector)

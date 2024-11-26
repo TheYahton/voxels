@@ -7,20 +7,17 @@
 
 VectorImpl(Mesh, MeshVector)
 
-#define FloatVector_addTrio(x, y, z)\
-	FloatVector_append(&mesh.vertices, x);\
-	FloatVector_append(&mesh.vertices, y);\
+#define FloatVector_addTrio(x, y, z)                                           \
+	FloatVector_append(&mesh.vertices, x);                                     \
+	FloatVector_append(&mesh.vertices, y);                                     \
 	FloatVector_append(&mesh.vertices, z);
 
-#define FloatVector_rgb(r, g, b)                                               \
-	FloatVector_addTrio(0.0, 0.9, 0.0)
+#define FloatVector_rgb(r, g, b) FloatVector_addTrio(0.0, 0.9, 0.0)
 
 #define FloatVector_addVertex(x, y, z)                                         \
-	FloatVector_addTrio(x, y, z)\
-	FloatVector_rgb(0.0, 0.9, 0.0)\
+	FloatVector_addTrio(x, y, z) FloatVector_rgb(0.0, 0.9, 0.0)
 
-#define FloatVector_addNormal(x, y, z)\
-	FloatVector_addTrio(x, y, z)
+#define FloatVector_addNormal(x, y, z) FloatVector_addTrio(x, y, z)
 
 #define STRANGE_CONSTANT 9
 
@@ -102,7 +99,7 @@ VectorImpl(Mesh, MeshVector)
 						float nx = 1.0f;
 						float ny = 0.0f;
 						float nz = 0.0f;
-						
+
 						size_t size = mesh.vertices.size;
 						FloatVector_addVertex(1.0 + x, 0.0 + y, 0.0 + z);
 						FloatVector_addNormal(nx, ny, nz);
@@ -113,18 +110,24 @@ VectorImpl(Mesh, MeshVector)
 						FloatVector_addVertex(1.0 + x, 1.0 + y, 1.0 + z);
 						FloatVector_addNormal(nx, ny, nz);
 
-						UInt32Vector_append(&mesh.indices, size / STRANGE_CONSTANT + 0);
-						UInt32Vector_append(&mesh.indices, size / STRANGE_CONSTANT + 1);
-						UInt32Vector_append(&mesh.indices, size / STRANGE_CONSTANT + 2);
-						UInt32Vector_append(&mesh.indices, size / STRANGE_CONSTANT + 3);
-						UInt32Vector_append(&mesh.indices, size / STRANGE_CONSTANT + 2);
-						UInt32Vector_append(&mesh.indices, size / STRANGE_CONSTANT + 1);
+						UInt32Vector_append(&mesh.indices,
+											size / STRANGE_CONSTANT + 0);
+						UInt32Vector_append(&mesh.indices,
+											size / STRANGE_CONSTANT + 1);
+						UInt32Vector_append(&mesh.indices,
+											size / STRANGE_CONSTANT + 2);
+						UInt32Vector_append(&mesh.indices,
+											size / STRANGE_CONSTANT + 3);
+						UInt32Vector_append(&mesh.indices,
+											size / STRANGE_CONSTANT + 2);
+						UInt32Vector_append(&mesh.indices,
+											size / STRANGE_CONSTANT + 1);
 					}
 					if ((curr & 16)) {
 						float nx = -1.0f;
 						float ny = 0.0f;
 						float nz = 0.0f;
-						
+
 						size_t size = mesh.vertices.size;
 						FloatVector_addVertex(x, 0.0 + y, 0.0 + z);
 						FloatVector_addNormal(nx, ny, nz);
@@ -135,18 +138,24 @@ VectorImpl(Mesh, MeshVector)
 						FloatVector_addVertex(x, 1.0 + y, 1.0 + z);
 						FloatVector_addNormal(nx, ny, nz);
 
-						UInt32Vector_append(&mesh.indices, size / STRANGE_CONSTANT + 0);
-						UInt32Vector_append(&mesh.indices, size / STRANGE_CONSTANT + 2);
-						UInt32Vector_append(&mesh.indices, size / STRANGE_CONSTANT + 1);
-						UInt32Vector_append(&mesh.indices, size / STRANGE_CONSTANT + 3);
-						UInt32Vector_append(&mesh.indices, size / STRANGE_CONSTANT + 1);
-						UInt32Vector_append(&mesh.indices, size / STRANGE_CONSTANT + 2);
+						UInt32Vector_append(&mesh.indices,
+											size / STRANGE_CONSTANT + 0);
+						UInt32Vector_append(&mesh.indices,
+											size / STRANGE_CONSTANT + 2);
+						UInt32Vector_append(&mesh.indices,
+											size / STRANGE_CONSTANT + 1);
+						UInt32Vector_append(&mesh.indices,
+											size / STRANGE_CONSTANT + 3);
+						UInt32Vector_append(&mesh.indices,
+											size / STRANGE_CONSTANT + 1);
+						UInt32Vector_append(&mesh.indices,
+											size / STRANGE_CONSTANT + 2);
 					}
 					if ((curr & 8)) {
 						float nx = 0.0f;
 						float ny = 1.0f;
 						float nz = 0.0f;
-						
+
 						size_t size = mesh.vertices.size;
 						FloatVector_addVertex(0.0 + x, 1.0 + y, 0.0 + z);
 						FloatVector_addNormal(nx, ny, nz);
@@ -157,18 +166,24 @@ VectorImpl(Mesh, MeshVector)
 						FloatVector_addVertex(1.0 + x, 1.0 + y, 1.0 + z);
 						FloatVector_addNormal(nx, ny, nz);
 
-						UInt32Vector_append(&mesh.indices, size / STRANGE_CONSTANT + 0);
-						UInt32Vector_append(&mesh.indices, size / STRANGE_CONSTANT + 2);
-						UInt32Vector_append(&mesh.indices, size / STRANGE_CONSTANT + 1);
-						UInt32Vector_append(&mesh.indices, size / STRANGE_CONSTANT + 3);
-						UInt32Vector_append(&mesh.indices, size / STRANGE_CONSTANT + 1);
-						UInt32Vector_append(&mesh.indices, size / STRANGE_CONSTANT + 2);
+						UInt32Vector_append(&mesh.indices,
+											size / STRANGE_CONSTANT + 0);
+						UInt32Vector_append(&mesh.indices,
+											size / STRANGE_CONSTANT + 2);
+						UInt32Vector_append(&mesh.indices,
+											size / STRANGE_CONSTANT + 1);
+						UInt32Vector_append(&mesh.indices,
+											size / STRANGE_CONSTANT + 3);
+						UInt32Vector_append(&mesh.indices,
+											size / STRANGE_CONSTANT + 1);
+						UInt32Vector_append(&mesh.indices,
+											size / STRANGE_CONSTANT + 2);
 					}
 					if ((curr & 4)) {
 						float nx = 0.0f;
 						float ny = -1.0f;
 						float nz = 0.0f;
-						
+
 						size_t size = mesh.vertices.size;
 						FloatVector_addVertex(0.0 + x, y, 0.0 + z);
 						FloatVector_addNormal(nx, ny, nz);
@@ -179,18 +194,24 @@ VectorImpl(Mesh, MeshVector)
 						FloatVector_addVertex(1.0 + x, y, 1.0 + z);
 						FloatVector_addNormal(nx, ny, nz);
 
-						UInt32Vector_append(&mesh.indices, size / STRANGE_CONSTANT + 0);
-						UInt32Vector_append(&mesh.indices, size / STRANGE_CONSTANT + 1);
-						UInt32Vector_append(&mesh.indices, size / STRANGE_CONSTANT + 2);
-						UInt32Vector_append(&mesh.indices, size / STRANGE_CONSTANT + 3);
-						UInt32Vector_append(&mesh.indices, size / STRANGE_CONSTANT + 2);
-						UInt32Vector_append(&mesh.indices, size / STRANGE_CONSTANT + 1);
+						UInt32Vector_append(&mesh.indices,
+											size / STRANGE_CONSTANT + 0);
+						UInt32Vector_append(&mesh.indices,
+											size / STRANGE_CONSTANT + 1);
+						UInt32Vector_append(&mesh.indices,
+											size / STRANGE_CONSTANT + 2);
+						UInt32Vector_append(&mesh.indices,
+											size / STRANGE_CONSTANT + 3);
+						UInt32Vector_append(&mesh.indices,
+											size / STRANGE_CONSTANT + 2);
+						UInt32Vector_append(&mesh.indices,
+											size / STRANGE_CONSTANT + 1);
 					}
 					if ((curr & 2)) {
 						float nx = 0.0f;
 						float ny = 0.0f;
 						float nz = 1.0f;
-						
+
 						size_t size = mesh.vertices.size;
 						FloatVector_addVertex(0.0 + x, 0.0 + y, 1.0 + z);
 						FloatVector_addNormal(nx, ny, nz);
@@ -201,18 +222,24 @@ VectorImpl(Mesh, MeshVector)
 						FloatVector_addVertex(1.0 + x, 1.0 + y, 1.0 + z);
 						FloatVector_addNormal(nx, ny, nz);
 
-						UInt32Vector_append(&mesh.indices, size / STRANGE_CONSTANT + 0);
-						UInt32Vector_append(&mesh.indices, size / STRANGE_CONSTANT + 2);
-						UInt32Vector_append(&mesh.indices, size / STRANGE_CONSTANT + 1);
-						UInt32Vector_append(&mesh.indices, size / STRANGE_CONSTANT + 3);
-						UInt32Vector_append(&mesh.indices, size / STRANGE_CONSTANT + 1);
-						UInt32Vector_append(&mesh.indices, size / STRANGE_CONSTANT + 2);
+						UInt32Vector_append(&mesh.indices,
+											size / STRANGE_CONSTANT + 0);
+						UInt32Vector_append(&mesh.indices,
+											size / STRANGE_CONSTANT + 2);
+						UInt32Vector_append(&mesh.indices,
+											size / STRANGE_CONSTANT + 1);
+						UInt32Vector_append(&mesh.indices,
+											size / STRANGE_CONSTANT + 3);
+						UInt32Vector_append(&mesh.indices,
+											size / STRANGE_CONSTANT + 1);
+						UInt32Vector_append(&mesh.indices,
+											size / STRANGE_CONSTANT + 2);
 					}
 					if ((curr & 1)) {
 						float nx = 0.0f;
 						float ny = 0.0f;
 						float nz = -1.0f;
-						
+
 						size_t size = mesh.vertices.size;
 						FloatVector_addVertex(0.0 + x, 0.0 + y, z);
 						FloatVector_addNormal(nx, ny, nz);
@@ -223,12 +250,18 @@ VectorImpl(Mesh, MeshVector)
 						FloatVector_addVertex(1.0 + x, 1.0 + y, z);
 						FloatVector_addNormal(nx, ny, nz);
 
-						UInt32Vector_append(&mesh.indices, size / STRANGE_CONSTANT + 0);
-						UInt32Vector_append(&mesh.indices, size / STRANGE_CONSTANT + 1);
-						UInt32Vector_append(&mesh.indices, size / STRANGE_CONSTANT + 2);
-						UInt32Vector_append(&mesh.indices, size / STRANGE_CONSTANT + 3);
-						UInt32Vector_append(&mesh.indices, size / STRANGE_CONSTANT + 2);
-						UInt32Vector_append(&mesh.indices, size / STRANGE_CONSTANT + 1);
+						UInt32Vector_append(&mesh.indices,
+											size / STRANGE_CONSTANT + 0);
+						UInt32Vector_append(&mesh.indices,
+											size / STRANGE_CONSTANT + 1);
+						UInt32Vector_append(&mesh.indices,
+											size / STRANGE_CONSTANT + 2);
+						UInt32Vector_append(&mesh.indices,
+											size / STRANGE_CONSTANT + 3);
+						UInt32Vector_append(&mesh.indices,
+											size / STRANGE_CONSTANT + 2);
+						UInt32Vector_append(&mesh.indices,
+											size / STRANGE_CONSTANT + 1);
 					}
 				}
 			}
