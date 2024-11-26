@@ -6,7 +6,7 @@ void append_warnings(Nob_Cmd *cmd) {
 }
 
 void append_common(Nob_Cmd *cmd) {
-	nob_cmd_append(cmd, "src/common/camera.c", "src/common/chunk.c",
+	nob_cmd_append(cmd, "src/common/chunk.c",
 				   "src/common/logs.c", "src/common/player.c",
 				   "src/common/utils.c", "src/common/world.c");
 }
@@ -50,7 +50,7 @@ int build_client(void) {
 	append_common(&cmd);
 
 	// SOURCE FILES
-	nob_cmd_append(&cmd, "src/client/main.c", "src/client/mesh.c",
+	nob_cmd_append(&cmd, "src/client/main.c", "src/client/camera.c", "src/client/mesh.c",
 				   "src/client/render.c", "src/client/shader.c",
 				   "src/client/window.c");
 
