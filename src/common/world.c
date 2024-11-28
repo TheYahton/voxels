@@ -27,7 +27,8 @@ void world_chunk_generate(struct World *world, int x, int y, int z) {
 
 	for (int x = 0; x < CHUNK_SIZE; x++) {
 		for (int z = 0; z < CHUNK_SIZE; z++) {
-			int y_level = sin((float)x / 5.0f) * 3 + 5.0f;
+			// int y_level = sin((float)x / 5.0f) * 3 + 5.0f;
+			int y_level = (sinf((float)x / 10.0f) * sinf((float)z / 10.0f) + 1.0f) * 5;
 			for (int y = 0; y < y_level; y++) {
 				chunk_set(chunk, x, y, z, 1);
 			}
