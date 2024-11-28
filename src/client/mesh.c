@@ -12,10 +12,10 @@ VectorImpl(Mesh, MeshVector)
 	FloatVector_append(&mesh.vertices, y);                                     \
 	FloatVector_append(&mesh.vertices, z);
 
-#define FloatVector_rgb(r, g, b) FloatVector_addTrio(0.0, 0.9, 0.0)
+#define FloatVector_rgb(r, g, b) FloatVector_addTrio(r, g, b)
 
 #define FloatVector_addVertex(x, y, z)                                         \
-	FloatVector_addTrio(x, y, z) FloatVector_rgb(0.0, 0.9, 0.0)
+	FloatVector_addTrio(x, y, z) FloatVector_rgb(0.1, 0.5, 0.1)
 
 #define FloatVector_addNormal(x, y, z) FloatVector_addTrio(x, y, z)
 
