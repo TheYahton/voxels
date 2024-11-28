@@ -36,7 +36,7 @@ void include_common(Nob_Cmd *cmd) { nob_cmd_append(cmd, "-I./include"); }
 void link_math(Nob_Cmd *cmd) { nob_cmd_append(cmd, "-lm"); }
 
 bool for_windows(char *CC) {
-	return (CC != NULL && strcmp(CC, "x86_64-w64-mingw32-gcc"));
+	return (CC != NULL && strcmp(CC, "x86_64-w64-mingw32-gcc") == 0);
 }
 
 int build_client(void) {
