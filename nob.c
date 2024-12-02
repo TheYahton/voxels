@@ -89,6 +89,9 @@ int build_client(void) {
 	// Non-MinGW
 	else {
 		nob_cmd_append(&cmd, "-lglfw", "-lGL");
+		#ifdef __FreeBSD__
+		nob_cmd_append(&cmd, "-I/usr/local/include", "-L/usr/local/lib");
+		#endif // __FREEBSD__
 		link_math(&cmd);
 
 		append_output(&cmd, "client");
@@ -116,6 +119,10 @@ int build_server(void) {
 	// LINKING
 	include_common(&cmd);
 	link_math(&cmd);
+
+	#ifdef __FreeBSD__
+	nob_cmd_append(&cmd, "-I/usr/local/include", "-L/usr/local/lib");
+	#endif // __FREEBSD__
 
 	if (for_windows(CC)) {
 		append_output(&cmd, "server.exe");
