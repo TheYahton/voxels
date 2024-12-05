@@ -11,5 +11,5 @@ typedef struct {
 	Vec3 direction;
 } Player;
 
-void player_move(Player *player, bool keys[1024], float dt);
+void player_move(Player *player, bool keys[6], float dt);
 #endif // _PLAYER_H

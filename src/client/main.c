@@ -76,7 +76,15 @@ int main(void) {
 		lastY = ypos;
 
 		camera_update(&camera, window.keys, dx, dy, dt);
-		player_move(&player, window.keys, dt);
+		bool player_keys[6] = {
+			window.keys[GLFW_KEY_W],
+			window.keys[GLFW_KEY_A],
+			window.keys[GLFW_KEY_S],
+			window.keys[GLFW_KEY_D],
+			window.keys[GLFW_KEY_SPACE],
+			window.keys[GLFW_KEY_LEFT_SHIFT],
+		};
+		player_move(&player, player_keys, dt);
 
 		world_chunk_circle(&should_load, &world, -player.position.x,
 						   -player.position.y, -player.position.z, 4);

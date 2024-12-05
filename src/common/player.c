@@ -1,14 +1,14 @@
-#include <GLFW/glfw3.h>
-
 #include <math.h>
 #include <stdbool.h>
 
 #include "player.h"
 
-void player_move(Player *player, bool keys[1024], float dt) {
-	int forward = keys[GLFW_KEY_W] - keys[GLFW_KEY_S];
-	int left = keys[GLFW_KEY_A] - keys[GLFW_KEY_D];
-	int up = keys[GLFW_KEY_SPACE] - keys[GLFW_KEY_LEFT_SHIFT];
+void player_move(Player *player, bool keys[6], float dt) {
+	// keys is W A S D SPACE SHIFT
+	//         0 1 2 3 4     5
+	int forward = keys[0] - keys[2];
+	int left = keys[1] - keys[3];
+	int up = keys[4] - keys[5];
 
 	player->position.z +=
 		(forward * cos(player->direction.x) - left * sin(player->direction.x)) *
