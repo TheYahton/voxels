@@ -31,8 +31,8 @@ void world_chunk_generate(struct World *world, int x, int y, int z) {
 			int y_level = (sinf((float)x / 10.0f) * sinf((float)z / 10.0f) + 1.0f) * 5;
 			for (int y = 0; y < y_level; y++) {
 				BlockType block;
-				if (y_level < 6) block = Water;
-				else if (y_level == 6) block = Sand;
+				if (y < 5) block = Water;
+				else if (y == 5) block = Sand;
 				else block = Grass;
 				chunk_set(chunk, x, y, z, block);
 			}

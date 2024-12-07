@@ -92,6 +92,7 @@ void render(Renderer *renderer, const MeshVector *meshes,
 	mat4 projection;
 	glm_perspective_default((float)*renderer->width / (float)*renderer->height,
 							projection);
+	glm_persp_move_far(projection, renderer->render_distance * CHUNK_SIZE);
 	int projection_location =
 		glGetUniformLocation(renderer->shader_program, "projection");
 

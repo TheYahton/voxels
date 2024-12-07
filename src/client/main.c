@@ -11,6 +11,8 @@
 
 #include <stdlib.h>
 
+#define RENDER_DISTANCE 16
+
 size_t SizeVector_find(SizeVector *vec, size_t value) {
 	for (size_t i = 0; i < vec->size; i++) {
 		if (vec->data[i] == value) {
@@ -49,6 +51,7 @@ int main(void) {
 		shader_program,
 		&window.width,
 		&window.height,
+		RENDER_DISTANCE,
 	};
 
 	pre_render(window.width, window.height);
@@ -87,7 +90,7 @@ int main(void) {
 		player_move(&player, player_keys, dt);
 
 		world_chunk_circle(&should_load, &world, -player.position.x,
-						   -player.position.y, -player.position.z, 4);
+						   -player.position.y, -player.position.z, RENDER_DISTANCE);
 
 		for (size_t i = 0; i < should_load.size; i++) {
 			size_t index = should_load.data[i];
@@ -137,7 +140,6 @@ int main(void) {
 // TODO: optimize Mesh generating. Сейчас мы генерируем по 4 вершины на каждую
 // грань вокселя. Это 24 вершины на воксель в худшем случае. Но воксель это куб
 // и можно обойтись 8 вершинами
-// TODO: add ability to change color of voxel.
 // TODO: write a blazingly fast greedy mesher xd lol
 // TODO: world generation
 // TODO: improve camera rotation (use quaternions O.O)
@@ -154,3 +156,5 @@ int main(void) {
 // это нужно, а не в начале выполнения программы
 // TODO: mesh.c looks ugly. Improve it somehow pwease OwO
 // TODO: separate chunks load-unload system into function
+// TODO: generate chunks in second thread?
+// TODO: more types of voxels

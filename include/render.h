@@ -12,6 +12,7 @@ typedef struct {
 	bool *polygon_mode;		 // 1 byte
 	uint32_t shader_program; // 4 byte
 	int *width, *height;	 // 8 + 8 = 16 bytes
+	unsigned int render_distance;  // 4 bytes
 } Renderer;
 
 uint32_t render_create_shader(void);
