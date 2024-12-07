@@ -8,52 +8,53 @@
 
 VectorImpl(Chunk, ChunkVector)
 
-	struct World world_init(void) {
-	struct World world = {ChunkVector_init(0, 64)};
-
-	for (int i = 0; i < 256; i++) {
-		size_t x = i % 16 - 8;
-		size_t z = i / 16 - 8;
-		world_chunk_generate(&world, x, 0, z);
-	}
-
-	return world;
+static int mod(int a, int b) {
+	int r = a % b;
+	return r < 0 ? r + b : r;
 }
 
-void world_chunk_generate(struct World *world, int x, int y, int z) {
+struct World world_init(void) {
+	return (struct World) {ChunkVector_init(0, 64)};
+}
+
+size_t world_chunk_generate(struct World *world, int x, int y, int z) {
 	ChunkVector_append(&world->chunks, chunk_init(x, y, z));
 	size_t index = world->chunks.size - 1;
 	Chunk *chunk = &world->chunks.data[index];
+	BlockType block = mod(x, 5) + 1;
 
 	for (int x = 0; x < CHUNK_SIZE; x++) {
 		for (int z = 0; z < CHUNK_SIZE; z++) {
-			// int y_level = sin((float)x / 5.0f) * 3 + 5.0f;
-			int y_level = (sinf((float)x / 10.0f) * sinf((float)z / 10.0f) + 1.0f) * 5;
-			for (int y = 0; y < y_level; y++) {
-				BlockType block;
-				if (y < 5) block = Water;
-				else if (y == 5) block = Sand;
-				else block = Grass;
-				chunk_set(chunk, x, y, z, block);
+			for (int y = 0; y < CHUNK_SIZE; y++) {
+				int dx = x - CHUNK_SIZE / 2;
+				int dy = y - CHUNK_SIZE / 2;
+				int dz = z - CHUNK_SIZE / 2;
+				int squared_dist = dx * dx + dy * dy + dz * dz;
+				if (squared_dist < CHUNK_SIZE * CHUNK_SIZE / 16) {
+					chunk_set(chunk, x, y, z, block);
+				}
 			}
 		}
 	}
+
+	return index;
 }
 
-Chunk *world_chunk_get(const struct World *world, int x, int y, int z) {
+size_t world_chunk_get(const struct World *world, int x, int y, int z) {
 	for (size_t i = 0; i < world->chunks.size; i++) {
 		Chunk *chunk = &world->chunks.data[i];
 		if (chunk->position.x == x && chunk->position.y == y &&
 			chunk->position.z == z) {
-			return chunk;
+			return i;
 		}
 	}
-	return NULL;
+	return -1;
 }
 
-static int mod(int a, int b) {
-	int r = a % b;
-	return r < 0 ? r + b : r;
+size_t world_chunk_get_or_generate(struct World *world, int x, int y, int z) {
+	size_t chunk_index = world_chunk_get(world, x, y, z);
+	if (chunk_index != SIZE_MAX) return chunk_index;
+	return world_chunk_generate(world, x, y, z);
 }
 
 uint8_t world_block_get(const struct World *world, int x, int y, int z) {
@@ -63,8 +64,12 @@ uint8_t world_block_get(const struct World *world, int x, int y, int z) {
 	int chunkX = floorf((float)x / CHUNK_SIZE);
 	int chunkY = floorf((float)y / CHUNK_SIZE);
 	int chunkZ = floorf((float)z / CHUNK_SIZE);
-	return chunk_get(world_chunk_get(world, chunkX, chunkY, chunkZ), blockX,
-					 blockY, blockZ);
+	size_t chunk_index = world_chunk_get(world, chunkX, chunkY, chunkZ);
+	Chunk *chunk = NULL;
+	if (chunk_index != SIZE_MAX) {
+		chunk = &world->chunks.data[chunk_index];
+	}
+	return chunk_get(chunk, blockX, blockY, blockZ);
 }
 
 void world_block_set(struct World *world, int x, int y, int z, uint8_t value) {
@@ -74,20 +79,25 @@ void world_block_set(struct World *world, int x, int y, int z, uint8_t value) {
 	int chunkX = floorf((float)x / CHUNK_SIZE);
 	int chunkY = floorf((float)y / CHUNK_SIZE);
 	int chunkZ = floorf((float)z / CHUNK_SIZE);
-	chunk_set(world_chunk_get(world, chunkX, chunkY, chunkZ), blockX, blockY,
-			  blockZ, value);
+	size_t chunk_index = world_chunk_get(world, chunkX, chunkY, chunkZ);
+	Chunk *chunk = NULL;
+	if (chunk_index != SIZE_MAX) {
+		chunk = &world->chunks.data[chunk_index];
+	}
+	chunk_set(chunk, blockX, blockY, blockZ, value);
 }
 
-void world_chunk_circle(SizeVector *vec, const struct World *world, float x,
-						float y, float z, int radius) {
-	for (size_t i = 0; i < world->chunks.size; i++) {
-		const Vec3i *chunkPos = &world->chunks.data[i].position;
-		float dx = CHUNK_SIZE * chunkPos->x - x + CHUNK_SIZE / 2.0;
-		float dy = CHUNK_SIZE * chunkPos->y - y + CHUNK_SIZE / 2.0;
-		float dz = CHUNK_SIZE * chunkPos->z - z + CHUNK_SIZE / 2.0;
-		float dist = sqrtf(dx * dx + dy * dy + dz * dz);
-		if (dist < radius * CHUNK_SIZE) {
-			SizeVector_append(vec, i);
+void world_chunk_circle(SizeVector *vec, struct World *world, float playerX,
+						float playerY, float playerZ, int radius) {
+	int chunkX = floorf((-playerX + CHUNK_SIZE / 2.0f) / CHUNK_SIZE);
+	int chunkY = floorf((playerY + CHUNK_SIZE / 2.0f) / CHUNK_SIZE);
+	int chunkZ = floorf((-playerZ + CHUNK_SIZE / 2.0f) / CHUNK_SIZE);
+	for (int x = -radius; x < radius; x++) {
+		for (int y = -radius; y < radius; y++) {
+			for (int z = -radius; z < radius; z++) {
+				size_t index = world_chunk_get_or_generate(world, chunkX + x, chunkY + y, chunkZ + z);
+				SizeVector_append(vec, index);
+			}
 		}
 	}
 }

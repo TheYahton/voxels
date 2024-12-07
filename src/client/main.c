@@ -11,7 +11,7 @@
 
 #include <stdlib.h>
 
-#define RENDER_DISTANCE 16
+#define RENDER_DISTANCE 4
 
 size_t SizeVector_find(SizeVector *vec, size_t value) {
 	for (size_t i = 0; i < vec->size; i++) {
@@ -89,8 +89,8 @@ int main(void) {
 		};
 		player_move(&player, player_keys, dt);
 
-		world_chunk_circle(&should_load, &world, -player.position.x,
-						   -player.position.y, -player.position.z, RENDER_DISTANCE);
+		world_chunk_circle(&should_load, &world, player.position.x,
+						   player.position.y, player.position.z, RENDER_DISTANCE);
 
 		for (size_t i = 0; i < should_load.size; i++) {
 			size_t index = should_load.data[i];
@@ -141,7 +141,7 @@ int main(void) {
 // грань вокселя. Это 24 вершины на воксель в худшем случае. Но воксель это куб
 // и можно обойтись 8 вершинами
 // TODO: write a blazingly fast greedy mesher xd lol
-// TODO: world generation
+// TODO: world generation using simplex noise
 // TODO: improve camera rotation (use quaternions O.O)
 // TODO (может быть ненужным и даже вредным):
 // 1. написать обёртку над вводом GLFW
@@ -152,8 +152,6 @@ int main(void) {
 // TODO: сейчас трудно разглядеть трёхмерность какого-либо чанка - всё
 // одноцветное и монотонное. Ранее от текстур я решил отказаться, поэтому
 // реализую Ambient occlusion
-// TODO: make world potentially infinite + пусть чанки генерируются тогда, когда
-// это нужно, а не в начале выполнения программы
 // TODO: mesh.c looks ugly. Improve it somehow pwease OwO
 // TODO: separate chunks load-unload system into function
 // TODO: generate chunks in second thread?
