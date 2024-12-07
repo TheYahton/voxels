@@ -14,8 +14,8 @@ VectorImpl(Mesh, MeshVector)
 
 #define FloatVector_rgb(r, g, b) FloatVector_addTrio(r, g, b)
 
-#define FloatVector_addVertex(x, y, z)                                         \
-	FloatVector_addTrio(x, y, z) FloatVector_rgb(0.1, 0.5, 0.1)
+#define FloatVector_addVertex(x, y, z, r, g, b)                                         \
+	FloatVector_addTrio(x, y, z) FloatVector_rgb(r, g, b)
 
 #define FloatVector_addNormal(x, y, z) FloatVector_addTrio(x, y, z)
 
@@ -94,6 +94,9 @@ VectorImpl(Mesh, MeshVector)
 				int x = i + chunk->position.x * CHUNK_SIZE;
 				int y = j + chunk->position.y * CHUNK_SIZE;
 				int z = k + chunk->position.z * CHUNK_SIZE;
+				float r = 0.1;
+				float g = 0.5;
+				float b = 0.1;
 				if (curr) {
 					if ((curr & 32)) {
 						float nx = 1.0f;
@@ -101,13 +104,13 @@ VectorImpl(Mesh, MeshVector)
 						float nz = 0.0f;
 
 						size_t size = mesh.vertices.size;
-						FloatVector_addVertex(1.0 + x, 0.0 + y, 0.0 + z);
+						FloatVector_addVertex(1.0 + x, 0.0 + y, 0.0 + z, r, g, b);
 						FloatVector_addNormal(nx, ny, nz);
-						FloatVector_addVertex(1.0 + x, 1.0 + y, 0.0 + z);
+						FloatVector_addVertex(1.0 + x, 1.0 + y, 0.0 + z, r, g, b);
 						FloatVector_addNormal(nx, ny, nz);
-						FloatVector_addVertex(1.0 + x, 0.0 + y, 1.0 + z);
+						FloatVector_addVertex(1.0 + x, 0.0 + y, 1.0 + z, r, g, b);
 						FloatVector_addNormal(nx, ny, nz);
-						FloatVector_addVertex(1.0 + x, 1.0 + y, 1.0 + z);
+						FloatVector_addVertex(1.0 + x, 1.0 + y, 1.0 + z, r, g, b);
 						FloatVector_addNormal(nx, ny, nz);
 
 						UInt32Vector_append(&mesh.indices,
@@ -129,13 +132,13 @@ VectorImpl(Mesh, MeshVector)
 						float nz = 0.0f;
 
 						size_t size = mesh.vertices.size;
-						FloatVector_addVertex(x, 0.0 + y, 0.0 + z);
+						FloatVector_addVertex(x, 0.0 + y, 0.0 + z, r, g, b);
 						FloatVector_addNormal(nx, ny, nz);
-						FloatVector_addVertex(x, 1.0 + y, 0.0 + z);
+						FloatVector_addVertex(x, 1.0 + y, 0.0 + z, r, g, b);
 						FloatVector_addNormal(nx, ny, nz);
-						FloatVector_addVertex(x, 0.0 + y, 1.0 + z);
+						FloatVector_addVertex(x, 0.0 + y, 1.0 + z, r, g, b);
 						FloatVector_addNormal(nx, ny, nz);
-						FloatVector_addVertex(x, 1.0 + y, 1.0 + z);
+						FloatVector_addVertex(x, 1.0 + y, 1.0 + z, r, g, b);
 						FloatVector_addNormal(nx, ny, nz);
 
 						UInt32Vector_append(&mesh.indices,
@@ -157,13 +160,13 @@ VectorImpl(Mesh, MeshVector)
 						float nz = 0.0f;
 
 						size_t size = mesh.vertices.size;
-						FloatVector_addVertex(0.0 + x, 1.0 + y, 0.0 + z);
+						FloatVector_addVertex(0.0 + x, 1.0 + y, 0.0 + z, r, g, b);
 						FloatVector_addNormal(nx, ny, nz);
-						FloatVector_addVertex(1.0 + x, 1.0 + y, 0.0 + z);
+						FloatVector_addVertex(1.0 + x, 1.0 + y, 0.0 + z, r, g, b);
 						FloatVector_addNormal(nx, ny, nz);
-						FloatVector_addVertex(0.0 + x, 1.0 + y, 1.0 + z);
+						FloatVector_addVertex(0.0 + x, 1.0 + y, 1.0 + z, r, g, b);
 						FloatVector_addNormal(nx, ny, nz);
-						FloatVector_addVertex(1.0 + x, 1.0 + y, 1.0 + z);
+						FloatVector_addVertex(1.0 + x, 1.0 + y, 1.0 + z, r, g, b);
 						FloatVector_addNormal(nx, ny, nz);
 
 						UInt32Vector_append(&mesh.indices,
@@ -185,13 +188,13 @@ VectorImpl(Mesh, MeshVector)
 						float nz = 0.0f;
 
 						size_t size = mesh.vertices.size;
-						FloatVector_addVertex(0.0 + x, y, 0.0 + z);
+						FloatVector_addVertex(0.0 + x, y, 0.0 + z, r, g, b);
 						FloatVector_addNormal(nx, ny, nz);
-						FloatVector_addVertex(1.0 + x, y, 0.0 + z);
+						FloatVector_addVertex(1.0 + x, y, 0.0 + z, r, g, b);
 						FloatVector_addNormal(nx, ny, nz);
-						FloatVector_addVertex(0.0 + x, y, 1.0 + z);
+						FloatVector_addVertex(0.0 + x, y, 1.0 + z, r, g, b);
 						FloatVector_addNormal(nx, ny, nz);
-						FloatVector_addVertex(1.0 + x, y, 1.0 + z);
+						FloatVector_addVertex(1.0 + x, y, 1.0 + z, r, g, b);
 						FloatVector_addNormal(nx, ny, nz);
 
 						UInt32Vector_append(&mesh.indices,
@@ -213,13 +216,13 @@ VectorImpl(Mesh, MeshVector)
 						float nz = 1.0f;
 
 						size_t size = mesh.vertices.size;
-						FloatVector_addVertex(0.0 + x, 0.0 + y, 1.0 + z);
+						FloatVector_addVertex(0.0 + x, 0.0 + y, 1.0 + z, r, g, b);
 						FloatVector_addNormal(nx, ny, nz);
-						FloatVector_addVertex(0.0 + x, 1.0 + y, 1.0 + z);
+						FloatVector_addVertex(0.0 + x, 1.0 + y, 1.0 + z, r, g, b);
 						FloatVector_addNormal(nx, ny, nz);
-						FloatVector_addVertex(1.0 + x, 0.0 + y, 1.0 + z);
+						FloatVector_addVertex(1.0 + x, 0.0 + y, 1.0 + z, r, g, b);
 						FloatVector_addNormal(nx, ny, nz);
-						FloatVector_addVertex(1.0 + x, 1.0 + y, 1.0 + z);
+						FloatVector_addVertex(1.0 + x, 1.0 + y, 1.0 + z, r, g, b);
 						FloatVector_addNormal(nx, ny, nz);
 
 						UInt32Vector_append(&mesh.indices,
@@ -241,13 +244,13 @@ VectorImpl(Mesh, MeshVector)
 						float nz = -1.0f;
 
 						size_t size = mesh.vertices.size;
-						FloatVector_addVertex(0.0 + x, 0.0 + y, z);
+						FloatVector_addVertex(0.0 + x, 0.0 + y, z, r, g, b);
 						FloatVector_addNormal(nx, ny, nz);
-						FloatVector_addVertex(0.0 + x, 1.0 + y, z);
+						FloatVector_addVertex(0.0 + x, 1.0 + y, z, r, g, b);
 						FloatVector_addNormal(nx, ny, nz);
-						FloatVector_addVertex(1.0 + x, 0.0 + y, z);
+						FloatVector_addVertex(1.0 + x, 0.0 + y, z, r, g, b);
 						FloatVector_addNormal(nx, ny, nz);
-						FloatVector_addVertex(1.0 + x, 1.0 + y, z);
+						FloatVector_addVertex(1.0 + x, 1.0 + y, z, r, g, b);
 						FloatVector_addNormal(nx, ny, nz);
 
 						UInt32Vector_append(&mesh.indices,
