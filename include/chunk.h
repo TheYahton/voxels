@@ -3,6 +3,16 @@
 
 #include "utils.h"
 
+typedef enum {
+	Air = 0,
+	Stone,
+	Dirt,
+	Grass,
+	Sand,
+	Water,
+	TypeCount,
+} BlockType;
+
 #define CHUNK_SIZE 32
 #define CHUNK_CSIZE (CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE)
 
