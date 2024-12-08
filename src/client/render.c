@@ -71,15 +71,16 @@ uint32_t render_create_vao(Mesh *mesh) {
 	return VAO;
 }
 
-void pre_render(int width, int height) {
+void render_preparation(int width, int height) {
 	glViewport(0, 0, width, height);
 
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
 }
 
-void render(Renderer *renderer, const MeshVector *meshes,
-			const UInt32Vector *VAOs, Player *player, Camera *camera) {
+// void render(Renderer *renderer, const MeshVector *meshes,
+// 			const UInt32Vector *VAOs, Player *player, Camera *camera) {
+void render(Renderer *renderer, Player *player, Camera *camera) {
 	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -111,8 +112,8 @@ void render(Renderer *renderer, const MeshVector *meshes,
 	glUniformMatrix4fv(projection_location, 1, GL_FALSE, projection[0]);
 	glUniformMatrix4fv(view_location, 1, GL_FALSE, view[0]);
 
-	for (size_t i = 0; i < VAOs->size; i++) {
-		if (!meshes->data[i].visible)
+	for (size_t i = 0; i < renderer->VAOs.size; i++) {
+		if (!renderer->meshes.data[i].visible)
 			continue;
 		mat4 model;
 		vec4 translation = {player->position.x, -player->position.y,
@@ -120,8 +121,8 @@ void render(Renderer *renderer, const MeshVector *meshes,
 		glm_mat4_identity(model);
 		glm_translate(model, translation);
 		glUniformMatrix4fv(model_location, 1, GL_FALSE, model[0]);
-		glBindVertexArray(VAOs->data[i]);
-		glDrawElements(GL_TRIANGLES, meshes->data[i].indices.size,
+		glBindVertexArray(renderer->VAOs.data[i]);
+		glDrawElements(GL_TRIANGLES, renderer->meshes.data[i].indices.size,
 					   GL_UNSIGNED_INT,
 					   0); // With EBO
 
@@ -137,4 +138,72 @@ int loadGL(GLADloadfunc func) {
 	}
 	info("OpenGL loaded successfully.");
 	return 0;
+}
+
+#define RENDER_DISTANCE 4
+
+Renderer renderer_init(Window *window) {
+	Renderer renderer = {
+		&window->polygon_mode,
+		render_create_shader(),
+		&window->width,
+		&window->height,
+		RENDER_DISTANCE,
+		MeshVector_init(0, 64),
+		UInt32Vector_init(0, 64),
+		SizeVector_init(0, 64),
+		SizeVector_init(0, 64),
+	};
+
+	return renderer;
+}
+
+size_t SizeVector_find(SizeVector *vec, size_t value) {
+	for (size_t i = 0; i < vec->size; i++) {
+		if (vec->data[i] == value) {
+			return i;
+		}
+	}
+	return SIZE_MAX;
+}
+
+void chunks_load_unload_system(Renderer *renderer, struct World *world, Vec3 position) {
+		world_chunk_circle(&renderer->should_load, world, position.x,
+						   position.y, position.z, RENDER_DISTANCE);
+
+		for (size_t i = 0; i < renderer->should_load.size; i++) {
+			size_t index = renderer->should_load.data[i];
+			Chunk *chunk = &world->chunks.data[index];
+			if (SizeVector_find(&renderer->loaded, index) == SIZE_MAX) {
+				MeshVector_append(&renderer->meshes, chunk_genmesh(chunk, world));
+				size_t mesh_index = renderer->meshes.size - 1;
+				UInt32Vector_append(
+					&renderer->VAOs, render_create_vao(&renderer->meshes.data[mesh_index]));
+				SizeVector_append(&renderer->loaded, index);
+				chunk->mesh_index = mesh_index;
+			}
+		}
+
+		for (size_t i = 0; i < renderer->loaded.size; i++) {
+			size_t loaded_index = renderer->loaded.data[i];
+			const Chunk *chunk = &world->chunks.data[loaded_index];
+			if (SizeVector_find(&renderer->should_load, loaded_index) == SIZE_MAX) {
+				renderer->meshes.data[chunk->mesh_index].visible = false;
+			} else {
+				renderer->meshes.data[chunk->mesh_index].visible = true;
+			}
+		}
+
+		renderer->should_load.size = 0;
+
+}
+
+void renderer_free(Renderer *renderer) {
+	for (size_t i = 0; i < renderer->meshes.size; i++) {
+		free(renderer->meshes.data[i].vertices.data);
+		free(renderer->meshes.data[i].indices.data);
+	}
+	free(renderer->meshes.data);
+	free(renderer->should_load.data);
+	free(renderer->loaded.data);
 }
