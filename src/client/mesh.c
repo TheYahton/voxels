@@ -5,21 +5,24 @@
 
 #include <string.h>
 
+#define positive_indices(vec, size)\
+UInt32Vector_append(vec, size + 0);\
+UInt32Vector_append(vec, size + 1);\
+UInt32Vector_append(vec, size + 2);\
+UInt32Vector_append(vec, size + 3);\
+UInt32Vector_append(vec, size + 2);\
+UInt32Vector_append(vec, size + 1);
+
+#define negative_indices(vec, size)\
+UInt32Vector_append(vec, size + 0);\
+UInt32Vector_append(vec, size + 2);\
+UInt32Vector_append(vec, size + 1);\
+UInt32Vector_append(vec, size + 3);\
+UInt32Vector_append(vec, size + 1);\
+UInt32Vector_append(vec, size + 2);
+
 VectorImpl(Mesh, MeshVector)
-
-#define FloatVector_addTrio(x, y, z)                                           \
-	FloatVector_append(&mesh.vertices, x);                                     \
-	FloatVector_append(&mesh.vertices, y);                                     \
-	FloatVector_append(&mesh.vertices, z);
-
-#define FloatVector_rgb(r, g, b) FloatVector_addTrio(r, g, b)
-
-#define FloatVector_addVertex(x, y, z, r, g, b)                                         \
-	FloatVector_addTrio(x, y, z) FloatVector_rgb(r, g, b)
-
-#define FloatVector_addNormal(x, y, z) FloatVector_addTrio(x, y, z)
-
-#define STRANGE_CONSTANT 9
+VectorImpl(Vertex, Vertices)
 
 typedef struct {
 	unsigned char r, g, b;
@@ -43,7 +46,7 @@ void get_block_color(BlockType type, float *r, float *g , float *b) {
 
 	Mesh chunk_genmesh(const struct Chunk *chunk, const struct World *world) {
 	Mesh mesh = {
-		.vertices = FloatVector_init(0, 64),
+		.vertices = Vertices_init(0, sizeof(Vertex) * 4),
 		.indices = UInt32Vector_init(0, 64),
 		.visible = true,
 	};
@@ -125,27 +128,13 @@ void get_block_color(BlockType type, float *r, float *g , float *b) {
 						float nz = 0.0f;
 
 						size_t size = mesh.vertices.size;
-						FloatVector_addVertex(1.0 + x, 0.0 + y, 0.0 + z, r, g, b);
-						FloatVector_addNormal(nx, ny, nz);
-						FloatVector_addVertex(1.0 + x, 1.0 + y, 0.0 + z, r, g, b);
-						FloatVector_addNormal(nx, ny, nz);
-						FloatVector_addVertex(1.0 + x, 0.0 + y, 1.0 + z, r, g, b);
-						FloatVector_addNormal(nx, ny, nz);
-						FloatVector_addVertex(1.0 + x, 1.0 + y, 1.0 + z, r, g, b);
-						FloatVector_addNormal(nx, ny, nz);
 
-						UInt32Vector_append(&mesh.indices,
-											size / STRANGE_CONSTANT + 0);
-						UInt32Vector_append(&mesh.indices,
-											size / STRANGE_CONSTANT + 1);
-						UInt32Vector_append(&mesh.indices,
-											size / STRANGE_CONSTANT + 2);
-						UInt32Vector_append(&mesh.indices,
-											size / STRANGE_CONSTANT + 3);
-						UInt32Vector_append(&mesh.indices,
-											size / STRANGE_CONSTANT + 2);
-						UInt32Vector_append(&mesh.indices,
-											size / STRANGE_CONSTANT + 1);
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 1, y + 0, z + 0}, {r, g, b}, {nx, ny, nz}});
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 1, y + 1, z + 0}, {r, g, b}, {nx, ny, nz}});
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 1, y + 0, z + 1}, {r, g, b}, {nx, ny, nz}});
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 1, y + 1, z + 1}, {r, g, b}, {nx, ny, nz}});
+
+						positive_indices(&mesh.indices, size);
 					}
 					if ((curr & 16)) {
 						float nx = -1.0f;
@@ -153,27 +142,13 @@ void get_block_color(BlockType type, float *r, float *g , float *b) {
 						float nz = 0.0f;
 
 						size_t size = mesh.vertices.size;
-						FloatVector_addVertex(x, 0.0 + y, 0.0 + z, r, g, b);
-						FloatVector_addNormal(nx, ny, nz);
-						FloatVector_addVertex(x, 1.0 + y, 0.0 + z, r, g, b);
-						FloatVector_addNormal(nx, ny, nz);
-						FloatVector_addVertex(x, 0.0 + y, 1.0 + z, r, g, b);
-						FloatVector_addNormal(nx, ny, nz);
-						FloatVector_addVertex(x, 1.0 + y, 1.0 + z, r, g, b);
-						FloatVector_addNormal(nx, ny, nz);
 
-						UInt32Vector_append(&mesh.indices,
-											size / STRANGE_CONSTANT + 0);
-						UInt32Vector_append(&mesh.indices,
-											size / STRANGE_CONSTANT + 2);
-						UInt32Vector_append(&mesh.indices,
-											size / STRANGE_CONSTANT + 1);
-						UInt32Vector_append(&mesh.indices,
-											size / STRANGE_CONSTANT + 3);
-						UInt32Vector_append(&mesh.indices,
-											size / STRANGE_CONSTANT + 1);
-						UInt32Vector_append(&mesh.indices,
-											size / STRANGE_CONSTANT + 2);
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 0, y + 0, z + 0}, {r, g, b}, {nx, ny, nz}});
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 0, y + 1, z + 0}, {r, g, b}, {nx, ny, nz}});
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 0, y + 0, z + 1}, {r, g, b}, {nx, ny, nz}});
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 0, y + 1, z + 1}, {r, g, b}, {nx, ny, nz}});
+
+						negative_indices(&mesh.indices, size);
 					}
 					if ((curr & 8)) {
 						float nx = 0.0f;
@@ -181,27 +156,13 @@ void get_block_color(BlockType type, float *r, float *g , float *b) {
 						float nz = 0.0f;
 
 						size_t size = mesh.vertices.size;
-						FloatVector_addVertex(0.0 + x, 1.0 + y, 0.0 + z, r, g, b);
-						FloatVector_addNormal(nx, ny, nz);
-						FloatVector_addVertex(1.0 + x, 1.0 + y, 0.0 + z, r, g, b);
-						FloatVector_addNormal(nx, ny, nz);
-						FloatVector_addVertex(0.0 + x, 1.0 + y, 1.0 + z, r, g, b);
-						FloatVector_addNormal(nx, ny, nz);
-						FloatVector_addVertex(1.0 + x, 1.0 + y, 1.0 + z, r, g, b);
-						FloatVector_addNormal(nx, ny, nz);
 
-						UInt32Vector_append(&mesh.indices,
-											size / STRANGE_CONSTANT + 0);
-						UInt32Vector_append(&mesh.indices,
-											size / STRANGE_CONSTANT + 2);
-						UInt32Vector_append(&mesh.indices,
-											size / STRANGE_CONSTANT + 1);
-						UInt32Vector_append(&mesh.indices,
-											size / STRANGE_CONSTANT + 3);
-						UInt32Vector_append(&mesh.indices,
-											size / STRANGE_CONSTANT + 1);
-						UInt32Vector_append(&mesh.indices,
-											size / STRANGE_CONSTANT + 2);
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 0, y + 1, z + 0}, {r, g, b}, {nx, ny, nz}});
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 0, y + 1, z + 1}, {r, g, b}, {nx, ny, nz}});
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 1, y + 1, z + 0}, {r, g, b}, {nx, ny, nz}});
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 1, y + 1, z + 1}, {r, g, b}, {nx, ny, nz}});
+
+						positive_indices(&mesh.indices, size);
 					}
 					if ((curr & 4)) {
 						float nx = 0.0f;
@@ -209,27 +170,13 @@ void get_block_color(BlockType type, float *r, float *g , float *b) {
 						float nz = 0.0f;
 
 						size_t size = mesh.vertices.size;
-						FloatVector_addVertex(0.0 + x, y, 0.0 + z, r, g, b);
-						FloatVector_addNormal(nx, ny, nz);
-						FloatVector_addVertex(1.0 + x, y, 0.0 + z, r, g, b);
-						FloatVector_addNormal(nx, ny, nz);
-						FloatVector_addVertex(0.0 + x, y, 1.0 + z, r, g, b);
-						FloatVector_addNormal(nx, ny, nz);
-						FloatVector_addVertex(1.0 + x, y, 1.0 + z, r, g, b);
-						FloatVector_addNormal(nx, ny, nz);
 
-						UInt32Vector_append(&mesh.indices,
-											size / STRANGE_CONSTANT + 0);
-						UInt32Vector_append(&mesh.indices,
-											size / STRANGE_CONSTANT + 1);
-						UInt32Vector_append(&mesh.indices,
-											size / STRANGE_CONSTANT + 2);
-						UInt32Vector_append(&mesh.indices,
-											size / STRANGE_CONSTANT + 3);
-						UInt32Vector_append(&mesh.indices,
-											size / STRANGE_CONSTANT + 2);
-						UInt32Vector_append(&mesh.indices,
-											size / STRANGE_CONSTANT + 1);
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 0, y + 0, z + 0}, {r, g, b}, {nx, ny, nz}});
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 0, y + 0, z + 1}, {r, g, b}, {nx, ny, nz}});
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 1, y + 0, z + 0}, {r, g, b}, {nx, ny, nz}});
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 1, y + 0, z + 1}, {r, g, b}, {nx, ny, nz}});
+
+						negative_indices(&mesh.indices, size);
 					}
 					if ((curr & 2)) {
 						float nx = 0.0f;
@@ -237,27 +184,13 @@ void get_block_color(BlockType type, float *r, float *g , float *b) {
 						float nz = 1.0f;
 
 						size_t size = mesh.vertices.size;
-						FloatVector_addVertex(0.0 + x, 0.0 + y, 1.0 + z, r, g, b);
-						FloatVector_addNormal(nx, ny, nz);
-						FloatVector_addVertex(0.0 + x, 1.0 + y, 1.0 + z, r, g, b);
-						FloatVector_addNormal(nx, ny, nz);
-						FloatVector_addVertex(1.0 + x, 0.0 + y, 1.0 + z, r, g, b);
-						FloatVector_addNormal(nx, ny, nz);
-						FloatVector_addVertex(1.0 + x, 1.0 + y, 1.0 + z, r, g, b);
-						FloatVector_addNormal(nx, ny, nz);
 
-						UInt32Vector_append(&mesh.indices,
-											size / STRANGE_CONSTANT + 0);
-						UInt32Vector_append(&mesh.indices,
-											size / STRANGE_CONSTANT + 2);
-						UInt32Vector_append(&mesh.indices,
-											size / STRANGE_CONSTANT + 1);
-						UInt32Vector_append(&mesh.indices,
-											size / STRANGE_CONSTANT + 3);
-						UInt32Vector_append(&mesh.indices,
-											size / STRANGE_CONSTANT + 1);
-						UInt32Vector_append(&mesh.indices,
-											size / STRANGE_CONSTANT + 2);
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 0, y + 0, z + 1}, {r, g, b}, {nx, ny, nz}});
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 0, y + 1, z + 1}, {r, g, b}, {nx, ny, nz}});
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 1, y + 0, z + 1}, {r, g, b}, {nx, ny, nz}});
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 1, y + 1, z + 1}, {r, g, b}, {nx, ny, nz}});
+
+						negative_indices(&mesh.indices, size);
 					}
 					if ((curr & 1)) {
 						float nx = 0.0f;
@@ -265,27 +198,13 @@ void get_block_color(BlockType type, float *r, float *g , float *b) {
 						float nz = -1.0f;
 
 						size_t size = mesh.vertices.size;
-						FloatVector_addVertex(0.0 + x, 0.0 + y, z, r, g, b);
-						FloatVector_addNormal(nx, ny, nz);
-						FloatVector_addVertex(0.0 + x, 1.0 + y, z, r, g, b);
-						FloatVector_addNormal(nx, ny, nz);
-						FloatVector_addVertex(1.0 + x, 0.0 + y, z, r, g, b);
-						FloatVector_addNormal(nx, ny, nz);
-						FloatVector_addVertex(1.0 + x, 1.0 + y, z, r, g, b);
-						FloatVector_addNormal(nx, ny, nz);
 
-						UInt32Vector_append(&mesh.indices,
-											size / STRANGE_CONSTANT + 0);
-						UInt32Vector_append(&mesh.indices,
-											size / STRANGE_CONSTANT + 1);
-						UInt32Vector_append(&mesh.indices,
-											size / STRANGE_CONSTANT + 2);
-						UInt32Vector_append(&mesh.indices,
-											size / STRANGE_CONSTANT + 3);
-						UInt32Vector_append(&mesh.indices,
-											size / STRANGE_CONSTANT + 2);
-						UInt32Vector_append(&mesh.indices,
-											size / STRANGE_CONSTANT + 1);
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 0, y + 0, z + 0}, {r, g, b}, {nx, ny, nz}});
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 0, y + 1, z + 0}, {r, g, b}, {nx, ny, nz}});
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 1, y + 0, z + 0}, {r, g, b}, {nx, ny, nz}});
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 1, y + 1, z + 0}, {r, g, b}, {nx, ny, nz}});
+
+						positive_indices(&mesh.indices, size);
 					}
 				}
 			}

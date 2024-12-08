@@ -32,7 +32,7 @@ uint32_t render_create_shader(void) {
 }
 
 uint32_t render_create_vao(const Mesh *mesh) {
-	const FloatVector *vertices = &mesh->vertices;
+	const Vertices *vertices = &mesh->vertices;
 	const UInt32Vector *indices = &mesh->indices;
 
 	// WARNING: A DUNGER STARTS!
@@ -46,7 +46,7 @@ uint32_t render_create_vao(const Mesh *mesh) {
 
 	glBindVertexArray(VAO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, vertices->capacity * sizeof(float),
+	glBufferData(GL_ARRAY_BUFFER, vertices->capacity * sizeof(Vertex),
 				 vertices->data, GL_STATIC_DRAW);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
