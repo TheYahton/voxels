@@ -78,9 +78,7 @@ void render_preparation(int width, int height) {
 	glEnable(GL_CULL_FACE);
 }
 
-// void render(Renderer *renderer, const MeshVector *meshes,
-// 			const UInt32Vector *VAOs, Player *player, Camera *camera) {
-void render(const Renderer *renderer, Camera *camera) {
+void render(const Renderer *renderer) {
 	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -103,9 +101,9 @@ void render(const Renderer *renderer, Camera *camera) {
 	mat4 view;
 	glm_mat4_identity(view);
 	vec3 up = {1.0f, 0.0f, 0.0f};
-	glm_rotate(view, -camera->direction->y, up);
+	glm_rotate(view, -renderer->camera->direction->y, up);
 	vec3 left = {0.0f, 1.0f, 0.0f};
-	glm_rotate(view, -camera->direction->x, left);
+	glm_rotate(view, -renderer->camera->direction->x, left);
 	int view_location = glGetUniformLocation(renderer->shader_program, "view");
 
 	glUseProgram(renderer->shader_program);
@@ -116,8 +114,8 @@ void render(const Renderer *renderer, Camera *camera) {
 		if (!renderer->meshes.data[i].visible)
 			continue;
 		mat4 model;
-		vec4 translation = {camera->position->x, -camera->position->y,
-							camera->position->z, 0.0f};
+		vec4 translation = {renderer->camera->position->x, -renderer->camera->position->y,
+							renderer->camera->position->z, 0.0f};
 		glm_mat4_identity(model);
 		glm_translate(model, translation);
 		glUniformMatrix4fv(model_location, 1, GL_FALSE, model[0]);
@@ -142,7 +140,7 @@ int loadGL(GLADloadfunc func) {
 
 #define RENDER_DISTANCE 4
 
-Renderer renderer_init(const Window *window) {
+Renderer renderer_init(const Window *window, const Camera *camera) {
 	Renderer renderer = {
 		&window->polygon_mode,
 		render_create_shader(),
@@ -153,6 +151,7 @@ Renderer renderer_init(const Window *window) {
 		UInt32Vector_init(0, 64),
 		SizeVector_init(0, 64),
 		SizeVector_init(0, 64),
+		camera,
 	};
 
 	return renderer;
@@ -167,8 +166,8 @@ size_t SizeVector_find(SizeVector *vec, size_t value) {
 	return SIZE_MAX;
 }
 
-void chunks_load_unload_system(Renderer *renderer, struct World *world, const Camera *camera) {
-		world_chunk_cube(&renderer->should_load, world, *camera->position, RENDER_DISTANCE);
+void chunks_load_unload_system(Renderer *renderer, struct World *world) {
+		world_chunk_cube(&renderer->should_load, world, *renderer->camera->position, RENDER_DISTANCE);
 
 		for (size_t i = 0; i < renderer->should_load.size; i++) {
 			size_t index = renderer->should_load.data[i];

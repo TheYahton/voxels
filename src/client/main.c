@@ -1,13 +1,6 @@
-#include <limits.h>
-
-#include "camera.h"
 #include "logs.h"
 #include "player.h"
 #include "render.h"
-#include "shader.h"
-#include "utils.h"
-#include "window.h"
-#include "world.h"
 
 int main(void) {
 	Window window = createWindow(800, 600);
@@ -26,7 +19,7 @@ int main(void) {
 		{0.0f, 0.0f, 0.0f},
 	};
 	Camera camera = {&player.position, &player.direction, &player.speed};
-	Renderer renderer = renderer_init(&window);
+	Renderer renderer = renderer_init(&window, &camera);
 
 	render_preparation(window.width, window.height);
 
@@ -54,10 +47,10 @@ int main(void) {
 
 		camera_update(&camera, window.keys, dx, dy, dt);
 
-		chunks_load_unload_system(&renderer, &world, &camera);
+		chunks_load_unload_system(&renderer, &world);
 
 		// RENDER
-		render(&renderer, &camera);
+		render(&renderer);
 		swapBuffer(&window);
 
 		end = getTime();

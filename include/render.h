@@ -9,21 +9,22 @@
 #include <stdbool.h>
 
 typedef struct {
-	const bool *polygon_mode;		 // 1 byte
-	uint32_t shader_program; // 4 byte
-	const int *width, *height;	 // 8 + 8 = 16 bytes
-	unsigned int render_distance;  // 4 bytes
+	const bool *polygon_mode;
+	uint32_t shader_program;
+	const int *width, *height;
+	unsigned int render_distance;
 	MeshVector meshes;
 	UInt32Vector VAOs;
 	SizeVector loaded; // chunks
 	SizeVector should_load; // chunks
+	const Camera *camera;
 } Renderer;
 
-void chunks_load_unload_system(Renderer *renderer, struct World *world, const Camera *camera);
+void chunks_load_unload_system(Renderer *renderer, struct World *world);
 uint32_t render_create_shader(void);
 uint32_t render_create_vao(const Mesh *mesh);
 void render_preparation(int width, int height);
-Renderer renderer_init(const Window *window);
+Renderer renderer_init(const Window *window, const Camera *camera);
 void renderer_free(Renderer *renderer);
-void render(const Renderer *renderer, Camera *camera);
+void render(const Renderer *renderer);
 int loadGL(GLADloadfunc func);
