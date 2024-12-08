@@ -1,7 +1,6 @@
 #define _VECTOR_IMPL
 #include "world.h"
 #include "chunk.h"
-#include "render.h"
 #include "utils.h"
 
 #include <math.h>
@@ -17,7 +16,7 @@ struct World world_init(void) {
 	return (struct World) {ChunkVector_init(0, 64)};
 }
 
-size_t world_chunk_generate(struct World *world, int x, int y, int z) {
+static size_t world_chunk_generate(struct World *world, int x, int y, int z) {
 	ChunkVector_append(&world->chunks, chunk_init(x, y, z));
 	size_t index = world->chunks.size - 1;
 	Chunk *chunk = &world->chunks.data[index];
@@ -40,7 +39,8 @@ size_t world_chunk_generate(struct World *world, int x, int y, int z) {
 	return index;
 }
 
-size_t world_chunk_get(const struct World *world, int x, int y, int z) {
+// Get index in world.chunks by chunk's coordinates
+static size_t world_chunk_get(const struct World *world, int x, int y, int z) {
 	for (size_t i = 0; i < world->chunks.size; i++) {
 		Chunk *chunk = &world->chunks.data[i];
 		if (chunk->position.x == x && chunk->position.y == y &&
@@ -51,12 +51,14 @@ size_t world_chunk_get(const struct World *world, int x, int y, int z) {
 	return -1;
 }
 
-size_t world_chunk_get_or_generate(struct World *world, int x, int y, int z) {
+// Get index in world.chunks by chunk's coordinates or generate if it's not found
+static size_t world_chunk_get_or_generate(struct World *world, int x, int y, int z) {
 	size_t chunk_index = world_chunk_get(world, x, y, z);
 	if (chunk_index != SIZE_MAX) return chunk_index;
 	return world_chunk_generate(world, x, y, z);
 }
 
+// Get block type by block's coordinates in the world.
 uint8_t world_block_get(const struct World *world, int x, int y, int z) {
 	uint8_t blockX = mod(x, CHUNK_SIZE);
 	uint8_t blockY = mod(y, CHUNK_SIZE);
@@ -72,6 +74,7 @@ uint8_t world_block_get(const struct World *world, int x, int y, int z) {
 	return chunk_get(chunk, blockX, blockY, blockZ);
 }
 
+// Set block type by block's coordinates in the world.
 void world_block_set(struct World *world, int x, int y, int z, uint8_t value) {
 	uint8_t blockX = mod(x, CHUNK_SIZE);
 	uint8_t blockY = mod(y, CHUNK_SIZE);
@@ -87,11 +90,12 @@ void world_block_set(struct World *world, int x, int y, int z, uint8_t value) {
 	chunk_set(chunk, blockX, blockY, blockZ, value);
 }
 
-void world_chunk_circle(SizeVector *vec, struct World *world, float playerX,
-						float playerY, float playerZ, int radius) {
-	int chunkX = floorf((-playerX + CHUNK_SIZE / 2.0f) / CHUNK_SIZE);
-	int chunkY = floorf((playerY + CHUNK_SIZE / 2.0f) / CHUNK_SIZE);
-	int chunkZ = floorf((-playerZ + CHUNK_SIZE / 2.0f) / CHUNK_SIZE);
+// Adds chunks around given position to vector
+// If needed chunks are not generated then it'll generate it.
+void world_chunk_cube(SizeVector *vec, struct World *world, Vec3 around, int radius) {
+	int chunkX = floorf((-around.x + CHUNK_SIZE / 2.0f) / CHUNK_SIZE);
+	int chunkY = floorf((around.y + CHUNK_SIZE / 2.0f) / CHUNK_SIZE);
+	int chunkZ = floorf((-around.z + CHUNK_SIZE / 2.0f) / CHUNK_SIZE);
 	for (int x = -radius; x < radius; x++) {
 		for (int y = -radius; y < radius; y++) {
 			for (int z = -radius; z < radius; z++) {

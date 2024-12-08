@@ -25,7 +25,7 @@ int main(void) {
 		{0.0f, 2.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, 5.0f,
 		{0.0f, 0.0f, 0.0f},
 	};
-	Camera camera = {&player.position, &player.direction};
+	Camera camera = {&player.position, &player.direction, &player.speed};
 	Renderer renderer = renderer_init(&window);
 
 	render_preparation(window.width, window.height);
@@ -53,20 +53,11 @@ int main(void) {
 		lastY = ypos;
 
 		camera_update(&camera, window.keys, dx, dy, dt);
-		bool player_keys[6] = {
-			window.keys[GLFW_KEY_W],
-			window.keys[GLFW_KEY_A],
-			window.keys[GLFW_KEY_S],
-			window.keys[GLFW_KEY_D],
-			window.keys[GLFW_KEY_SPACE],
-			window.keys[GLFW_KEY_LEFT_SHIFT],
-		};
-		player_move(&player, player_keys, dt);
 
-		chunks_load_unload_system(&renderer, &world, player.position);
+		chunks_load_unload_system(&renderer, &world, &camera);
 
 		// RENDER
-		render(&renderer, &player, &camera);
+		render(&renderer, &camera);
 		swapBuffer(&window);
 
 		end = getTime();

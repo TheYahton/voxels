@@ -31,9 +31,9 @@ uint32_t render_create_shader(void) {
 	return shader_program;
 }
 
-uint32_t render_create_vao(Mesh *mesh) {
-	FloatVector *vertices = &mesh->vertices;
-	UInt32Vector *indices = &mesh->indices;
+uint32_t render_create_vao(const Mesh *mesh) {
+	const FloatVector *vertices = &mesh->vertices;
+	const UInt32Vector *indices = &mesh->indices;
 
 	// WARNING: A DUNGER STARTS!
 	uint32_t VAO; // Vertex Attribute Object(?)
@@ -80,7 +80,7 @@ void render_preparation(int width, int height) {
 
 // void render(Renderer *renderer, const MeshVector *meshes,
 // 			const UInt32Vector *VAOs, Player *player, Camera *camera) {
-void render(Renderer *renderer, Player *player, Camera *camera) {
+void render(const Renderer *renderer, Camera *camera) {
 	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -116,8 +116,8 @@ void render(Renderer *renderer, Player *player, Camera *camera) {
 		if (!renderer->meshes.data[i].visible)
 			continue;
 		mat4 model;
-		vec4 translation = {player->position.x, -player->position.y,
-							player->position.z, 0.0f};
+		vec4 translation = {camera->position->x, -camera->position->y,
+							camera->position->z, 0.0f};
 		glm_mat4_identity(model);
 		glm_translate(model, translation);
 		glUniformMatrix4fv(model_location, 1, GL_FALSE, model[0]);
@@ -142,7 +142,7 @@ int loadGL(GLADloadfunc func) {
 
 #define RENDER_DISTANCE 4
 
-Renderer renderer_init(Window *window) {
+Renderer renderer_init(const Window *window) {
 	Renderer renderer = {
 		&window->polygon_mode,
 		render_create_shader(),
@@ -167,9 +167,8 @@ size_t SizeVector_find(SizeVector *vec, size_t value) {
 	return SIZE_MAX;
 }
 
-void chunks_load_unload_system(Renderer *renderer, struct World *world, Vec3 position) {
-		world_chunk_circle(&renderer->should_load, world, position.x,
-						   position.y, position.z, RENDER_DISTANCE);
+void chunks_load_unload_system(Renderer *renderer, struct World *world, const Camera *camera) {
+		world_chunk_cube(&renderer->should_load, world, *camera->position, RENDER_DISTANCE);
 
 		for (size_t i = 0; i < renderer->should_load.size; i++) {
 			size_t index = renderer->should_load.data[i];
