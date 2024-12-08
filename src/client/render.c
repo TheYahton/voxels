@@ -57,12 +57,12 @@ uint32_t render_create_vao(const Mesh *mesh) {
 						  (GLvoid *)0);
 	glEnableVertexAttribArray(0);
 
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
-						  (GLvoid *)(3 * sizeof(GLfloat)));
+	glVertexAttribIPointer(1, 1, GL_UNSIGNED_INT, sizeof(Vertex),
+						  (GLvoid *)(3 * 4));
 	glEnableVertexAttribArray(1);
 
 	glVertexAttribIPointer(2, 1, GL_UNSIGNED_INT, sizeof(Vertex),
-						  (GLvoid *)(6 * sizeof(GLfloat)));
+						  (GLvoid *)(4 * 4));
 	glEnableVertexAttribArray(2);
 
 	glBindVertexArray(0);

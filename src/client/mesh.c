@@ -24,27 +24,7 @@ UInt32Vector_append(vec, size + 2);
 VectorImpl(Mesh, MeshVector)
 VectorImpl(Vertex, Vertices)
 
-typedef struct {
-	unsigned char r, g, b;
-} Color;
-
-const Color COLORS[TypeCount] = {
-	{0, 0, 0},       // 0 Air
-	{127, 127, 127}, // 1 Stone
-	{64, 41, 5},     // 2 Dirt
-	{25, 127, 25},   // 3 Grass
-	{236, 237, 171}, // 4 Sand
-	{21, 39, 237},   // 5 Water
-};
-
-void get_block_color(BlockType type, float *r, float *g , float *b) {
-	Color color = COLORS[type];
-	*r = (float)color.r / 255.0f;
-	*g = (float)color.g / 255.0f;
-	*b = (float)color.b / 255.0f;
-}
-
-	Mesh chunk_genmesh(const struct Chunk *chunk, const struct World *world) {
+Mesh chunk_genmesh(const struct Chunk *chunk, const struct World *world) {
 	Mesh mesh = {
 		.vertices = Vertices_init(0, sizeof(Vertex) * 4),
 		.indices = UInt32Vector_init(0, 64),
@@ -117,68 +97,65 @@ void get_block_color(BlockType type, float *r, float *g , float *b) {
 				int x = i + chunk->position.x * CHUNK_SIZE;
 				int y = j + chunk->position.y * CHUNK_SIZE;
 				int z = k + chunk->position.z * CHUNK_SIZE;
-				float r;
-				float g;
-				float b;
-				get_block_color(chunk->data[i + j * CHUNK_SIZE + k * CHUNK_SIZE * CHUNK_SIZE], &r, &g, &b);
+				BlockType block = world_block_get(world, x, y, z);
 				if (curr) {
 					if ((curr & 32)) {
 						size_t size = mesh.vertices.size;
 
-						Vertices_append(&mesh.vertices, (Vertex) {{x + 1, y + 0, z + 0}, {r, g, b}, 0});
-						Vertices_append(&mesh.vertices, (Vertex) {{x + 1, y + 1, z + 0}, {r, g, b}, 0});
-						Vertices_append(&mesh.vertices, (Vertex) {{x + 1, y + 0, z + 1}, {r, g, b}, 0});
-						Vertices_append(&mesh.vertices, (Vertex) {{x + 1, y + 1, z + 1}, {r, g, b}, 0});
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 1, y + 0, z + 0}, block, 0});
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 1, y + 1, z + 0}, block, 0});
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 1, y + 0, z + 1}, block, 0});
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 1, y + 1, z + 1}, block, 0});
 
 						positive_indices(&mesh.indices, size);
 					}
 					if ((curr & 16)) {
 						size_t size = mesh.vertices.size;
 
-						Vertices_append(&mesh.vertices, (Vertex) {{x + 0, y + 0, z + 0}, {r, g, b}, 1});
-						Vertices_append(&mesh.vertices, (Vertex) {{x + 0, y + 1, z + 0}, {r, g, b}, 1});
-						Vertices_append(&mesh.vertices, (Vertex) {{x + 0, y + 0, z + 1}, {r, g, b}, 1});
-						Vertices_append(&mesh.vertices, (Vertex) {{x + 0, y + 1, z + 1}, {r, g, b}, 1});
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 0, y + 0, z + 0}, block, 1});
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 0, y + 1, z + 0}, block, 1});
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 0, y + 0, z + 1}, block, 1});
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 0, y + 1, z + 1}, block, 1});
 
 						negative_indices(&mesh.indices, size);
 					}
 					if ((curr & 8)) {
 						size_t size = mesh.vertices.size;
 
-						Vertices_append(&mesh.vertices, (Vertex) {{x + 0, y + 1, z + 0}, {r, g, b}, 2});
-						Vertices_append(&mesh.vertices, (Vertex) {{x + 0, y + 1, z + 1}, {r, g, b}, 2});
-						Vertices_append(&mesh.vertices, (Vertex) {{x + 1, y + 1, z + 0}, {r, g, b}, 2});
-						Vertices_append(&mesh.vertices, (Vertex) {{x + 1, y + 1, z + 1}, {r, g, b}, 2});
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 0, y + 1, z + 0}, block, 2});
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 0, y + 1, z + 1}, block, 2});
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 1, y + 1, z + 0}, block, 2});
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 1, y + 1, z + 1}, block, 2});
 
 						positive_indices(&mesh.indices, size);
 					}
 					if ((curr & 4)) {
 						size_t size = mesh.vertices.size;
 
-						Vertices_append(&mesh.vertices, (Vertex) {{x + 0, y + 0, z + 0}, {r, g, b}, 3});
-						Vertices_append(&mesh.vertices, (Vertex) {{x + 0, y + 0, z + 1}, {r, g, b}, 3});
-						Vertices_append(&mesh.vertices, (Vertex) {{x + 1, y + 0, z + 0}, {r, g, b}, 3});
-						Vertices_append(&mesh.vertices, (Vertex) {{x + 1, y + 0, z + 1}, {r, g, b}, 3});
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 0, y + 0, z + 0}, block, 3});
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 0, y + 0, z + 1}, block, 3});
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 1, y + 0, z + 0}, block, 3});
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 1, y + 0, z + 1}, block, 3});
 
 						negative_indices(&mesh.indices, size);
 					}
 					if ((curr & 2)) {
 						size_t size = mesh.vertices.size;
 
-						Vertices_append(&mesh.vertices, (Vertex) {{x + 0, y + 0, z + 1}, {r, g, b}, 4});
-						Vertices_append(&mesh.vertices, (Vertex) {{x + 0, y + 1, z + 1}, {r, g, b}, 4});
-						Vertices_append(&mesh.vertices, (Vertex) {{x + 1, y + 0, z + 1}, {r, g, b}, 4});
-						Vertices_append(&mesh.vertices, (Vertex) {{x + 1, y + 1, z + 1}, {r, g, b}, 4});
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 0, y + 0, z + 1}, block, 4});
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 0, y + 1, z + 1}, block, 4});
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 1, y + 0, z + 1}, block, 4});
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 1, y + 1, z + 1}, block, 4});
 
 						negative_indices(&mesh.indices, size);
 					}
 					if ((curr & 1)) {
 						size_t size = mesh.vertices.size;
 
-						Vertices_append(&mesh.vertices, (Vertex) {{x + 0, y + 0, z + 0}, {r, g, b}, 5});
-						Vertices_append(&mesh.vertices, (Vertex) {{x + 0, y + 1, z + 0}, {r, g, b}, 5});
-						Vertices_append(&mesh.vertices, (Vertex) {{x + 1, y + 0, z + 0}, {r, g, b}, 5});
-						Vertices_append(&mesh.vertices, (Vertex) {{x + 1, y + 1, z + 0}, {r, g, b}, 5});
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 0, y + 0, z + 0}, block, 5});
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 0, y + 1, z + 0}, block, 5});
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 1, y + 0, z + 0}, block, 5});
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 1, y + 1, z + 0}, block, 5});
 
 						positive_indices(&mesh.indices, size);
 					}
