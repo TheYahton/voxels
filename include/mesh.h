@@ -6,11 +6,12 @@
 #include "world.h"
 
 #include <stdbool.h>
+#include <GL/gl.h>
 
 typedef struct {
-	float position[3];  // 12 bytes
-	float color[3];     // 12 bytes
-	float normal[3];    // 12 bytes
+	GLfloat position[3];  // 12 bytes
+	GLfloat color[3];     // 12 bytes
+	uint32_t normal;      // 4 bytes
 } Vertex;  // 36 bytes
 
 Vectorize(Vertex, Vertices)

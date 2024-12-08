@@ -123,86 +123,62 @@ void get_block_color(BlockType type, float *r, float *g , float *b) {
 				get_block_color(chunk->data[i + j * CHUNK_SIZE + k * CHUNK_SIZE * CHUNK_SIZE], &r, &g, &b);
 				if (curr) {
 					if ((curr & 32)) {
-						float nx = 1.0f;
-						float ny = 0.0f;
-						float nz = 0.0f;
-
 						size_t size = mesh.vertices.size;
 
-						Vertices_append(&mesh.vertices, (Vertex) {{x + 1, y + 0, z + 0}, {r, g, b}, {nx, ny, nz}});
-						Vertices_append(&mesh.vertices, (Vertex) {{x + 1, y + 1, z + 0}, {r, g, b}, {nx, ny, nz}});
-						Vertices_append(&mesh.vertices, (Vertex) {{x + 1, y + 0, z + 1}, {r, g, b}, {nx, ny, nz}});
-						Vertices_append(&mesh.vertices, (Vertex) {{x + 1, y + 1, z + 1}, {r, g, b}, {nx, ny, nz}});
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 1, y + 0, z + 0}, {r, g, b}, 0});
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 1, y + 1, z + 0}, {r, g, b}, 0});
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 1, y + 0, z + 1}, {r, g, b}, 0});
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 1, y + 1, z + 1}, {r, g, b}, 0});
 
 						positive_indices(&mesh.indices, size);
 					}
 					if ((curr & 16)) {
-						float nx = -1.0f;
-						float ny = 0.0f;
-						float nz = 0.0f;
-
 						size_t size = mesh.vertices.size;
 
-						Vertices_append(&mesh.vertices, (Vertex) {{x + 0, y + 0, z + 0}, {r, g, b}, {nx, ny, nz}});
-						Vertices_append(&mesh.vertices, (Vertex) {{x + 0, y + 1, z + 0}, {r, g, b}, {nx, ny, nz}});
-						Vertices_append(&mesh.vertices, (Vertex) {{x + 0, y + 0, z + 1}, {r, g, b}, {nx, ny, nz}});
-						Vertices_append(&mesh.vertices, (Vertex) {{x + 0, y + 1, z + 1}, {r, g, b}, {nx, ny, nz}});
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 0, y + 0, z + 0}, {r, g, b}, 1});
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 0, y + 1, z + 0}, {r, g, b}, 1});
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 0, y + 0, z + 1}, {r, g, b}, 1});
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 0, y + 1, z + 1}, {r, g, b}, 1});
 
 						negative_indices(&mesh.indices, size);
 					}
 					if ((curr & 8)) {
-						float nx = 0.0f;
-						float ny = 1.0f;
-						float nz = 0.0f;
-
 						size_t size = mesh.vertices.size;
 
-						Vertices_append(&mesh.vertices, (Vertex) {{x + 0, y + 1, z + 0}, {r, g, b}, {nx, ny, nz}});
-						Vertices_append(&mesh.vertices, (Vertex) {{x + 0, y + 1, z + 1}, {r, g, b}, {nx, ny, nz}});
-						Vertices_append(&mesh.vertices, (Vertex) {{x + 1, y + 1, z + 0}, {r, g, b}, {nx, ny, nz}});
-						Vertices_append(&mesh.vertices, (Vertex) {{x + 1, y + 1, z + 1}, {r, g, b}, {nx, ny, nz}});
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 0, y + 1, z + 0}, {r, g, b}, 2});
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 0, y + 1, z + 1}, {r, g, b}, 2});
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 1, y + 1, z + 0}, {r, g, b}, 2});
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 1, y + 1, z + 1}, {r, g, b}, 2});
 
 						positive_indices(&mesh.indices, size);
 					}
 					if ((curr & 4)) {
-						float nx = 0.0f;
-						float ny = -1.0f;
-						float nz = 0.0f;
-
 						size_t size = mesh.vertices.size;
 
-						Vertices_append(&mesh.vertices, (Vertex) {{x + 0, y + 0, z + 0}, {r, g, b}, {nx, ny, nz}});
-						Vertices_append(&mesh.vertices, (Vertex) {{x + 0, y + 0, z + 1}, {r, g, b}, {nx, ny, nz}});
-						Vertices_append(&mesh.vertices, (Vertex) {{x + 1, y + 0, z + 0}, {r, g, b}, {nx, ny, nz}});
-						Vertices_append(&mesh.vertices, (Vertex) {{x + 1, y + 0, z + 1}, {r, g, b}, {nx, ny, nz}});
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 0, y + 0, z + 0}, {r, g, b}, 3});
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 0, y + 0, z + 1}, {r, g, b}, 3});
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 1, y + 0, z + 0}, {r, g, b}, 3});
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 1, y + 0, z + 1}, {r, g, b}, 3});
 
 						negative_indices(&mesh.indices, size);
 					}
 					if ((curr & 2)) {
-						float nx = 0.0f;
-						float ny = 0.0f;
-						float nz = 1.0f;
-
 						size_t size = mesh.vertices.size;
 
-						Vertices_append(&mesh.vertices, (Vertex) {{x + 0, y + 0, z + 1}, {r, g, b}, {nx, ny, nz}});
-						Vertices_append(&mesh.vertices, (Vertex) {{x + 0, y + 1, z + 1}, {r, g, b}, {nx, ny, nz}});
-						Vertices_append(&mesh.vertices, (Vertex) {{x + 1, y + 0, z + 1}, {r, g, b}, {nx, ny, nz}});
-						Vertices_append(&mesh.vertices, (Vertex) {{x + 1, y + 1, z + 1}, {r, g, b}, {nx, ny, nz}});
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 0, y + 0, z + 1}, {r, g, b}, 4});
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 0, y + 1, z + 1}, {r, g, b}, 4});
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 1, y + 0, z + 1}, {r, g, b}, 4});
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 1, y + 1, z + 1}, {r, g, b}, 4});
 
 						negative_indices(&mesh.indices, size);
 					}
 					if ((curr & 1)) {
-						float nx = 0.0f;
-						float ny = 0.0f;
-						float nz = -1.0f;
-
 						size_t size = mesh.vertices.size;
 
-						Vertices_append(&mesh.vertices, (Vertex) {{x + 0, y + 0, z + 0}, {r, g, b}, {nx, ny, nz}});
-						Vertices_append(&mesh.vertices, (Vertex) {{x + 0, y + 1, z + 0}, {r, g, b}, {nx, ny, nz}});
-						Vertices_append(&mesh.vertices, (Vertex) {{x + 1, y + 0, z + 0}, {r, g, b}, {nx, ny, nz}});
-						Vertices_append(&mesh.vertices, (Vertex) {{x + 1, y + 1, z + 0}, {r, g, b}, {nx, ny, nz}});
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 0, y + 0, z + 0}, {r, g, b}, 5});
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 0, y + 1, z + 0}, {r, g, b}, 5});
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 1, y + 0, z + 0}, {r, g, b}, 5});
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 1, y + 1, z + 0}, {r, g, b}, 5});
 
 						positive_indices(&mesh.indices, size);
 					}

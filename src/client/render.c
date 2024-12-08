@@ -50,18 +50,18 @@ uint32_t render_create_vao(const Mesh *mesh) {
 				 vertices->data, GL_STATIC_DRAW);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices->capacity * sizeof(float),
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices->capacity * sizeof(GLuint),
 				 indices->data, GL_STATIC_DRAW);
 
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(GLfloat),
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
 						  (GLvoid *)0);
 	glEnableVertexAttribArray(0);
 
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(GLfloat),
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
 						  (GLvoid *)(3 * sizeof(GLfloat)));
 	glEnableVertexAttribArray(1);
 
-	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 9 * sizeof(GLfloat),
+	glVertexAttribIPointer(2, 1, GL_UNSIGNED_INT, sizeof(Vertex),
 						  (GLvoid *)(6 * sizeof(GLfloat)));
 	glEnableVertexAttribArray(2);
 
