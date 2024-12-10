@@ -16,3 +16,6 @@ And then every time you want to rebuild Voxels you should
 ```shell
 ./nob
 ```
+### Screenshots
+![image](https://github.com/user-attachments/assets/d86e84b1-6633-4b6b-beb0-c26ba4f5c77d)
+
