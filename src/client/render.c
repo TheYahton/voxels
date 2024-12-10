@@ -138,9 +138,9 @@ int loadGL(GLADloadfunc func) {
 	return 0;
 }
 
-#define RENDER_DISTANCE 4
+#define RENDER_DISTANCE 2
 
-Renderer renderer_init(const Window *window, const Camera *camera) {
+Renderer renderer_init(const MyWindow *window, const Camera *camera) {
 	Renderer renderer = {
 		&window->polygon_mode,
 		render_create_shader(),

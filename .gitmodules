@@ -1,3 +1,6 @@
 [submodule "cglm"]
 	path = cglm
 	url = https://github.com/recp/cglm
+[submodule "RGFW"]
+	path = RGFW
+	url = https://github.com/ColleagueRiley/RGFW.git

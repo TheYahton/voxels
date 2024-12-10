@@ -1,4 +1,4 @@
-#include <GLFW/glfw3.h>
+#include <RGFW.h>
 
 #include "camera.h"
 #include <math.h>
@@ -9,8 +9,8 @@ void camera_update(Camera *camera, bool keys[1024], float dx, float dy,
 				   float dt) {
 	// Update camera rotation
 	{
-		int up = keys[GLFW_KEY_UP] - keys[GLFW_KEY_DOWN];
-		int left = keys[GLFW_KEY_LEFT] - keys[GLFW_KEY_RIGHT];
+		int up = keys[RGFW_Up] - keys[RGFW_Down];
+		int left = keys[RGFW_Left] - keys[RGFW_Right];
 
 		camera->direction->y += up * dt;
 		camera->direction->x += left * dt;
@@ -22,9 +22,9 @@ void camera_update(Camera *camera, bool keys[1024], float dx, float dy,
 
 	// Update camera position
 	{
-		int forward = keys[GLFW_KEY_W] - keys[GLFW_KEY_S];
-		int left = keys[GLFW_KEY_A] - keys[GLFW_KEY_D];
-		int up = keys[GLFW_KEY_SPACE] - keys[GLFW_KEY_LEFT_SHIFT];
+		int forward = keys[RGFW_w] - keys[RGFW_s];
+		int left = keys[RGFW_a] - keys[RGFW_d];
+		int up = keys[RGFW_Space] - keys[RGFW_ShiftL];
 
 		camera->position->z +=
 			(forward * cos(camera->direction->x) - left * sin(camera->direction->x)) *

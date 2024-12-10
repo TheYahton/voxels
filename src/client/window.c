@@ -1,93 +1,96 @@
+#define RGFW_IMPLEMENTATION
+
 #include "window.h"
 #include "logs.h"
 #include "shader.h"
 
-void windowClose(Window *window __attribute__((unused))) { glfwTerminate(); }
-
-void windowPollEvents(Window *window __attribute__((unused))) {
-	glfwPollEvents();
+void windowClose(MyWindow *window __attribute__((unused))) {
+	RGFW_window_close(window->window);
 }
 
-double getTime(void) { return glfwGetTime(); }
-
-void swapBuffer(Window *window) { glfwSwapBuffers(window->window); }
-
-bool windowShouldClose(Window *window) {
-	return glfwWindowShouldClose(window->window);
+void windowPollEvents(MyWindow *window __attribute__((unused))) {
+	RGFW_window_checkEvents(window->window, 0);
 }
 
-void getCursorPos(Window *window, double *xpos, double *ypos) {
-	glfwGetCursorPos(window->window, xpos, ypos);
+double getTime(void) {
+	return RGFW_getTimeNS() / 1000000000.0f;
 }
 
-static void key_callback(GLFWwindow *window, int key,
-						 int scancode __attribute__((unused)), int action,
-						 int mode __attribute__((unused))) {
-	Window *my_window = (Window *)glfwGetWindowUserPointer(window);
+void swapBuffer(MyWindow *window) {
+	RGFW_window_swapBuffers(window->window);
+}
 
-	if (key >= 0 && key < 1024) {
-		if (action == GLFW_PRESS) {
-			my_window->keys[key] = true;
-		} else if (action == GLFW_RELEASE) {
-			my_window->keys[key] = false;
+bool windowShouldClose(MyWindow *window) {
+	return RGFW_window_shouldClose(window->window);
+}
+
+void getCursorPos(MyWindow *window, double *xpos, double *ypos) {
+	RGFW_point mouse_pos = RGFW_window_getMousePoint(window->window);
+	*xpos = mouse_pos.x;
+	*ypos = mouse_pos.y;
+}
+
+static void key_callback(RGFW_window* win, u32 keycode, char keyName[16], u8 lockState, b8 pressed) {
+	MyWindow *my_window = win->userPtr;
+
+	if (keycode >= 0 && keycode < 1024) {
+		if (pressed) {
+			my_window->keys[keycode] = true;
+		} else if (!pressed) {
+			my_window->keys[keycode] = false;
 		}
 	}
 
-	if (key == GLFW_KEY_Q && action == GLFW_PRESS) {
-		glfwSetWindowShouldClose(window, true);
-	} else if (key == GLFW_KEY_P && action == GLFW_PRESS) {
+	if (keycode == RGFW_q && pressed) {
+		RGFW_window_setShouldClose(win);
+	} else if (keycode == RGFW_p && pressed) {
 		my_window->polygon_mode = !my_window->polygon_mode;
 	}
 }
 
-static void resize_callback(GLFWwindow *window, int new_width, int new_height) {
-	Window *my_window = (Window *)glfwGetWindowUserPointer(window);
-	my_window->width = new_width;
-	my_window->height = new_height;
-	glViewport(0, 0, new_width, new_height);
+static void resize_callback(RGFW_window* win, RGFW_rect r) {
+	MyWindow *my_window = win->userPtr;
+ 	my_window->width = r.w;
+ 	my_window->height = r.h;
+ 	glViewport(0, 0, r.w, r.h);
 }
 
-Window createWindow(int width, int height) {
-	return (Window){NULL, width, height, {false}, false};
+MyWindow createWindow(int width, int height) {
+	return (MyWindow){NULL, width, height, {false}, false};
 }
 
-int initWindow(Window *window) {
-	glfwInit();
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	glfwWindowHint(GLFW_RESIZABLE, true);
-	info("GLFW has been initialized.");
-
-	window->window =
-		glfwCreateWindow(window->width, window->height, "Voxels", NULL, NULL);
-	if (window->window == NULL) {
-		error("Failed to create window.");
-		return -1;
-	}
+int initWindow(MyWindow* window) {
+	window->window = RGFW_createWindow("Voxels", (RGFW_rect) {0, 0, 800, 600}, RGFW_CENTER | RGFW_HIDE_MOUSE);
 	info("The window has been initialized.");
 
-	glfwSetWindowUserPointer(window->window, window);
+	window->window->userPtr = window;
 
-	glfwGetFramebufferSize(window->window, &window->width, &window->height);
+	RGFW_area size = RGFW_getScreenSize();
+	window->width = size.w;
+	window->height = size.h;
 
-	glfwSetInputMode(window->window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	// Мы уже скрыли мышь на этапе создания окна с помощью флага RGFW_HIDE_MOUSE
 	info("The cursor has been disabled.");
 
-	if (glfwRawMouseMotionSupported()) {
-		glfwSetInputMode(window->window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
-		info("Raw mouse motion mode enabled.");
-	} else {
-		warning("The system does not support raw mouse motion mode.");
-	}
+	// TODO: вернуть эту штуку
+	// if (glfwRawMouseMotionSupported()) {
+	// 	glfwSetInputMode(window->window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
+	// 	info("Raw mouse motion mode enabled.");
+	// } else {
+	// 	warning("The system does not support raw mouse motion mode.");
+	// }
+	// Может быть что-то из этого?
+	// RGFW_window_mouseHold(window->window, (RGFW_area) {10000, 10000});
+	// RGFW_window_disableMouse(window->window);
+	// RGFW_captureCursor(window->window, (RGFW_rect) {0, 0, 0, 0});
 
-	glfwMakeContextCurrent(window->window);
+	RGFW_window_makeCurrent(window->window);
 	info("The OpenGL context has been attached to the window.");
 
-	glfwSetKeyCallback(window->window, key_callback);
+	RGFW_setKeyCallback(key_callback);
 	info("The key_callback function handles user input.");
 
-	glfwSetFramebufferSizeCallback(window->window, resize_callback);
+	RGFW_setWindowResizeCallback(resize_callback);
 	info("The resize_callback function handles window size changes.");
 
 	return 0;

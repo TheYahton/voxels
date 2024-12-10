@@ -3,12 +3,12 @@
 #include "render.h"
 
 int main(void) {
-	Window window = createWindow(800, 600);
+	MyWindow window = createWindow(800, 600);
 	if (initWindow(&window) != 0) {
 		return -1;
 	}
 
-	if (loadGL(glfwGetProcAddress) != 0) {
+	if (loadGL((GLADloadfunc)RGFW_getProcAddress) != 0) {
 		windowClose(&window);
 		return -1;
 	}

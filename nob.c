@@ -17,6 +17,7 @@ void append_output(Nob_Cmd *cmd, const char *name) {
 	nob_sb_append_cstr(&output, name);
 	nob_sb_append_null(&output);
 	nob_cmd_append(cmd, "-o", nob_temp_sv_to_cstr(nob_sb_to_sv(output)));
+	nob_sb_free(output);
 }
 
 void append_compiler(Nob_Cmd *cmd, char *CC, char *CFLAGS) {
@@ -67,31 +68,29 @@ int build_client(void) {
 	}
 	closedir(cglm_dir);
 
+	DIR *rgfw_dir = opendir("cglm/include");
+	if (!rgfw_dir) {
+		nob_log(NOB_ERROR, "The RGFW submodule is not initialized."
+						   "Please, run the following:\n"
+						   "$ git submodule init RGFW\n"
+						   "$ git submodule update");
+		return -1;
+	}
+	closedir(rgfw_dir);
+
 	nob_cmd_append(&cmd, "-I./cglm/include");
+	nob_cmd_append(&cmd, "-I./RGFW/");
 
 	// MinGW
 	if (for_windows(CC)) {
-		DIR *glfw_dir = opendir("glfw");
-		if (!glfw_dir) {
-			nob_log(NOB_ERROR, "You should download and unpack pre-compiled "
-							   "GLFW 3 as ./glfw/");
-			return -1;
-		}
-		closedir(glfw_dir);
-
-		nob_cmd_append(&cmd, "-lglfw3", "-lopengl32", "-lgdi32");
+		nob_cmd_append(&cmd, "-lopengl32", "-lshell32", "-lgdi32", "-lwinmm");
 		link_math(&cmd);
-		nob_cmd_append(&cmd, "-I./glfw/include");
-		nob_cmd_append(&cmd, "-L./glfw/lib-mingw-w64/");
 
 		append_output(&cmd, "client.exe");
 	}
 	// Non-MinGW
 	else {
-		nob_cmd_append(&cmd, "-lglfw", "-lGL");
-		#ifdef __FreeBSD__
-		nob_cmd_append(&cmd, "-I/usr/local/include", "-L/usr/local/lib");
-		#endif // __FREEBSD__
+		nob_cmd_append(&cmd, "-lX11", "-lGL", "-lXrandr");
 		link_math(&cmd);
 
 		append_output(&cmd, "client");
@@ -99,6 +98,8 @@ int build_client(void) {
 
 	if (!nob_cmd_run_sync(cmd))
 		return 1;
+
+	nob_cmd_free(cmd);
 
 	return 0;
 }
@@ -120,10 +121,6 @@ int build_server(void) {
 	include_common(&cmd);
 	link_math(&cmd);
 
-	#ifdef __FreeBSD__
-	nob_cmd_append(&cmd, "-I/usr/local/include", "-L/usr/local/lib");
-	#endif // __FREEBSD__
-
 	if (for_windows(CC)) {
 		append_output(&cmd, "server.exe");
 	} else {
@@ -133,6 +130,8 @@ int build_server(void) {
 	if (!nob_cmd_run_async(cmd)) {
 		return 1;
 	}
+
+	nob_cmd_free(cmd);
 
 	return 0;
 }

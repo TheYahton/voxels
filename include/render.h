@@ -24,7 +24,7 @@ void chunks_load_unload_system(Renderer *renderer, struct World *world);
 uint32_t render_create_shader(void);
 uint32_t render_create_vao(const Mesh *mesh);
 void render_preparation(int width, int height);
-Renderer renderer_init(const Window *window, const Camera *camera);
+Renderer renderer_init(const MyWindow *window, const Camera *camera);
 void renderer_free(Renderer *renderer);
 void render(const Renderer *renderer);
 int loadGL(GLADloadfunc func);
