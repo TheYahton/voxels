@@ -11,6 +11,7 @@ typedef struct {
 	bool polygon_mode;
 } MyWindow;
 
+void* getProcAddress(const char *name);
 MyWindow createWindow(int width, int height);
 int initWindow(MyWindow *window);
 void getWindowSize(MyWindow *window, int *width, int *height);

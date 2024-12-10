@@ -1,3 +1,4 @@
+#define RGFW_EXPORT
 #include <RGFW.h>
 
 #include "camera.h"

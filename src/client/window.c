@@ -4,6 +4,10 @@
 #include "logs.h"
 #include "shader.h"
 
+void* getProcAddress(const char *name) {
+	return RGFW_getProcAddress(name);
+}
+
 void windowClose(MyWindow *window __attribute__((unused))) {
 	RGFW_window_close(window->window);
 }
@@ -30,10 +34,10 @@ void getCursorPos(MyWindow *window, double *xpos, double *ypos) {
 	*ypos = mouse_pos.y;
 }
 
-static void key_callback(RGFW_window* win, u32 keycode, char keyName[16], u8 lockState, b8 pressed) {
+static void key_callback(RGFW_window* win, u32 keycode, char keyName[16] __attribute__((__unused__)), u8 lockState __attribute__((__unused__)), b8 pressed) {
 	MyWindow *my_window = win->userPtr;
 
-	if (keycode >= 0 && keycode < 1024) {
+	if (keycode < 1024) {
 		if (pressed) {
 			my_window->keys[keycode] = true;
 		} else if (!pressed) {

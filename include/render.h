@@ -3,6 +3,7 @@
 #include <glad/gl.h>
 #endif // _GLAD_H
 
+#define RGFW_EXPORT
 #include "camera.h"
 #include "mesh.h"
 #include "window.h"

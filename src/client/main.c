@@ -1,3 +1,5 @@
+#define RGFW_EXPORT
+
 #include "logs.h"
 #include "player.h"
 #include "render.h"
@@ -8,7 +10,7 @@ int main(void) {
 		return -1;
 	}
 
-	if (loadGL((GLADloadfunc)RGFW_getProcAddress) != 0) {
+	if (loadGL((GLADloadfunc)getProcAddress) != 0) {
 		windowClose(&window);
 		return -1;
 	}

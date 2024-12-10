@@ -2,7 +2,7 @@
 #include "nob.h"
 
 void append_warnings(Nob_Cmd *cmd) {
-	nob_cmd_append(cmd, "-Wall", "-Wextra", "-Wpedantic");
+	nob_cmd_append(cmd, "-Wall", "-Wextra", "-Werror");
 }
 
 void append_common(Nob_Cmd *cmd) {
