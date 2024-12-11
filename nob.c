@@ -45,7 +45,15 @@ bool for_windows(char *CC) {
 	#ifdef _WIN32
 	return 1;
 	#else
-	return (CC != NULL && strcmp(CC, "x86_64-w64-mingw32-gcc") == 0);
+	return (CC != NULL && strcmp(CC, "x86_64-w64-mingw32-gcc") == 0); // You can compile an executable for Windows on a non-Windows system if you use MinGW
+	#endif
+}
+
+bool for_macos(void) {
+	#ifdef __APPLE__
+	return 1;
+	#else
+	return 0;
 	#endif
 }
 
@@ -57,9 +65,9 @@ int build_client(void) {
 
 	append_compiler(&cmd, CC, CFLAGS);
 	append_warnings(&cmd);
-	append_common(&cmd);
 
 	// SOURCE FILES
+	append_common(&cmd);
 	nob_cmd_append(&cmd, "src/client/main.c", "src/client/camera.c", "src/client/mesh.c",
 				   "src/client/render.c", "src/client/shader.c",
 				   "src/client/window.c");
@@ -77,31 +85,32 @@ int build_client(void) {
 	}
 	closedir(cglm_dir);
 
-	DIR *rgfw_dir = opendir("cglm/include");
-	if (!rgfw_dir) {
+	if (!nob_file_exists("RGFW/RGFW.h")) {
 		nob_log(NOB_ERROR, "The RGFW submodule is not initialized."
 						   "Please, run the following:\n"
 						   "$ git submodule init RGFW\n"
 						   "$ git submodule update");
 		return -1;
 	}
-	closedir(rgfw_dir);
 
 	nob_cmd_append(&cmd, "-I./cglm/include");
 	nob_cmd_append(&cmd, "-I./RGFW/");
 
-	// MinGW
+	link_math(&cmd);
+
+	// Windows
 	if (for_windows(CC)) {
 		nob_cmd_append(&cmd, "-lopengl32", "-lshell32", "-lgdi32", "-lwinmm");
-		link_math(&cmd);
-
 		append_output(&cmd, "client.exe");
 	}
-	// Non-MinGW
+	// MacOS
+	else if (for_macos()) {
+		nob_cmd_append(&cmd, "-framework", "Foundation", "-framework", "AppKit", "-framework", "OpenGL", "-framework", "CoreVideo");
+		append_output(&cmd, "client");
+	}
+	// Linux
 	else {
 		nob_cmd_append(&cmd, "-lX11", "-lGL", "-lXrandr");
-		link_math(&cmd);
-
 		append_output(&cmd, "client");
 	}
 
@@ -121,18 +130,21 @@ int build_server(void) {
 
 	append_compiler(&cmd, CC, CFLAGS);
 	append_warnings(&cmd);
-	append_common(&cmd);
 
 	// SOURCE FILES
+	append_common(&cmd);
 	nob_cmd_append(&cmd, "src/server/main.c");
 
 	// LINKING
 	include_common(&cmd);
 	link_math(&cmd);
 
+	// Windows
 	if (for_windows(CC)) {
 		append_output(&cmd, "server.exe");
-	} else {
+	}
+	// Other
+	else {
 		append_output(&cmd, "server");
 	}
 
