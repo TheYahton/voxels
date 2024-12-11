@@ -64,6 +64,7 @@ MyWindow createWindow(int width, int height) {
 }
 
 int initWindow(MyWindow* window) {
+	RGFW_setGLVersion(RGFW_GL_CORE, 3, 3);
 	window->window = RGFW_createWindow("Voxels", (RGFW_rect) {0, 0, 800, 600}, RGFW_CENTER | RGFW_HIDE_MOUSE);
 	info("The window has been initialized.");
 

@@ -6,11 +6,9 @@
 #include "world.h"
 
 #include <stdbool.h>
-#include <GL/gl.h>
 
 typedef struct {
-	GLfloat position[3];  // 12 bytes
-	// GLfloat color[3];     // 12 bytes
+	float position[3];  // 12 bytes
 	uint32_t type;        // 4 bytes
 	uint32_t normal;      // 4 bytes
 } Vertex;  // 36 bytes
