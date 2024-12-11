@@ -4,10 +4,6 @@
 #include "camera.h"
 #include <math.h>
 
-#ifndef M_PI_2
-#define M_PI_2 1.57079632679489661923 /* pi/2 */
-#endif
-
 void camera_update(Camera *camera, bool keys[1024], float dx, float dy,
 				   float dt) {
 	// Update camera rotation
