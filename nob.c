@@ -1,4 +1,4 @@
-#ifdef __WIN32
+#ifdef _WIN32
 #include <windows.h>
 #endif
 
@@ -42,7 +42,7 @@ void include_common(Nob_Cmd *cmd) { nob_cmd_append(cmd, "-I./include"); }
 void link_math(Nob_Cmd *cmd) { nob_cmd_append(cmd, "-lm"); }
 
 bool for_windows(char *CC) {
-	#ifdef __WIN32
+	#ifdef _WIN32
 	return 1;
 	#else
 	return (CC != NULL && strcmp(CC, "x86_64-w64-mingw32-gcc") == 0);
