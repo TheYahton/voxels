@@ -6,7 +6,12 @@
 #include "world.h"
 
 #include <stdbool.h>
+
+#ifdef __APPLE__
+#include <OpenGL/gl.h>
+#else
 #include <GL/gl.h>
+#endif
 
 typedef struct {
 	GLfloat position[3];  // 12 bytes
