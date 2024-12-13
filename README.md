@@ -10,7 +10,7 @@ git submodule update
 ```
 Compile [nob](https://github.com/tsoding/nob.h) once
 ```shell
-cc -o nob.c nob
+cc -o nob nob.c
 ```
 And then every time you want to rebuild Voxels you should
 ```shell
