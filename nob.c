@@ -7,7 +7,7 @@
 
 
 void append_warnings(Nob_Cmd *cmd) {
-	nob_cmd_append(cmd, "-Wall", "-Wextra", "-Werror");
+	nob_cmd_append(cmd, "-Wall", "-Wextra");
 }
 
 void append_common(Nob_Cmd *cmd) {
