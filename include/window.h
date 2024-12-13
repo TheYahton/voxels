@@ -17,7 +17,6 @@ int initWindow(MyWindow *window);
 void getWindowSize(MyWindow *window, int *width, int *height);
 void swapBuffer(MyWindow *window);
 bool windowShouldClose(MyWindow *window);
-void getCursorPos(MyWindow *window, double *xpos, double *ypos);
 void windowClose(MyWindow *window);
 void windowPollEvents(MyWindow *window);
 double getTime(void);

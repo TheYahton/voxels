@@ -30,25 +30,24 @@ int main(void) {
 	double start = 0.0f;
 	double end = 0.0f;
 	double dt = 0.0f;
-	double lastX = window.width / 2.0f;
-	double lastY = window.height / 2.0f;
 	while (!windowShouldClose(&window)) {
 		dt = end - start;
 		start = getTime();
 
+		float dx = 0.0f;
+		float dy = 0.0f;
+
+		// EVENTS
+		while (RGFW_window_checkEvent(window.window)) {
+			// Mouse rotate camera
+			if (window.window->event.type == RGFW_mousePosChanged) {
+				dx = window.window->event.point.x;
+				dy = window.window->event.point.y;
+			}
+		}
+
 		// LOGIC
-		windowPollEvents(&window);
-
-		// Mouse rotate camera
-		double xpos, ypos;
-		getCursorPos(&window, &xpos, &ypos);
-		float dx = (xpos - lastX);
-		float dy = (ypos - lastY);
-		lastX = xpos;
-		lastY = ypos;
-
 		camera_update(&camera, window.keys, dx, dy, dt);
-
 		chunks_load_unload_system(&renderer, &world);
 
 		// RENDER

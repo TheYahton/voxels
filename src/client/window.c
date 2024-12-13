@@ -28,12 +28,6 @@ bool windowShouldClose(MyWindow *window) {
 	return RGFW_window_shouldClose(window->window);
 }
 
-void getCursorPos(MyWindow *window, double *xpos, double *ypos) {
-	RGFW_point mouse_pos = RGFW_window_getMousePoint(window->window);
-	*xpos = mouse_pos.x;
-	*ypos = mouse_pos.y;
-}
-
 static void key_callback(RGFW_window* win, u32 keycode, char keyName[16] __attribute__((__unused__)), u8 lockState __attribute__((__unused__)), b8 pressed) {
 	MyWindow *my_window = win->userPtr;
 
@@ -77,17 +71,15 @@ int initWindow(MyWindow* window) {
 	// Мы уже скрыли мышь на этапе создания окна с помощью флага RGFW_HIDE_MOUSE
 	info("The cursor has been disabled.");
 
-	// TODO: вернуть эту штуку
+	// TODO: return raw mouse motion back?
 	// if (glfwRawMouseMotionSupported()) {
 	// 	glfwSetInputMode(window->window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
 	// 	info("Raw mouse motion mode enabled.");
 	// } else {
 	// 	warning("The system does not support raw mouse motion mode.");
 	// }
-	// Может быть что-то из этого?
-	// RGFW_window_mouseHold(window->window, (RGFW_area) {10000, 10000});
-	// RGFW_window_disableMouse(window->window);
-	// RGFW_captureCursor(window->window, (RGFW_rect) {0, 0, 0, 0});
+
+	RGFW_window_mouseHold(window->window, RGFW_AREA(window->window->r.w / 2, window->window->r.h / 2));
 
 	RGFW_window_makeCurrent(window->window);
 	info("The OpenGL context has been attached to the window.");
