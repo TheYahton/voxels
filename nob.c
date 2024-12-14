@@ -76,21 +76,16 @@ int build_client(void) {
 	include_common(&cmd);
 
 	DIR *cglm_dir = opendir("cglm/include");
-	if (!cglm_dir) {
-		nob_log(NOB_ERROR, "The cglm submodule is not initialized."
-						   "Please, run the following:\n"
-						   "$ git submodule init cglm\n"
-						   "$ git submodule update");
-		return -1;
-	}
-	closedir(cglm_dir);
+	if ((!cglm_dir) || (!nob_file_exists("RGFW/RGFW.h"))) {
+		closedir(cglm_dir);
 
-	if (!nob_file_exists("RGFW/RGFW.h")) {
-		nob_log(NOB_ERROR, "The RGFW submodule is not initialized."
-						   "Please, run the following:\n"
-						   "$ git submodule init RGFW\n"
-						   "$ git submodule update");
-		return -1;
+		Nob_Cmd autoinit = {0};
+		nob_cmd_append(&autoinit, "git", "submodule", "init");
+		if (!nob_cmd_run_sync(autoinit)) return -1;
+
+		Nob_Cmd autoupdate = {0};
+		nob_cmd_append(&autoupdate, "git", "submodule", "update", "--depth=1");
+		if (!nob_cmd_run_sync(autoupdate)) return -1;
 	}
 
 	nob_cmd_append(&cmd, "-I./cglm/include");
