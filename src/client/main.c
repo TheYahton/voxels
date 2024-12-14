@@ -1,5 +1,3 @@
-#define RGFW_EXPORT
-
 #include "logs.h"
 #include "player.h"
 #include "render.h"
