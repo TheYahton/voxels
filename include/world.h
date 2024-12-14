@@ -12,9 +12,9 @@ struct World {
 };
 
 struct World world_init(void);
-uint8_t world_block_get(const struct World *world, int x, int y, int z);
-void world_block_set(struct World *world, int x, int y, int z, uint8_t value);
-void world_chunk_cube(SizeVector *vec, struct World *world, Vec3 around, int radius);
+uint8_t world_getVoxel(const struct World *world, int x, int y, int z);
+void world_setVoxel(struct World *world, int x, int y, int z, uint8_t value);
+void world_getChunkCube(SizeVector *vec, struct World *world, Vec3 around, int radius);
 void world_free(struct World *world);
 
 #endif // _WORLD_H

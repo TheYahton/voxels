@@ -11,7 +11,7 @@ typedef enum {
 	Sand,
 	Water,
 	TypeCount,
-} BlockType;
+} VoxelType;
 
 #define CHUNK_SIZE 32
 #define CHUNK_CSIZE (CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE)

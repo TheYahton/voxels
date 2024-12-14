@@ -167,7 +167,7 @@ size_t SizeVector_find(SizeVector *vec, size_t value) {
 }
 
 void chunks_load_unload_system(Renderer *renderer, struct World *world) {
-		world_chunk_cube(&renderer->should_load, world, *renderer->camera->position, RENDER_DISTANCE);
+		world_getChunkCube(&renderer->should_load, world, *renderer->camera->position, RENDER_DISTANCE);
 
 		for (size_t i = 0; i < renderer->should_load.size; i++) {
 			size_t index = renderer->should_load.data[i];

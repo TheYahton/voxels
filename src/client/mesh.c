@@ -46,37 +46,37 @@ Mesh chunk_genmesh(const struct Chunk *chunk, const struct World *world) {
 				char curr = chunk_get(chunk, x, y, z);
 				if (curr != 0) {
 					uint8_t result = 0;
-					char Xinc = world_block_get(
+					char Xinc = world_getVoxel(
 						world, chunkX * CHUNK_SIZE + x + 1,
 						chunkY * CHUNK_SIZE + y, chunkZ * CHUNK_SIZE + z);
 					if (Xinc == 0 || Xinc == -1) {
 						result = 32 | result;
 					}
-					char Xdec = world_block_get(
+					char Xdec = world_getVoxel(
 						world, chunkX * CHUNK_SIZE + x - 1,
 						chunkY * CHUNK_SIZE + y, chunkZ * CHUNK_SIZE + z);
 					if (Xdec == 0 || Xdec == -1) {
 						result = 16 | result;
 					}
-					char Yinc = world_block_get(world, chunkX * CHUNK_SIZE + x,
+					char Yinc = world_getVoxel(world, chunkX * CHUNK_SIZE + x,
 												chunkY * CHUNK_SIZE + y + 1,
 												z + CHUNK_SIZE * chunkZ);
 					if (Yinc == 0 || Yinc == -1) {
 						result = 8 | result;
 					}
-					char Ydec = world_block_get(world, chunkX * CHUNK_SIZE + x,
+					char Ydec = world_getVoxel(world, chunkX * CHUNK_SIZE + x,
 												chunkY * CHUNK_SIZE + y - 1,
 												z + CHUNK_SIZE * chunkZ);
 					if (Ydec == 0 || Ydec == -1) {
 						result = 4 | result;
 					}
-					char Zinc = world_block_get(world, chunkX * CHUNK_SIZE + x,
+					char Zinc = world_getVoxel(world, chunkX * CHUNK_SIZE + x,
 												chunkY * CHUNK_SIZE + y,
 												chunkZ * CHUNK_SIZE + z + 1);
 					if (Zinc == 0 || Zinc == -1) {
 						result = 2 | result;
 					}
-					char Zdec = world_block_get(world, chunkX * CHUNK_SIZE + x,
+					char Zdec = world_getVoxel(world, chunkX * CHUNK_SIZE + x,
 												chunkY * CHUNK_SIZE + y,
 												chunkZ * CHUNK_SIZE + z - 1);
 					if (Zdec == 0 || Zdec == -1) {
@@ -97,65 +97,65 @@ Mesh chunk_genmesh(const struct Chunk *chunk, const struct World *world) {
 				int x = i + chunk->position.x * CHUNK_SIZE;
 				int y = j + chunk->position.y * CHUNK_SIZE;
 				int z = k + chunk->position.z * CHUNK_SIZE;
-				BlockType block = world_block_get(world, x, y, z);
+				VoxelType voxel = world_getVoxel(world, x, y, z);
 				if (curr) {
 					if ((curr & 32)) {
 						size_t size = mesh.vertices.size;
 
-						Vertices_append(&mesh.vertices, (Vertex) {{x + 1, y + 0, z + 0}, block, 0});
-						Vertices_append(&mesh.vertices, (Vertex) {{x + 1, y + 1, z + 0}, block, 0});
-						Vertices_append(&mesh.vertices, (Vertex) {{x + 1, y + 0, z + 1}, block, 0});
-						Vertices_append(&mesh.vertices, (Vertex) {{x + 1, y + 1, z + 1}, block, 0});
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 1, y + 0, z + 0}, voxel, 0});
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 1, y + 1, z + 0}, voxel, 0});
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 1, y + 0, z + 1}, voxel, 0});
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 1, y + 1, z + 1}, voxel, 0});
 
 						positive_indices(&mesh.indices, size);
 					}
 					if ((curr & 16)) {
 						size_t size = mesh.vertices.size;
 
-						Vertices_append(&mesh.vertices, (Vertex) {{x + 0, y + 0, z + 0}, block, 1});
-						Vertices_append(&mesh.vertices, (Vertex) {{x + 0, y + 1, z + 0}, block, 1});
-						Vertices_append(&mesh.vertices, (Vertex) {{x + 0, y + 0, z + 1}, block, 1});
-						Vertices_append(&mesh.vertices, (Vertex) {{x + 0, y + 1, z + 1}, block, 1});
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 0, y + 0, z + 0}, voxel, 1});
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 0, y + 1, z + 0}, voxel, 1});
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 0, y + 0, z + 1}, voxel, 1});
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 0, y + 1, z + 1}, voxel, 1});
 
 						negative_indices(&mesh.indices, size);
 					}
 					if ((curr & 8)) {
 						size_t size = mesh.vertices.size;
 
-						Vertices_append(&mesh.vertices, (Vertex) {{x + 0, y + 1, z + 0}, block, 2});
-						Vertices_append(&mesh.vertices, (Vertex) {{x + 0, y + 1, z + 1}, block, 2});
-						Vertices_append(&mesh.vertices, (Vertex) {{x + 1, y + 1, z + 0}, block, 2});
-						Vertices_append(&mesh.vertices, (Vertex) {{x + 1, y + 1, z + 1}, block, 2});
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 0, y + 1, z + 0}, voxel, 2});
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 0, y + 1, z + 1}, voxel, 2});
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 1, y + 1, z + 0}, voxel, 2});
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 1, y + 1, z + 1}, voxel, 2});
 
 						positive_indices(&mesh.indices, size);
 					}
 					if ((curr & 4)) {
 						size_t size = mesh.vertices.size;
 
-						Vertices_append(&mesh.vertices, (Vertex) {{x + 0, y + 0, z + 0}, block, 3});
-						Vertices_append(&mesh.vertices, (Vertex) {{x + 0, y + 0, z + 1}, block, 3});
-						Vertices_append(&mesh.vertices, (Vertex) {{x + 1, y + 0, z + 0}, block, 3});
-						Vertices_append(&mesh.vertices, (Vertex) {{x + 1, y + 0, z + 1}, block, 3});
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 0, y + 0, z + 0}, voxel, 3});
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 0, y + 0, z + 1}, voxel, 3});
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 1, y + 0, z + 0}, voxel, 3});
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 1, y + 0, z + 1}, voxel, 3});
 
 						negative_indices(&mesh.indices, size);
 					}
 					if ((curr & 2)) {
 						size_t size = mesh.vertices.size;
 
-						Vertices_append(&mesh.vertices, (Vertex) {{x + 0, y + 0, z + 1}, block, 4});
-						Vertices_append(&mesh.vertices, (Vertex) {{x + 0, y + 1, z + 1}, block, 4});
-						Vertices_append(&mesh.vertices, (Vertex) {{x + 1, y + 0, z + 1}, block, 4});
-						Vertices_append(&mesh.vertices, (Vertex) {{x + 1, y + 1, z + 1}, block, 4});
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 0, y + 0, z + 1}, voxel, 4});
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 0, y + 1, z + 1}, voxel, 4});
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 1, y + 0, z + 1}, voxel, 4});
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 1, y + 1, z + 1}, voxel, 4});
 
 						negative_indices(&mesh.indices, size);
 					}
 					if ((curr & 1)) {
 						size_t size = mesh.vertices.size;
 
-						Vertices_append(&mesh.vertices, (Vertex) {{x + 0, y + 0, z + 0}, block, 5});
-						Vertices_append(&mesh.vertices, (Vertex) {{x + 0, y + 1, z + 0}, block, 5});
-						Vertices_append(&mesh.vertices, (Vertex) {{x + 1, y + 0, z + 0}, block, 5});
-						Vertices_append(&mesh.vertices, (Vertex) {{x + 1, y + 1, z + 0}, block, 5});
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 0, y + 0, z + 0}, voxel, 5});
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 0, y + 1, z + 0}, voxel, 5});
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 1, y + 0, z + 0}, voxel, 5});
+						Vertices_append(&mesh.vertices, (Vertex) {{x + 1, y + 1, z + 0}, voxel, 5});
 
 						positive_indices(&mesh.indices, size);
 					}
