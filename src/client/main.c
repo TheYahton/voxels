@@ -62,21 +62,40 @@ int main(void) {
 	return 0;
 }
 
-// TODO: optimize Mesh generating. Сейчас мы генерируем по 4 вершины на каждую
-// грань вокселя. Это 24 вершины на воксель в худшем случае. Но воксель это куб
-// и можно обойтись 8 вершинами
-// TODO: write a blazingly fast greedy mesher xd lol
-// TODO: world generation using simplex noise
-// TODO: improve camera rotation (use quaternions O.O)
-// TODO (может быть ненужным и даже вредным):
-// 1. написать обёртку над вводом GLFW
-// 2. иметь несколько window creating backend. Например GLFW, SDL2/SDL3, RGFW
-// или что-то в этом духе
-// TODO: подумать над мультиплеером. Будет ли это главный сервер и клиенты, или
-// что-то типа P2P?
-// TODO: сейчас трудно разглядеть трёхмерность какого-либо чанка - всё
-// одноцветное и монотонное. Ранее от текстур я решил отказаться, поэтому
-// реализую Ambient occlusion
-// TODO: mesh.c looks ugly. Improve it somehow pwease OwO
-// TODO: generate chunks in second thread?
-// TODO: more types of voxels
+// BUG (SHADERS): voxels' shadows look horrible. Maybe gamma corr or HSV/HSL instead of RGB?
+
+// PERFORMANCE (MESHGEN): check performance of mesh generating
+
+// TODO (REFACTORING): remove the internal functions in the headers and make them static
+// TODO (REFACTORING): more consistent naming that makes sense (like in world.h)
+// TODO (REFACTORING): mesh.c looks ugly. Improve it somehow pwease OwO
+// TODO (LOGGING): write the logs to a file in the `logs` folder
+// TODO (DEBUG): hot reloading (hi Zozin)
+// TODO (WORLDGEN): world generation using simplex noise
+// TODO (PHYSICS): basic physics (gravitation, air resistance)
+// TODO (PHYSICS): block breaking by player
+// TODO (SHADERS): ambient occlusion
+// TODO (SHADERS): a nice sky
+// TODO (NEW SYSTEM): addons/plugins/scripts
+// TODO (NEW SYSTEM): client-server multiplayer
+// TODO (NEW SYSTEM): play some audio using miniaudio
+// TODO (NEW SYSTEM): cimgui or header-only alternative (player position, FPS, render distance, speed, sensitivity)
+// TODO (NEW SYSTEM): level of details (LoD)
+
+// OPTIMIZE (BUILD): build libs to obj file ONCE, then link with other stuff (it will improve build speed)
+// OPTIMIZE (BUILD): fully incremental build system
+// OPTIMIZE (WORLDGEN): generate chunks in second thread?
+// OPTIMIZE (MESHGEN, SHADERS): optimize vertex size: compress all data in one 32 bit integer
+// OPTIMIZE (MESHGEN): mesh generating: create 8 vertex per voxel instead of 4 vertex per face (24 vertex per block)
+// upd: after adding normales to vertices i'm not sure how to do it :(
+// upd2: if you do "optimize vertex size" then you can do instancing and it wouldn't be a problem
+// OPTIMIZE (MESHGEN): a blazingly fast greedy mesher xd lol
+
+// QUESTION (THREADS): how to implement threads for world generation, running scripts, etc.?
+// winapi threads, pthread, C11 threads? Maybe I should write an wrapper?
+// note 1: C11 threads are supported on most Unix-like systems (linux, freebsd, openbsd, netbsd) and
+// Windows (Visual Studio 2022 version 17.8 Preview 2 and later)
+// note 2: C11 threads are unsupported in MinGW and Apple's Clang
+// note 3: pthread are supported on POSIX systems (macOS, linux, *bsd, etc.) and MinGW (gcc for windows)
+// note 3.1: there is a MSVC package for pthread.
+// note 3.2: does Clang in Windows support pthread?
