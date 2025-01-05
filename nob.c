@@ -57,6 +57,72 @@ bool for_macos(void) {
 	#endif
 }
 
+int build_client_zig(void) {
+	Nob_Cmd cmd = {0};
+
+	char *CC = getenv("CC");
+	char *CFLAGS = getenv("CFLAGS");
+
+	append_compiler(&cmd, "zig", CFLAGS);
+	// append_warnings(&cmd);
+
+	nob_cmd_append(&cmd, "build-exe");
+
+	// SOURCE FILES
+	append_common(&cmd);
+	nob_cmd_append(&cmd, "src/client/main.zig", "src/client/camera.c", "src/client/mesh.c",
+				   "src/client/render.c", "src/client/shader.c",
+				   "src/client/window.c");
+
+	// LINKING
+	include_common(&cmd);
+
+	DIR *cglm_dir = opendir("cglm/include");
+	if ((!cglm_dir) || (!nob_file_exists("RGFW/RGFW.h"))) {
+		closedir(cglm_dir);
+
+		Nob_Cmd autoinit = {0};
+		nob_cmd_append(&autoinit, "git", "submodule", "init");
+		if (!nob_cmd_run_sync(autoinit)) return -1;
+
+		Nob_Cmd autoupdate = {0};
+		nob_cmd_append(&autoupdate, "git", "submodule", "update", "--depth=1");
+		if (!nob_cmd_run_sync(autoupdate)) return -1;
+	}
+
+	nob_cmd_append(&cmd, "-I./cglm/include");
+	nob_cmd_append(&cmd, "-I./RGFW/");
+
+	link_math(&cmd);
+
+	// Windows
+	if (for_windows(CC)) {
+		nob_cmd_append(&cmd, "-lopengl32", "-lshell32", "-lgdi32", "-lwinmm");
+		// append_output(&cmd, "zig-client.exe");
+		nob_cmd_append(&cmd, "-femit-bin=./build/zig-client.exe");
+		nob_cmd_append(&cmd, "-target", "x86_64-windows-gnu");
+	}
+	// MacOS
+	else if (for_macos()) {
+		nob_cmd_append(&cmd, "-framework", "Foundation", "-framework", "AppKit", "-framework", "OpenGL", "-framework", "CoreVideo");
+		// append_output(&cmd, "zig-client");
+		nob_cmd_append(&cmd, "-femit-bin=./build/zig-client");
+	}
+	// Linux
+	else {
+		nob_cmd_append(&cmd, "-lX11", "-lGL", "-lXrandr");
+		// append_output(&cmd, "zig-client");
+		nob_cmd_append(&cmd, "-femit-bin=./build/zig-client");
+	}
+
+	if (!nob_cmd_run_sync(cmd))
+		return 1;
+
+	nob_cmd_free(cmd);
+
+	return 0;
+}
+
 int build_client(void) {
 	Nob_Cmd cmd = {0};
 
@@ -158,13 +224,13 @@ int main(int argc, char **argv) {
 	if (!nob_mkdir_if_not_exists("build/"))
 		return 1;
 
-	if (build_client() != 0) {
-		return -1;
+	if (argc == 2 && strcmp(argv[1], "zig") == 0) {
+		if (build_client_zig() != 0) return -1;
+	} else {
+		if (build_client() != 0) return -1;
 	}
 
-	if (build_server() != 0) {
-		return -1;
-	}
+	if (build_server() != 0) return -1;
 
 	return 0;
 }

@@ -1,3 +1,4 @@
+#define RGFW_EXPORT
 #define RGFW_IMPLEMENTATION
 
 #include "window.h"
