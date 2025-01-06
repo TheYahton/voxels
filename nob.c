@@ -70,7 +70,7 @@ int build_client_zig(void) {
 
 	// SOURCE FILES
 	append_common(&cmd);
-	nob_cmd_append(&cmd, "src/client/main.zig", "src/client/camera.c", "src/client/mesh.c",
+	nob_cmd_append(&cmd, "src/client/main.zig", "src/client/mesh.c",
 				   "src/client/render.c", "src/client/shader.c",
 				   "src/client/window.c");
 
