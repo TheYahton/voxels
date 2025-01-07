@@ -62,6 +62,6 @@ compile_commands.json
 nob
 nob.old
 
-# for compilation on Windows
-glfw/
-*.zip
+# zig
+.zig-cache
+zig-out

@@ -1,5 +1,5 @@
 const c = @cImport({
-    @cInclude("../../RGFW/RGFW.h");
+    @cInclude("RGFW.h");
 });
 
 const std = @import("std");
