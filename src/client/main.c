@@ -66,7 +66,7 @@ int main(void) {
 
 // BUG (SHADERS): voxels' shadows look horrible. Maybe gamma corr or HSV/HSL instead of RGB?
 
-// PERFORMANCE (MESHGEN): check performance of mesh generating
+// PERFORMANCE is horrible due to single-thread. Use another thread for generating chunks and futures-like system to create tasks to generate them.
 
 // TODO (REFACTORING): remove the internal functions in the headers and make them static
 // TODO (REFACTORING): more consistent naming that makes sense (like in world.h)

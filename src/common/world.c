@@ -41,6 +41,7 @@ static size_t world_generateChunk(struct World *world, int cx, int cy, int cz) {
 }
 
 // Get index in world.chunks by chunk's coordinates
+// WARNING: This function is very slow. Use it as little as possible.
 static size_t world_getChunk(const struct World *world, int x, int y, int z) {
 	for (size_t i = 0; i < world->chunks.size; i++) {
 		Chunk *chunk = &world->chunks.data[i];
@@ -60,6 +61,7 @@ static size_t world_getOrGenerateChunk(struct World *world, int x, int y, int z)
 }
 
 // Get voxel type by coordinates in the world.
+// WARNING: This function is very slow because it calls `world_getChunk()`
 uint8_t world_getVoxel(const struct World *world, int x, int y, int z) {
 	uint8_t voxelX = mod(x, CHUNK_SIZE);
 	uint8_t voxelY = mod(y, CHUNK_SIZE);
@@ -76,6 +78,7 @@ uint8_t world_getVoxel(const struct World *world, int x, int y, int z) {
 }
 
 // Set voxel type by coordinates in the world.
+// WARNING: This function is very slow because it calls `world_getChunk()`
 void world_setVoxel(struct World *world, int x, int y, int z, uint8_t value) {
 	uint8_t voxelX = mod(x, CHUNK_SIZE);
 	uint8_t voxelY = mod(y, CHUNK_SIZE);
@@ -93,8 +96,9 @@ void world_setVoxel(struct World *world, int x, int y, int z, uint8_t value) {
 
 // Adds chunks around given position to vector
 // If needed chunks are not generated then it'll generate it.
+// WARNING: This function is very slow because it calls `world_getChunk()`
 void world_getChunkCube(SizeVector *vec, struct World *world, Vec3 around, int radius) {
-	int gen = 1; // max chunk generation per function call
+	int gen = 8; // max chunk generation per function call
 
 	int chunkX = floorf((-around.x + CHUNK_SIZE / 2.0f) / CHUNK_SIZE);
 	int chunkY = floorf((around.y + CHUNK_SIZE / 2.0f) / CHUNK_SIZE);

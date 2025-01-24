@@ -4,6 +4,14 @@
 
 float vec3_length(Vec3 v) { return sqrt(v.x * v.x + v.y * v.y + v.z * v.z); }
 
+Vec3 vec3_sub(Vec3 a, Vec3 b) {
+	return (Vec3){
+		a.x - b.x,
+		a.y - b.y,
+		a.z - b.z,
+	};
+}
+
 Vec3 vec3_mulf(Vec3 v, float s) {
 	return (Vec3){
 		v.x * s,

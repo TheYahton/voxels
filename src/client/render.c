@@ -138,7 +138,7 @@ int loadGL(GLADloadfunc func) {
 	return 0;
 }
 
-#define RENDER_DISTANCE 2
+#define RENDER_DISTANCE 4
 
 Renderer renderer_init(const MyWindow *window, const Camera *camera) {
 	Renderer renderer = {
@@ -167,33 +167,37 @@ size_t SizeVector_find(SizeVector *vec, size_t value) {
 }
 
 void chunks_load_unload_system(Renderer *renderer, struct World *world) {
-		world_getChunkCube(&renderer->should_load, world, *renderer->camera->position, RENDER_DISTANCE);
+	// Сейчас это работает ужасно, но когда появится отдельный поток для генерации чанков
+	// можно будет запрашивать генерацию чанков только во время передвижения игрока.
+	static Vec3 last_pos = {0};
+	if (vec3_length(vec3_sub(*renderer->camera->position, last_pos)) < 0.01) return;
+	last_pos = *renderer->camera->position;
+	world_getChunkCube(&renderer->should_load, world, last_pos, RENDER_DISTANCE);
 
-		for (size_t i = 0; i < renderer->should_load.size; i++) {
-			size_t index = renderer->should_load.data[i];
-			Chunk *chunk = &world->chunks.data[index];
-			if (SizeVector_find(&renderer->loaded, index) == SIZE_MAX) {
-				MeshVector_append(&renderer->meshes, chunk_genmesh(chunk, world));
-				size_t mesh_index = renderer->meshes.size - 1;
-				UInt32Vector_append(
-					&renderer->VAOs, render_create_vao(&renderer->meshes.data[mesh_index]));
-				SizeVector_append(&renderer->loaded, index);
-				chunk->mesh_index = mesh_index;
-			}
+	for (size_t i = 0; i < renderer->should_load.size; i++) {
+		size_t index = renderer->should_load.data[i];
+		Chunk *chunk = &world->chunks.data[index];
+		if (SizeVector_find(&renderer->loaded, index) == SIZE_MAX) {
+			MeshVector_append(&renderer->meshes, chunk_genmesh(chunk, world));
+			size_t mesh_index = renderer->meshes.size - 1;
+			UInt32Vector_append(
+				&renderer->VAOs, render_create_vao(&renderer->meshes.data[mesh_index]));
+			SizeVector_append(&renderer->loaded, index);
+			chunk->mesh_index = mesh_index;
 		}
+	}
 
-		for (size_t i = 0; i < renderer->loaded.size; i++) {
-			size_t loaded_index = renderer->loaded.data[i];
-			const Chunk *chunk = &world->chunks.data[loaded_index];
-			if (SizeVector_find(&renderer->should_load, loaded_index) == SIZE_MAX) {
-				renderer->meshes.data[chunk->mesh_index].visible = false;
-			} else {
-				renderer->meshes.data[chunk->mesh_index].visible = true;
-			}
+	for (size_t i = 0; i < renderer->loaded.size; i++) {
+		size_t loaded_index = renderer->loaded.data[i];
+		const Chunk *chunk = &world->chunks.data[loaded_index];
+		if (SizeVector_find(&renderer->should_load, loaded_index) == SIZE_MAX) {
+			renderer->meshes.data[chunk->mesh_index].visible = false;
+		} else {
+			renderer->meshes.data[chunk->mesh_index].visible = true;
 		}
+	}
 
-		renderer->should_load.size = 0;
-
+	renderer->should_load.size = 0;
 }
 
 void renderer_free(Renderer *renderer) {

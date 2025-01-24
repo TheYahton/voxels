@@ -24,6 +24,13 @@ UInt32Vector_append(vec, size + 2);
 VectorImpl(Mesh, MeshVector)
 VectorImpl(Vertex, Vertices)
 
+// temp = world_getVoxel(world, chunkX + x + a, chunkY + y + b, chunkZ + z + c);
+#define getFace(a, b, c, n)\
+temp = chunk_get(chunk, x + a, y + b, z + c);\
+if (temp == 0 || temp == -1) {\
+	result = n | result;\
+}
+
 Mesh chunk_genmesh(const struct Chunk *chunk, const struct World *world) {
 	Mesh mesh = {
 		.vertices = Vertices_init(0, sizeof(Vertex) * 4),
@@ -31,57 +38,34 @@ Mesh chunk_genmesh(const struct Chunk *chunk, const struct World *world) {
 		.visible = true,
 	};
 
-	int chunkX = chunk->position.x;
-	int chunkY = chunk->position.y;
-	int chunkZ = chunk->position.z;
+	int chunkX = chunk->position.x * CHUNK_SIZE;
+	int chunkY = chunk->position.y * CHUNK_SIZE;
+	int chunkZ = chunk->position.z * CHUNK_SIZE;
 
 	// I want to create an array of air voxels intersect solid voxels
 	// One byte in this array is: 0 0 X+ X- Y+ Y- Z+ Z-
 	// where X Y Z are coordinates and + - are representing inc and dec
-	uint8_t array[CHUNK_CSIZE];
-	memset(array, 0, CHUNK_CSIZE);
+	uint8_t array[CHUNK_CSIZE] = {0};
 	for (int x = 0; x < CHUNK_SIZE; x++) {
 		for (int y = 0; y < CHUNK_SIZE; y++) {
 			for (int z = 0; z < CHUNK_SIZE; z++) {
 				char curr = chunk_get(chunk, x, y, z);
 				if (curr != 0) {
 					uint8_t result = 0;
-					char Xinc = world_getVoxel(
-						world, chunkX * CHUNK_SIZE + x + 1,
-						chunkY * CHUNK_SIZE + y, chunkZ * CHUNK_SIZE + z);
-					if (Xinc == 0 || Xinc == -1) {
-						result = 32 | result;
-					}
-					char Xdec = world_getVoxel(
-						world, chunkX * CHUNK_SIZE + x - 1,
-						chunkY * CHUNK_SIZE + y, chunkZ * CHUNK_SIZE + z);
-					if (Xdec == 0 || Xdec == -1) {
-						result = 16 | result;
-					}
-					char Yinc = world_getVoxel(world, chunkX * CHUNK_SIZE + x,
-												chunkY * CHUNK_SIZE + y + 1,
-												z + CHUNK_SIZE * chunkZ);
-					if (Yinc == 0 || Yinc == -1) {
-						result = 8 | result;
-					}
-					char Ydec = world_getVoxel(world, chunkX * CHUNK_SIZE + x,
-												chunkY * CHUNK_SIZE + y - 1,
-												z + CHUNK_SIZE * chunkZ);
-					if (Ydec == 0 || Ydec == -1) {
-						result = 4 | result;
-					}
-					char Zinc = world_getVoxel(world, chunkX * CHUNK_SIZE + x,
-												chunkY * CHUNK_SIZE + y,
-												chunkZ * CHUNK_SIZE + z + 1);
-					if (Zinc == 0 || Zinc == -1) {
-						result = 2 | result;
-					}
-					char Zdec = world_getVoxel(world, chunkX * CHUNK_SIZE + x,
-												chunkY * CHUNK_SIZE + y,
-												chunkZ * CHUNK_SIZE + z - 1);
-					if (Zdec == 0 || Zdec == -1) {
-						result = 1 | result;
-					}
+					char temp;
+					// Всякий раз когда вызывается world_getVoxel внутри вызывается очень дорогая функция world_getChunk
+					// Нужно либо оптимизировать world_getChunk, либо уменьшить кол-во вызовов world_getVoxel во время генерации меша.
+					// Кажется очевидным что большинство граней вокселей, проверяемых ниже нами, находится в пределах одного чанка.
+					// А еще кажется очевидным что нам нужно не более 7 чанков (1 наш и 6 соседей: x+, x-, y+, y-, z+, z-)
+					// для того чтобы найти блок за границей нашего чанка.
+					// Зачем же тогда нам вызывать дорогую функцию world_getChunk много раз, если мы знаем какие чанки нам нужны?
+					// P.S. но оптимизировать world_getChunk было бы неплохо ;]
+					getFace(1, 0, 0, 32);
+					getFace(-1, 0, 0, 16);
+					getFace(0, 1, 0, 8);
+					getFace(0, -1, 0, 4);
+					getFace(0, 0, 1, 2);
+					getFace(0, 0, -1, 1);
 					array[x + y * CHUNK_SIZE + z * CHUNK_SIZE * CHUNK_SIZE] =
 						result;
 				}
@@ -92,12 +76,12 @@ Mesh chunk_genmesh(const struct Chunk *chunk, const struct World *world) {
 	for (int i = 0; i < CHUNK_SIZE; i++) {
 		for (int j = 0; j < CHUNK_SIZE; j++) {
 			for (int k = 0; k < CHUNK_SIZE; k++) {
-				char curr =
-					array[i + j * CHUNK_SIZE + k * CHUNK_SIZE * CHUNK_SIZE];
-				int x = i + chunk->position.x * CHUNK_SIZE;
-				int y = j + chunk->position.y * CHUNK_SIZE;
-				int z = k + chunk->position.z * CHUNK_SIZE;
-				VoxelType voxel = world_getVoxel(world, x, y, z);
+				char curr = array[i + j * CHUNK_SIZE + k * CHUNK_SIZE * CHUNK_SIZE];
+				int x = i + chunkX;
+				int y = j + chunkY;
+				int z = k + chunkZ;
+				// VoxelType voxel = world_getVoxel(world, x, y, z);
+				VoxelType voxel = chunk_get(chunk, i, j, k);
 				if (curr) {
 					if ((curr & 32)) {
 						size_t size = mesh.vertices.size;
