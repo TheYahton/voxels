@@ -8,19 +8,19 @@
 #include <stdbool.h>
 
 typedef struct {
-	float position[3];  // 12 bytes
-	uint32_t type;        // 4 bytes
-	uint32_t normal;      // 4 bytes
-} Vertex;  // 36 bytes
+  float position[3]; // 12 bytes
+  uint32_t type;     // 4 bytes
+  uint32_t normal;   // 4 bytes
+} Vertex;            // 36 bytes
 
 Vectorize(Vertex, Vertices)
 
-typedef struct {
-	// FloatVector vertices; // 20 bytes
-	Vertices vertices;
-	UInt32Vector indices; // 20 bytes
-	bool visible;		  // 8 bytes
-} Mesh;					  // 48 bytes
+    typedef struct {
+  // FloatVector vertices; // 20 bytes
+  Vertices vertices;
+  UInt32Vector indices; // 20 bytes
+  bool visible;         // 8 bytes
+} Mesh;                 // 48 bytes
 
 Mesh chunk_genmesh(const struct Chunk *chunk, const struct World *world);
 void mesh_free(Mesh *mesh);

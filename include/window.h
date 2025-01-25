@@ -5,13 +5,13 @@
 #ifndef _WINDOW_H
 #define _WINDOW_H
 typedef struct {
-	RGFW_window *window;
-	int width, height;
-	bool keys[1024];
-	bool polygon_mode;
+  RGFW_window *window;
+  int width, height;
+  bool keys[1024];
+  bool polygon_mode;
 } MyWindow;
 
-void* getProcAddress(const char *name);
+void *getProcAddress(const char *name);
 MyWindow createWindow(int width, int height);
 int initWindow(MyWindow *window);
 void getWindowSize(MyWindow *window, int *width, int *height);

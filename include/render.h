@@ -10,15 +10,15 @@
 #include <stdbool.h>
 
 typedef struct {
-	const bool *polygon_mode;
-	uint32_t shader_program;
-	const int *width, *height;
-	unsigned int render_distance;
-	MeshVector meshes;
-	UInt32Vector VAOs;
-	SizeVector loaded; // chunks
-	SizeVector should_load; // chunks
-	const Camera *camera;
+  const bool *polygon_mode;
+  uint32_t shader_program;
+  const int *width, *height;
+  unsigned int render_distance;
+  MeshVector meshes;
+  UInt32Vector VAOs;
+  SizeVector loaded;      // chunks
+  SizeVector should_load; // chunks
+  const Camera *camera;
 } Renderer;
 
 void chunks_load_unload_system(Renderer *renderer, struct World *world);

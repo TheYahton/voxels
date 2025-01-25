@@ -4,11 +4,11 @@
 #ifndef _CAMERA_H
 #define _CAMERA_H
 typedef struct {
-	Vec3 *position;
-	Vec3 *direction;
-	float *speed;
+  Vec3 *position;
+  Vec3 *direction;
+  float *speed;
 } Camera;
 
 void camera_update(Camera *camera, bool keys[1024], float dx, float dy,
-				   float dt);
+                   float dt);
 #endif // _CAMERA_H
