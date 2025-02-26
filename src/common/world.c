@@ -78,20 +78,23 @@ static Chunk *generateChunk(int cx, int cy, int cz) {
 
 // Get index in world.chunks by chunk's coordinates
 // WARNING: This function is very slow. Use it as little as possible.
-static size_t world_getChunk(const struct World *world, int x, int y, int z) {
+static size_t world_getChunk(struct World *world, int x, int y, int z) {
+  pthread_mutex_lock(&world->mutex);
   size_t size = world->chunks.size;
   for (size_t i = 0; i < size; i++) {
     Chunk *chunk = world->chunks.data[i];
     if (chunk->position.x == x && chunk->position.y == y && chunk->position.z == z) {
+      pthread_mutex_unlock(&world->mutex);
       return i;
     }
   }
+  pthread_mutex_unlock(&world->mutex);
   return -1;
 }
 
 // Get voxel type by coordinates in the world.
 // WARNING: This function is very slow because it calls `world_getChunk()`
-uint8_t world_getVoxel(const struct World *world, int x, int y, int z) {
+uint8_t world_getVoxel(struct World *world, int x, int y, int z) {
   uint8_t voxelX = mod(x, CHUNK_SIZE);
   uint8_t voxelY = mod(y, CHUNK_SIZE);
   uint8_t voxelZ = mod(z, CHUNK_SIZE);

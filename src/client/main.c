@@ -70,14 +70,10 @@ int main(void) {
 // BUG (SHADERS): voxels' shadows look horrible. Maybe gamma corr or HSV/HSL
 // instead of RGB?
 // BUG (MULTITHREADING): sometimes the game crashes. Fix it!
-// BUG (MULTITHREADING): some microfreeze happen. Find a cause and annihilate.
 
-// PERFORMANCE is horrible due to single-thread. Use another thread for
-// generating chunks and futures-like system to create tasks to generate them.
+// PERFORMANCE (MULTITHREADING): some microfreeze happen. Find a cause and annihilate.
 
-// TODO (REFACTORING): remove the internal functions in the headers and make
-// them static
-// TODO (REFACTORING): more consistent naming that makes sense (like in world.h)
+// TODO (OPTIMIZATION): there're too many VAO
 // TODO (REFACTORING): mesh.c looks ugly. Improve it somehow pwease OwO
 // TODO (LOGGING): write the logs to a file in the `logs` folder
 // TODO (DEBUG): hot reloading (hi Zozin)
@@ -100,14 +96,5 @@ int main(void) {
 // 32 bit integer OPTIMIZE (MESHGEN): mesh generating: create 8 vertex per voxel
 // instead of 4 vertex per face (24 vertex per block) upd: after adding normales
 // to vertices i'm not sure how to do it :( upd2: if you do "optimize vertex
-// size" then you can do instancing and it wouldn't be a problem OPTIMIZE
-// (MESHGEN): a blazingly fast greedy mesher xd lol
-
-// QUESTION (THREADS): how to implement threads for world generation, running
-// scripts, etc.? winapi threads, pthread, C11 threads? Maybe I should write an
-// wrapper? note 1: C11 threads are supported on most Unix-like systems (linux,
-// freebsd, openbsd, netbsd) and Windows (Visual Studio 2022 version 17.8
-// Preview 2 and later) note 2: C11 threads are unsupported in MinGW and Apple's
-// Clang note 3: pthread are supported on POSIX systems (macOS, linux, *bsd,
-// etc.) and MinGW (gcc for windows) note 3.1: there is a MSVC package for
-// pthread. note 3.2: does Clang in Windows support pthread?
+// size" then you can do instancing and it wouldn't be a problem
+// OPTIMIZE (MESHGEN): a blazingly fast greedy mesher xd lol

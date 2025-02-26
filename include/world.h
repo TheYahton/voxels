@@ -26,7 +26,7 @@ struct World {
 };
 
 struct World *world_init(void);
-uint8_t world_getVoxel(const struct World *world, int x, int y, int z);
+uint8_t world_getVoxel(struct World *world, int x, int y, int z);
 void world_setVoxel(struct World *world, int x, int y, int z, uint8_t value);
 void world_getChunkCube(SizeVector *vec, struct World *world, Vec3 around,
                         int radius);

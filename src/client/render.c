@@ -172,6 +172,7 @@ void chunks_load_unload_system(Renderer *renderer, struct World *world) {
 
   for (size_t i = 0; i < renderer->should_load.size; i++) {
     size_t index = renderer->should_load.data[i];
+    pthread_mutex_lock(&world->mutex);
     Chunk *chunk = world->chunks.data[index];
     if (SizeVector_find(&renderer->loaded, index) == SIZE_MAX) {
       MeshVector_append(&renderer->meshes, chunk_genmesh(chunk));
@@ -180,16 +181,19 @@ void chunks_load_unload_system(Renderer *renderer, struct World *world) {
       chunk->mesh_index = mesh_index;
       SizeVector_append(&renderer->loaded, index);
     }
+    pthread_mutex_unlock(&world->mutex);
   }
 
   for (size_t i = 0; i < renderer->loaded.size; i++) {
     size_t loaded_index = renderer->loaded.data[i];
+    pthread_mutex_lock(&world->mutex);
     const Chunk *chunk = world->chunks.data[loaded_index];
     if (SizeVector_find(&renderer->should_load, loaded_index) == SIZE_MAX) {
       renderer->meshes.data[chunk->mesh_index].visible = false;
     } else {
       renderer->meshes.data[chunk->mesh_index].visible = true;
     }
+    pthread_mutex_unlock(&world->mutex);
   }
 
   renderer->should_load.size = 0;
