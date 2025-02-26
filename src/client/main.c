@@ -15,10 +15,13 @@ int main(void) {
     return -1;
   }
 
-  struct World world = world_init();
+  struct World *world = world_init();
   Player player = {
-      {0.0f, 2.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, 0.0f}, 5.0f,
-      {0.0f, 0.0f, 0.0f},
+      .position = {0.0f, 2.0f, 0.0f},
+      .velocity = {0.0f, 0.0f, 0.0f},
+      .acceleration = {0.0f, 0.0f, 0.0f},
+      .speed = 40.0f,
+      .direction = {0.0f, 0.0f, 0.0f},
   };
   Camera camera = {&player.position, &player.direction, &player.speed};
   Renderer renderer = renderer_init(&window, &camera);
@@ -48,7 +51,7 @@ int main(void) {
 
     // LOGIC
     camera_update(&camera, window.keys, dx, dy, dt);
-    chunks_load_unload_system(&renderer, &world);
+    chunks_load_unload_system(&renderer, world);
 
     // RENDER
     render(&renderer);
@@ -56,7 +59,7 @@ int main(void) {
 
     end = getTime();
   }
-  world_free(&world);
+  world_free(world);
   renderer_free(&renderer);
   windowClose(&window);
   info("The program has terminated.");
@@ -66,6 +69,8 @@ int main(void) {
 
 // BUG (SHADERS): voxels' shadows look horrible. Maybe gamma corr or HSV/HSL
 // instead of RGB?
+// BUG (MULTITHREADING): sometimes the game crashes. Fix it!
+// BUG (MULTITHREADING): some microfreeze happen. Find a cause and annihilate.
 
 // PERFORMANCE is horrible due to single-thread. Use another thread for
 // generating chunks and futures-like system to create tasks to generate them.

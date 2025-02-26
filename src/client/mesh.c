@@ -5,7 +5,7 @@
 
 #include <string.h>
 
-#define positive_indices(vec, size)                                            \
+#define clockwise_indices(vec, size)                                           \
   UInt32Vector_append(vec, size + 0);                                          \
   UInt32Vector_append(vec, size + 1);                                          \
   UInt32Vector_append(vec, size + 2);                                          \
@@ -13,7 +13,7 @@
   UInt32Vector_append(vec, size + 2);                                          \
   UInt32Vector_append(vec, size + 1);
 
-#define negative_indices(vec, size)                                            \
+#define aclockwise_indices(vec, size)                                          \
   UInt32Vector_append(vec, size + 0);                                          \
   UInt32Vector_append(vec, size + 2);                                          \
   UInt32Vector_append(vec, size + 1);                                          \
@@ -23,14 +23,13 @@
 
 VectorImpl(Mesh, MeshVector) VectorImpl(Vertex, Vertices)
 
-// temp = world_getVoxel(world, chunkX + x + a, chunkY + y + b, chunkZ + z + c);
 #define getFace(a, b, c, n)                                                    \
   temp = chunk_get(chunk, x + a, y + b, z + c);                                \
   if (temp == 0 || temp == -1) {                                               \
     result = n | result;                                                       \
   }
 
-    Mesh chunk_genmesh(const struct Chunk *chunk, const struct World *world) {
+Mesh chunk_genmesh(const struct Chunk *chunk) {
   Mesh mesh = {
       .vertices = Vertices_init(sizeof(Vertex) * 4, sizeof(Vertex) * 4),
       .indices = UInt32Vector_init(0, 64),
@@ -81,6 +80,9 @@ VectorImpl(Mesh, MeshVector) VectorImpl(Vertex, Vertices)
         int x = i + chunkX;
         int y = j + chunkY;
         int z = k + chunkZ;
+
+        // TODO: если chunk_get вместо world_getVoxel то на границах чанков проблемы.
+
         // VoxelType voxel = world_getVoxel(world, x, y, z);
         VoxelType voxel = chunk_get(chunk, i, j, k);
         if (curr) {
@@ -96,7 +98,7 @@ VectorImpl(Mesh, MeshVector) VectorImpl(Vertex, Vertices)
             Vertices_append(&mesh.vertices,
                             (Vertex){{x + 1, y + 1, z + 1}, voxel, 0});
 
-            positive_indices(&mesh.indices, size);
+            clockwise_indices(&mesh.indices, size);
           }
           if ((curr & 16)) {
             size_t size = mesh.vertices.size;
@@ -110,7 +112,7 @@ VectorImpl(Mesh, MeshVector) VectorImpl(Vertex, Vertices)
             Vertices_append(&mesh.vertices,
                             (Vertex){{x + 0, y + 1, z + 1}, voxel, 1});
 
-            negative_indices(&mesh.indices, size);
+            aclockwise_indices(&mesh.indices, size);
           }
           if ((curr & 8)) {
             size_t size = mesh.vertices.size;
@@ -124,7 +126,7 @@ VectorImpl(Mesh, MeshVector) VectorImpl(Vertex, Vertices)
             Vertices_append(&mesh.vertices,
                             (Vertex){{x + 1, y + 1, z + 1}, voxel, 2});
 
-            positive_indices(&mesh.indices, size);
+            clockwise_indices(&mesh.indices, size);
           }
           if ((curr & 4)) {
             size_t size = mesh.vertices.size;
@@ -138,7 +140,7 @@ VectorImpl(Mesh, MeshVector) VectorImpl(Vertex, Vertices)
             Vertices_append(&mesh.vertices,
                             (Vertex){{x + 1, y + 0, z + 1}, voxel, 3});
 
-            negative_indices(&mesh.indices, size);
+            aclockwise_indices(&mesh.indices, size);
           }
           if ((curr & 2)) {
             size_t size = mesh.vertices.size;
@@ -152,7 +154,7 @@ VectorImpl(Mesh, MeshVector) VectorImpl(Vertex, Vertices)
             Vertices_append(&mesh.vertices,
                             (Vertex){{x + 1, y + 1, z + 1}, voxel, 4});
 
-            negative_indices(&mesh.indices, size);
+            aclockwise_indices(&mesh.indices, size);
           }
           if ((curr & 1)) {
             size_t size = mesh.vertices.size;
@@ -166,7 +168,7 @@ VectorImpl(Mesh, MeshVector) VectorImpl(Vertex, Vertices)
             Vertices_append(&mesh.vertices,
                             (Vertex){{x + 1, y + 1, z + 0}, voxel, 5});
 
-            positive_indices(&mesh.indices, size);
+            clockwise_indices(&mesh.indices, size);
           }
         }
       }

@@ -3,13 +3,14 @@
 #include <stdlib.h>
 #include <string.h>
 
-struct Chunk chunk_init(int x, int y, int z) {
-  struct Chunk chunk = {
+struct Chunk *chunk_init(int x, int y, int z) {
+  struct Chunk *chunk = malloc(sizeof(struct Chunk));
+  *chunk = (struct Chunk) {
       .position = {x, y, z},
       .data = (uint8_t *)malloc(CHUNK_CSIZE * sizeof(uint8_t)),
       .mesh_index = -1,
   };
-  memset(chunk.data, 0, CHUNK_CSIZE * sizeof(char));
+  memset(chunk->data, 0, CHUNK_CSIZE * sizeof(char));
   return chunk;
 }
 

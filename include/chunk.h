@@ -22,7 +22,7 @@ struct Chunk {
   size_t mesh_index; // uint is 4 bytes
 }; // 24 bytes
 
-struct Chunk chunk_init(int x, int y, int z);
+struct Chunk *chunk_init(int x, int y, int z);
 void chunk_set(struct Chunk *chunk, uint8_t x, uint8_t y, uint8_t z,
                char value);
 uint8_t chunk_get(const struct Chunk *chunk, uint8_t x, uint8_t y, uint8_t z);
