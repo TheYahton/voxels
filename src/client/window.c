@@ -23,22 +23,14 @@ bool windowShouldClose(MyWindow *window) {
   return RGFW_window_shouldClose(window->window);
 }
 
-static void key_callback(RGFW_window *win, u32 keycode,
-                         char keyName[16] __attribute__((__unused__)),
-                         u8 lockState __attribute__((__unused__)), b8 pressed) {
+static void key_callback(RGFW_window* win, u8 key, char keyChar __attribute__((__unused__)), RGFW_keymod keyMod __attribute__((__unused__)), RGFW_bool pressed) {
   MyWindow *my_window = win->userPtr;
 
-  if (keycode < 1024) {
-    if (pressed) {
-      my_window->keys[keycode] = true;
-    } else if (!pressed) {
-      my_window->keys[keycode] = false;
-    }
-  }
+  my_window->keys[key] = pressed;
 
-  if (keycode == RGFW_q && pressed) {
+  if (key == RGFW_q && pressed) {
     RGFW_window_setShouldClose(win);
-  } else if (keycode == RGFW_p && pressed) {
+  } else if (key == RGFW_p && pressed) {
     my_window->polygon_mode = !my_window->polygon_mode;
   }
 }
@@ -55,9 +47,10 @@ MyWindow createWindow(int width, int height) {
 }
 
 int initWindow(MyWindow *window) {
-  RGFW_setGLVersion(RGFW_GL_CORE, 3, 3);
-  window->window = RGFW_createWindow("Voxels", (RGFW_rect){0, 0, 800, 600},
-                                     RGFW_CENTER | RGFW_HIDE_MOUSE);
+  RGFW_setGLHint(RGFW_glMajor, 3);
+  RGFW_setGLHint(RGFW_glMinor, 3);
+  RGFW_setGLHint(RGFW_glProfile, RGFW_glCore);
+  window->window = RGFW_createWindow("Voxels", (RGFW_rect){0, 0, 800, 600}, RGFW_windowCenter | RGFW_windowHideMouse);
   info("The window has been initialized.");
 
   window->window->userPtr = window;

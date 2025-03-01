@@ -41,13 +41,7 @@ int main(void) {
     float dy = 0.0f;
 
     // EVENTS
-    while (RGFW_window_checkEvent(window.window)) {
-      // Mouse rotate camera
-      if (window.window->event.type == RGFW_mousePosChanged) {
-        dx = window.window->event.point.x;
-        dy = window.window->event.point.y;
-      }
-    }
+    RGFW_window_checkEvents(window.window, 0);
 
     // LOGIC
     camera_update(&camera, window.keys, dx, dy, dt);
@@ -67,13 +61,14 @@ int main(void) {
   return 0;
 }
 
+// FIX (RENDER): too many VAO. When the player goes too far the app crashes. I suppose there is a limit of VAO count.
+
 // BUG (SHADERS): voxels' shadows look horrible. Maybe gamma corr or HSV/HSL
 // instead of RGB?
-// BUG (MULTITHREADING): sometimes the game crashes. Fix it!
 
 // PERFORMANCE (MULTITHREADING): some microfreeze happen. Find a cause and annihilate.
 
-// TODO (OPTIMIZATION): there're too many VAO
+// TODO (CAMERA): mouse camera rotation.
 // TODO (REFACTORING): mesh.c looks ugly. Improve it somehow pwease OwO
 // TODO (LOGGING): write the logs to a file in the `logs` folder
 // TODO (DEBUG): hot reloading (hi Zozin)
