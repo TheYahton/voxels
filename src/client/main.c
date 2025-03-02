@@ -37,14 +37,12 @@ int main(void) {
     dt = end - start;
     start = getTime();
 
-    float dx = 0.0f;
-    float dy = 0.0f;
-
     // EVENTS
+    window.dx = 0, window.dy = 0;
     RGFW_window_checkEvents(window.window, 0);
 
     // LOGIC
-    camera_update(&camera, window.keys, dx, dy, dt);
+    camera_update(&camera, window.keys, window.dx, window.dy, dt);
     chunks_load_unload_system(&renderer, world);
 
     // RENDER
@@ -68,7 +66,6 @@ int main(void) {
 
 // PERFORMANCE (MULTITHREADING): some microfreeze happen. Find a cause and annihilate.
 
-// TODO (CAMERA): mouse camera rotation.
 // TODO (REFACTORING): mesh.c looks ugly. Improve it somehow pwease OwO
 // TODO (LOGGING): write the logs to a file in the `logs` folder
 // TODO (DEBUG): hot reloading (hi Zozin)

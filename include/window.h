@@ -9,6 +9,7 @@ typedef struct {
   int width, height;
   bool keys[1024];
   bool polygon_mode;
+  float dx, dy;
 } MyWindow;
 
 void *getProcAddress(const char *name);

@@ -35,6 +35,12 @@ static void key_callback(RGFW_window* win, u8 key, char keyChar __attribute__((_
   }
 }
 
+static void mouse_callback(RGFW_window* win, RGFW_point point __attribute__((__unused__)), RGFW_point vector) {
+  MyWindow *my_window = win->userPtr;
+  my_window->dx = vector.x;
+  my_window->dy = vector.y;
+}
+
 static void resize_callback(RGFW_window *win, RGFW_rect r) {
   MyWindow *my_window = win->userPtr;
   my_window->width = r.w;
@@ -43,7 +49,7 @@ static void resize_callback(RGFW_window *win, RGFW_rect r) {
 }
 
 MyWindow createWindow(int width, int height) {
-  return (MyWindow){NULL, width, height, {false}, false};
+  return (MyWindow){NULL, width, height, {false}, false, 0, 0};
 }
 
 int initWindow(MyWindow *window) {
@@ -51,16 +57,13 @@ int initWindow(MyWindow *window) {
   RGFW_setGLHint(RGFW_glMinor, 3);
   RGFW_setGLHint(RGFW_glProfile, RGFW_glCore);
   window->window = RGFW_createWindow("Voxels", (RGFW_rect){0, 0, 800, 600}, RGFW_windowCenter | RGFW_windowHideMouse);
-  info("The window has been initialized.");
+  info("The window has been initialized. The cursor is disabled.");
 
   window->window->userPtr = window;
 
   RGFW_area size = RGFW_getScreenSize();
   window->width = size.w;
   window->height = size.h;
-
-  // Мы уже скрыли мышь на этапе создания окна с помощью флага RGFW_HIDE_MOUSE
-  info("The cursor has been disabled.");
 
   // TODO: return raw mouse motion back?
   // if (glfwRawMouseMotionSupported()) {
@@ -70,15 +73,15 @@ int initWindow(MyWindow *window) {
   // 	warning("The system does not support raw mouse motion mode.");
   // }
 
-  RGFW_window_mouseHold(window->window, RGFW_AREA(window->window->r.w / 2,
-                                                  window->window->r.h / 2));
+  RGFW_window_mouseHold(window->window, RGFW_AREA(0, 0));
 
   RGFW_window_makeCurrent(window->window);
   info("The OpenGL context has been attached to the window.");
 
   RGFW_setKeyCallback(key_callback);
-  info("The key_callback function handles user input.");
-
+  info("The key_callback function handles keyboard input.");
+  RGFW_setMousePosCallback(mouse_callback);
+  info("The mouse_callback function handles mouse input.");
   RGFW_setWindowResizeCallback(resize_callback);
   info("The resize_callback function handles window size changes.");
 
