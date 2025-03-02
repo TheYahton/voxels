@@ -5,6 +5,7 @@
 #include "render.h"
 
 int main(void) {
+  logging_init();
   MyWindow window = createWindow(800, 600);
   if (initWindow(&window) != 0) {
     return -1;
@@ -55,6 +56,7 @@ int main(void) {
   renderer_free(&renderer);
   windowClose(&window);
   info("The program has terminated.");
+  logging_deinit();
 
   return 0;
 }
@@ -66,7 +68,6 @@ int main(void) {
 
 // PERFORMANCE (MULTITHREADING): some microfreeze happen. Find a cause and annihilate.
 
-// TODO (LOGGING): write the logs to a file in the `logs` folder
 // TODO (DEBUG): hot reloading (hi Zozin)
 // TODO (WORLDGEN): world generation using simplex noise
 // TODO (PHYSICS): basic physics (gravitation, air resistance)

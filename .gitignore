@@ -54,6 +54,9 @@ dkms.conf
 # build folder
 build/
 
+# logs folder
+logs/
+
 # clangd (lsp) config
 .cache
 compile_commands.json
@@ -61,7 +64,3 @@ compile_commands.json
 # nob
 nob
 nob.old
-
-# zig
-.zig-cache
-zig-out
