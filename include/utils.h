@@ -16,6 +16,7 @@ Vec3 vec3_sub(Vec3, Vec3);
 Vec3 vec3_mulf(Vec3, float);
 Vec3 vec3_divf(Vec3, float);
 Vec3 vec3_norm(Vec3);
+Vec3i vec3i_muli(Vec3i, int);
 
 #define Vectorize(type, name)                                                  \
   typedef struct {                                                             \

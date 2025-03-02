@@ -1,9 +1,6 @@
 #define _VECTOR_IMPL
 #include "mesh.h"
 #include "chunk.h"
-#include "world.h"
-
-#include <string.h>
 
 #define clockwise_indices(vec, size)                                           \
   UInt32Vector_append(vec, size + 0);                                          \
@@ -34,13 +31,10 @@ Mesh chunk_genmesh(const struct Chunk *chunk) {
       .vertices = Vertices_init(sizeof(Vertex) * 4, sizeof(Vertex) * 4),
       .indices = UInt32Vector_init(0, 64),
       .visible = true,
+      vec3i_muli(chunk->position, CHUNK_SIZE),
   };
 
-  int chunkX = chunk->position.x * CHUNK_SIZE;
-  int chunkY = chunk->position.y * CHUNK_SIZE;
-  int chunkZ = chunk->position.z * CHUNK_SIZE;
-
-  // I want to create an array of air voxels intersect solid voxels
+  // An array of touches of air and solid voxels.
   // One byte in this array is: 0 0 X+ X- Y+ Y- Z+ Z-
   // where X Y Z are coordinates and + - are representing inc and dec
   uint8_t array[CHUNK_CSIZE] = {0};
@@ -73,104 +67,59 @@ Mesh chunk_genmesh(const struct Chunk *chunk) {
     }
   }
 
-  for (int i = 0; i < CHUNK_SIZE; i++) {
-    for (int j = 0; j < CHUNK_SIZE; j++) {
-      for (int k = 0; k < CHUNK_SIZE; k++) {
-        char curr = array[i + j * CHUNK_SIZE + k * CHUNK_SIZE * CHUNK_SIZE];
-        int x = i + chunkX;
-        int y = j + chunkY;
-        int z = k + chunkZ;
-
-        // TODO: если chunk_get вместо world_getVoxel то на границах чанков проблемы.
-
+  for (int x = 0; x < CHUNK_SIZE; x++) {
+    for (int y = 0; y < CHUNK_SIZE; y++) {
+      for (int z = 0; z < CHUNK_SIZE; z++) {
+        char curr = array[x + y * CHUNK_SIZE + z * CHUNK_SIZE * CHUNK_SIZE];
+        // FIX: если chunk_get вместо world_getVoxel то на границах чанков проблемы.
         // VoxelType voxel = world_getVoxel(world, x, y, z);
-        VoxelType voxel = chunk_get(chunk, i, j, k);
+        VoxelType voxel = chunk_get(chunk, x, y, z);
+        #define magic(n, a, b, c) Vertices_append(&mesh.vertices, (Vertex){{x + a, y + b, z + c}, voxel, n})
         if (curr) {
           if ((curr & 32)) {
-            size_t size = mesh.vertices.size;
-
-            Vertices_append(&mesh.vertices,
-                            (Vertex){{x + 1, y + 0, z + 0}, voxel, 0});
-            Vertices_append(&mesh.vertices,
-                            (Vertex){{x + 1, y + 1, z + 0}, voxel, 0});
-            Vertices_append(&mesh.vertices,
-                            (Vertex){{x + 1, y + 0, z + 1}, voxel, 0});
-            Vertices_append(&mesh.vertices,
-                            (Vertex){{x + 1, y + 1, z + 1}, voxel, 0});
-
-            clockwise_indices(&mesh.indices, size);
+            magic(0, 1, 0, 0);
+            magic(0, 1, 1, 0);
+            magic(0, 1, 0, 1);
+            magic(0, 1, 1, 1);
+            clockwise_indices(&mesh.indices, mesh.vertices.size - 4);
           }
           if ((curr & 16)) {
-            size_t size = mesh.vertices.size;
-
-            Vertices_append(&mesh.vertices,
-                            (Vertex){{x + 0, y + 0, z + 0}, voxel, 1});
-            Vertices_append(&mesh.vertices,
-                            (Vertex){{x + 0, y + 1, z + 0}, voxel, 1});
-            Vertices_append(&mesh.vertices,
-                            (Vertex){{x + 0, y + 0, z + 1}, voxel, 1});
-            Vertices_append(&mesh.vertices,
-                            (Vertex){{x + 0, y + 1, z + 1}, voxel, 1});
-
-            aclockwise_indices(&mesh.indices, size);
+            magic(1, 0, 0, 0);
+            magic(1, 0, 1, 0);
+            magic(1, 0, 0, 1);
+            magic(1, 0, 1, 1);
+            aclockwise_indices(&mesh.indices, mesh.vertices.size - 4);
           }
           if ((curr & 8)) {
-            size_t size = mesh.vertices.size;
-
-            Vertices_append(&mesh.vertices,
-                            (Vertex){{x + 0, y + 1, z + 0}, voxel, 2});
-            Vertices_append(&mesh.vertices,
-                            (Vertex){{x + 0, y + 1, z + 1}, voxel, 2});
-            Vertices_append(&mesh.vertices,
-                            (Vertex){{x + 1, y + 1, z + 0}, voxel, 2});
-            Vertices_append(&mesh.vertices,
-                            (Vertex){{x + 1, y + 1, z + 1}, voxel, 2});
-
-            clockwise_indices(&mesh.indices, size);
+            magic(2, 0, 1, 0);
+            magic(2, 0, 1, 1);
+            magic(2, 1, 1, 0);
+            magic(2, 1, 1, 1);
+            clockwise_indices(&mesh.indices, mesh.vertices.size - 4);
           }
           if ((curr & 4)) {
-            size_t size = mesh.vertices.size;
-
-            Vertices_append(&mesh.vertices,
-                            (Vertex){{x + 0, y + 0, z + 0}, voxel, 3});
-            Vertices_append(&mesh.vertices,
-                            (Vertex){{x + 0, y + 0, z + 1}, voxel, 3});
-            Vertices_append(&mesh.vertices,
-                            (Vertex){{x + 1, y + 0, z + 0}, voxel, 3});
-            Vertices_append(&mesh.vertices,
-                            (Vertex){{x + 1, y + 0, z + 1}, voxel, 3});
-
-            aclockwise_indices(&mesh.indices, size);
+            magic(3, 0, 0, 0);
+            magic(3, 0, 0, 1);
+            magic(3, 1, 0, 0);
+            magic(3, 1, 0, 1);
+            aclockwise_indices(&mesh.indices, mesh.vertices.size - 4);
           }
           if ((curr & 2)) {
-            size_t size = mesh.vertices.size;
-
-            Vertices_append(&mesh.vertices,
-                            (Vertex){{x + 0, y + 0, z + 1}, voxel, 4});
-            Vertices_append(&mesh.vertices,
-                            (Vertex){{x + 0, y + 1, z + 1}, voxel, 4});
-            Vertices_append(&mesh.vertices,
-                            (Vertex){{x + 1, y + 0, z + 1}, voxel, 4});
-            Vertices_append(&mesh.vertices,
-                            (Vertex){{x + 1, y + 1, z + 1}, voxel, 4});
-
-            aclockwise_indices(&mesh.indices, size);
+            magic(4, 0, 0, 1);
+            magic(4, 0, 1, 1);
+            magic(4, 1, 0, 1);
+            magic(4, 1, 1, 1);
+            aclockwise_indices(&mesh.indices, mesh.vertices.size - 4);
           }
           if ((curr & 1)) {
-            size_t size = mesh.vertices.size;
-
-            Vertices_append(&mesh.vertices,
-                            (Vertex){{x + 0, y + 0, z + 0}, voxel, 5});
-            Vertices_append(&mesh.vertices,
-                            (Vertex){{x + 0, y + 1, z + 0}, voxel, 5});
-            Vertices_append(&mesh.vertices,
-                            (Vertex){{x + 1, y + 0, z + 0}, voxel, 5});
-            Vertices_append(&mesh.vertices,
-                            (Vertex){{x + 1, y + 1, z + 0}, voxel, 5});
-
-            clockwise_indices(&mesh.indices, size);
+            magic(5, 0, 0, 0);
+            magic(5, 0, 1, 0);
+            magic(5, 1, 0, 0);
+            magic(5, 1, 1, 0);
+            clockwise_indices(&mesh.indices, mesh.vertices.size - 4);
           }
         }
+        #undef magic
       }
     }
   }

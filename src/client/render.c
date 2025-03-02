@@ -109,17 +109,18 @@ void render(const Renderer *renderer) {
   glUniformMatrix4fv(view_location, 1, GL_FALSE, view[0]);
 
   for (size_t i = 0; i < renderer->VAOs.size; i++) {
-    if (!renderer->meshes.data[i].visible)
+    const Mesh *mesh = &renderer->meshes.data[i];
+    if (!mesh->visible)
       continue;
     mat4 model;
-    vec4 translation = {renderer->camera->position->x,
-                        -renderer->camera->position->y,
-                        renderer->camera->position->z, 0.0f};
+    vec4 translation = {renderer->camera->position->x + mesh->position.x,
+                       -renderer->camera->position->y + mesh->position.y,
+                        renderer->camera->position->z + mesh->position.z, 0.0f};
     glm_mat4_identity(model);
     glm_translate(model, translation);
     glUniformMatrix4fv(model_location, 1, GL_FALSE, model[0]);
     glBindVertexArray(renderer->VAOs.data[i]);
-    glDrawElements(GL_TRIANGLES, renderer->meshes.data[i].indices.size,
+    glDrawElements(GL_TRIANGLES, mesh->indices.size,
                    GL_UNSIGNED_INT,
                    0); // With EBO
 

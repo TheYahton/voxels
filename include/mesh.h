@@ -19,7 +19,8 @@ typedef struct {
   Vertices vertices;    // 20 bytes
   UInt32Vector indices; // 20 bytes
   bool visible;         // 8 bytes
-} Mesh;                 // 48 bytes
+  Vec3i position;       // 12 bytes
+} Mesh;                 // 60 bytes
 
 Mesh chunk_genmesh(const struct Chunk *chunk);
 void mesh_free(Mesh *mesh);

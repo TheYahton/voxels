@@ -66,7 +66,6 @@ int main(void) {
 
 // PERFORMANCE (MULTITHREADING): some microfreeze happen. Find a cause and annihilate.
 
-// TODO (REFACTORING): mesh.c looks ugly. Improve it somehow pwease OwO
 // TODO (LOGGING): write the logs to a file in the `logs` folder
 // TODO (DEBUG): hot reloading (hi Zozin)
 // TODO (WORLDGEN): world generation using simplex noise
