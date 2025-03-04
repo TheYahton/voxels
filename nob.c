@@ -5,48 +5,20 @@
 #define NOB_IMPLEMENTATION
 #include "nob.h"
 
-void append_warnings(Nob_Cmd *cmd) {
-  nob_cmd_append(cmd, "-std=c99", "-Wall", "-Wextra");
-}
+#define WARNINGS "-std=c99", "-Wall", "-Wextra"
 
-void append_common(Nob_Cmd *cmd) {
-  nob_cmd_append(cmd, "src/common/chunk.c", "src/common/logs.c",
-                 "src/common/player.c", "src/common/utils.c",
-                 "src/common/world.c");
-}
+const char* COMMON_FILES[] = {"chunk", "logs", "player", "utils", "world"};
+const size_t COMMON_N = sizeof(COMMON_FILES) / sizeof(char*);
 
-void append_output(Nob_Cmd *cmd, const char *name) {
-  Nob_String_Builder output = {0};
-  nob_sb_append_cstr(&output, "./build/");
-  nob_sb_append_cstr(&output, name);
-  nob_sb_append_null(&output);
-  nob_cmd_append(cmd, "-o", nob_temp_sv_to_cstr(nob_sb_to_sv(output)));
-  nob_sb_free(output);
-}
-
-void append_compiler(Nob_Cmd *cmd, char *CC, char *CFLAGS) {
-  if (CC != NULL) {
-    nob_cmd_append(cmd, CC);
-  } else {
-    nob_cmd_append(cmd, "cc");
-  }
-
-  if (CFLAGS != NULL) {
-    nob_cmd_append(cmd, CFLAGS);
-  }
-}
-
-void include_common(Nob_Cmd *cmd) { nob_cmd_append(cmd, "-I./include"); }
-
-void link_math(Nob_Cmd *cmd) { nob_cmd_append(cmd, "-lm"); }
+const char* CLIENT_FILES[] = {"main", "camera", "mesh", "render", "shader", "window"};
+const size_t CLIENT_N = sizeof(CLIENT_FILES) / sizeof(char*);
 
 bool for_windows(char *CC) {
 #ifdef _WIN32
   return 1;
 #else
-  return (CC != NULL && strcmp(CC, "x86_64-w64-mingw32-gcc") ==
-                            0); // You can compile an executable for Windows on
-                                // a non-Windows system if you use MinGW
+  return strcmp(CC, "x86_64-w64-mingw32-gcc") == 0; // You can compile an executable for Windows on
+                                                    // a non-Windows system if you use MinGW
 #endif
 }
 
@@ -58,115 +30,87 @@ bool for_macos(void) {
 #endif
 }
 
-int build_client(void) {
-  Nob_Cmd cmd = {0};
+bool build_common(Nob_Cmd *cmd, char *cc) {
+  for (size_t i = 0; i < COMMON_N; i++) {
+    nob_cmd_append(cmd, cc, WARNINGS);
+    nob_cmd_append(cmd, nob_temp_sprintf("src/common/%s.c", COMMON_FILES[i]));
+    nob_cmd_append(cmd, "-I./include/", "-I./cglm/include/");
+    nob_cmd_append(cmd, "-c", "-o", nob_temp_sprintf("./build/common/%s.o", COMMON_FILES[i]));
+    if (!nob_cmd_run_sync_and_reset(cmd)) return 0;
+    nob_temp_reset();
+  }
+  return 1;
+}
 
-  char *CC = getenv("CC");
-  char *CFLAGS = getenv("CFLAGS");
+bool build_rgfw(Nob_Cmd *cmd, char *cc) {
+  nob_cmd_append(cmd, cc, "-c", "-x", "c", "-DRGFW_IMPLEMENTATION", "./RGFW/RGFW.h", "-o", "./build/rgfw.o");
+  if (!nob_cmd_run_sync_and_reset(cmd)) return 0;
+  return 1;
+}
 
-  append_compiler(&cmd, CC, CFLAGS);
-  append_warnings(&cmd);
-
-  // SOURCE FILES
-  append_common(&cmd);
-  nob_cmd_append(&cmd, "src/client/main.c", "src/client/camera.c",
-                 "src/client/mesh.c", "src/client/render.c",
-                 "src/client/shader.c", "src/client/window.c");
-
-  // LINKING
-  include_common(&cmd);
-
-  DIR *cglm_dir = opendir("cglm/include");
-  if ((!cglm_dir) || (!nob_file_exists("RGFW/RGFW.h"))) {
-    closedir(cglm_dir);
-
-    Nob_Cmd autoinit = {0};
-    nob_cmd_append(&autoinit, "git", "submodule", "init");
-    if (!nob_cmd_run_sync(autoinit))
-      return -1;
-
-    Nob_Cmd autoupdate = {0};
-    nob_cmd_append(&autoupdate, "git", "submodule", "update", "--depth=1");
-    if (!nob_cmd_run_sync(autoupdate))
-      return -1;
+bool build_client(Nob_Cmd *cmd, char *cc) {
+  // COMPILE
+  for (size_t i = 0; i < CLIENT_N; i++) {
+    nob_cmd_append(cmd, cc, WARNINGS);
+    nob_cmd_append(cmd, nob_temp_sprintf("src/client/%s.c", CLIENT_FILES[i]));
+    nob_cmd_append(cmd, "-I./include/", "-I./cglm/include/", "-I./RGFW/");
+    nob_cmd_append(cmd, "-c", "-o", nob_temp_sprintf("./build/client/%s.o", CLIENT_FILES[i]));
+    if (!nob_cmd_run_sync_and_reset(cmd)) return 0;
+    nob_temp_reset();
   }
 
-  nob_cmd_append(&cmd, "-I./cglm/include");
-  nob_cmd_append(&cmd, "-I./RGFW/");
-
-  link_math(&cmd);
+  // LINK
+  nob_cmd_append(cmd, cc);
+  for (size_t i = 0; i < CLIENT_N; i++) {
+    nob_cmd_append(cmd, nob_temp_sprintf("./build/client/%s.o", CLIENT_FILES[i]));
+  }
+  for (size_t i = 0; i < COMMON_N; i++) {
+    nob_cmd_append(cmd, nob_temp_sprintf("./build/common/%s.o", COMMON_FILES[i]));
+  }
+  nob_cmd_append(cmd, "./build/rgfw.o");
+  nob_cmd_append(cmd, "-lm");
 
   // Windows
-  if (for_windows(CC)) {
-    nob_cmd_append(&cmd, "-lopengl32", "-lshell32", "-lgdi32", "-lwinmm");
-    append_output(&cmd, "client.exe");
+  if (for_windows(cc)) {
+    nob_cmd_append(cmd, "-lopengl32", "-lshell32", "-lgdi32", "-lwinmm");
+    nob_cmd_append(cmd, "-o", "./build/voxels.exe");
   }
   // MacOS
   else if (for_macos()) {
-    nob_cmd_append(&cmd, "-framework", "Foundation", "-framework", "AppKit",
+    nob_cmd_append(cmd, "-framework", "Foundation", "-framework", "AppKit",
                    "-framework", "OpenGL", "-framework", "CoreVideo");
-    append_output(&cmd, "client");
+    nob_cmd_append(cmd, "-o", "./build/voxels");
   }
   // Linux
   else {
-    nob_cmd_append(&cmd, "-lX11", "-lGL", "-lXrandr");
-    append_output(&cmd, "client");
+    nob_cmd_append(cmd, "-lX11", "-lGL", "-lXrandr");
+    nob_cmd_append(cmd, "-o", "./build/voxels");
   }
 
-  if (!nob_cmd_run_sync(cmd))
-    return 1;
-
-  nob_cmd_free(cmd);
-
-  return 0;
-}
-
-int build_server(void) {
-  Nob_Cmd cmd = {0};
-
-  char *CC = getenv("CC");
-  char *CFLAGS = getenv("CFLAGS");
-
-  append_compiler(&cmd, CC, CFLAGS);
-  append_warnings(&cmd);
-
-  // SOURCE FILES
-  append_common(&cmd);
-  nob_cmd_append(&cmd, "src/server/main.c");
-
-  // LINKING
-  include_common(&cmd);
-  link_math(&cmd);
-
-  // Windows
-  if (for_windows(CC)) {
-    append_output(&cmd, "server.exe");
-  }
-  // Other
-  else {
-    append_output(&cmd, "server");
+  if (!nob_cmd_run_sync_and_reset(cmd)) {
+    nob_temp_reset();
+    return 0;
   }
 
-  if (!nob_cmd_run_async(cmd)) {
-    return 1;
-  }
-
-  nob_cmd_free(cmd);
-
-  return 0;
+  nob_temp_reset();
+  return 1;
 }
 
 int main(int argc, char **argv) {
   NOB_GO_REBUILD_URSELF(argc, argv);
 
-  if (!nob_mkdir_if_not_exists("build/"))
-    return 1;
+  Nob_Cmd cmd = {0};
+  
+  char *cc = getenv("CC");
+  if (cc == NULL) cc = "cc";
 
-  if (build_client() != 0)
-    return -1;
+  if (!nob_mkdir_if_not_exists("build/")) return 1;
+  if (!nob_mkdir_if_not_exists("build/client")) return 1;
+  if (!nob_mkdir_if_not_exists("build/common")) return 1;
 
-  if (build_server() != 0)
-    return -1;
+  if (!build_common(&cmd, cc)) return 1;
+  if (!build_rgfw(&cmd, cc)) return 1;
+  if (!build_client(&cmd, cc)) return 1;
 
   return 0;
 }

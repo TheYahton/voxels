@@ -72,8 +72,7 @@ int main(void) {
 // render distance, speed, sensitivity)
 // TODO (NEW SYSTEM): level of details (LoD)
 
-// OPTIMIZE (BUILD): build libs to obj file ONCE, then link with other stuff (it
-// will improve build speed) OPTIMIZE (BUILD): fully incremental build system
+// OPTIMIZE (BUILD): fully incremental build system
 // OPTIMIZE (WORLDGEN): generate chunks in second thread?
 // OPTIMIZE (MESHGEN, SHADERS): optimize vertex size: compress all data in one
 // 32 bit integer OPTIMIZE (MESHGEN): mesh generating: create 8 vertex per voxel

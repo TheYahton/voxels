@@ -3,7 +3,6 @@
 #include "shader.h"
 
 #define RGFW_EXPORT
-#define RGFW_IMPLEMENTATION
 #include <RGFW.h>
 
 RGFW_window *win;
