@@ -5,7 +5,8 @@
 #include "logs.h"
 #include "shader.h"
 #include "window.h"
-#include <cglm/cglm.h>
+
+#include "../../cglm/include/cglm/cglm.h"
 
 #define DEFAULT_RENDER_DISTANCE 4
 

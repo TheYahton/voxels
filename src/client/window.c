@@ -3,7 +3,8 @@
 #include "shader.h"
 
 #define RGFW_EXPORT
-#include <RGFW.h>
+#include "../../RGFW/RGFW.h"
+
 
 RGFW_window *win;
 float mouse_dx, mouse_dy;
