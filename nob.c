@@ -8,10 +8,8 @@
 #define WARNINGS "-std=c99", "-Wall", "-Wextra"
 
 const char* COMMON_FILES[] = {"chunk", "logs", "player", "utils", "world"};
-const size_t COMMON_N = sizeof(COMMON_FILES) / sizeof(char*);
 
 const char* CLIENT_FILES[] = {"main", "camera", "mesh", "render", "shader", "window"};
-const size_t CLIENT_N = sizeof(CLIENT_FILES) / sizeof(char*);
 
 bool for_windows(char *CC) {
 #ifdef _WIN32
@@ -31,7 +29,7 @@ bool for_macos(void) {
 }
 
 bool build_common(Nob_Cmd *cmd, char *cc) {
-  for (size_t i = 0; i < COMMON_N; i++) {
+  for (size_t i = 0; i < NOB_ARRAY_LEN(COMMON_FILES); i++) {
     nob_cmd_append(cmd, cc, WARNINGS);
     nob_cmd_append(cmd, nob_temp_sprintf("src/common/%s.c", COMMON_FILES[i]));
     nob_cmd_append(cmd, "-I./include/");
@@ -50,7 +48,7 @@ bool build_rgfw(Nob_Cmd *cmd, char *cc) {
 
 bool build_client(Nob_Cmd *cmd, char *cc) {
   // COMPILE
-  for (size_t i = 0; i < CLIENT_N; i++) {
+  for (size_t i = 0; i < NOB_ARRAY_LEN(CLIENT_FILES); i++) {
     nob_cmd_append(cmd, cc, WARNINGS);
     nob_cmd_append(cmd, nob_temp_sprintf("src/client/%s.c", CLIENT_FILES[i]));
     nob_cmd_append(cmd, "-I./include/");
@@ -61,10 +59,10 @@ bool build_client(Nob_Cmd *cmd, char *cc) {
 
   // LINK
   nob_cmd_append(cmd, cc);
-  for (size_t i = 0; i < CLIENT_N; i++) {
+  for (size_t i = 0; i < NOB_ARRAY_LEN(CLIENT_FILES); i++) {
     nob_cmd_append(cmd, nob_temp_sprintf("./build/client/%s.o", CLIENT_FILES[i]));
   }
-  for (size_t i = 0; i < COMMON_N; i++) {
+  for (size_t i = 0; i < NOB_ARRAY_LEN(COMMON_FILES); i++) {
     nob_cmd_append(cmd, nob_temp_sprintf("./build/common/%s.o", COMMON_FILES[i]));
   }
   nob_cmd_append(cmd, "./build/rgfw.o");
@@ -72,7 +70,7 @@ bool build_client(Nob_Cmd *cmd, char *cc) {
 
   // Windows
   if (for_windows(cc)) {
-    nob_cmd_append(cmd, "-lopengl32", "-lshell32", "-lgdi32", "-lwinmm");
+    nob_cmd_append(cmd, "-lopengl32", "-lshell32", "-lgdi32", "-lwinmm", "-pthread");
     nob_cmd_append(cmd, "-o", "./build/voxels.exe");
   }
   // MacOS

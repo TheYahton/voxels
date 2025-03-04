@@ -8,7 +8,9 @@
 #define HEIGHT 600
 
 int main(void) {
-  logging_init();
+  if (!logging_init()) {
+    return -1;
+  }
   window_create(TITLE, WIDTH, HEIGHT);
 
   if (loadGL((GLADloadfunc)getProcAddress) != 0) {

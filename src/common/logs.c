@@ -1,7 +1,13 @@
 #include <stdio.h>
 #include <time.h>
-#include <stdlib.h>
 #include <sys/stat.h>
+#include "logs.h"
+
+#ifdef _WIN32
+#define lmkdir(dir) mkdir(dir)
+#else
+#define lmkdir(dir) mkdir(dir, 0755)
+#endif // _WIN32
 
 #define INFO_FORMAT "[%s] [INFO]: %s\n"
 #define WARNING_FORMAT "[%s] [WARNING]: %s\n"
@@ -17,16 +23,17 @@ static void formatted_time(char *buffer) {
 
 FILE *f;
 
-void logging_init() {
-  mkdir("logs", 0777);
+int logging_init(void) {
+  lmkdir("logs");
   f = fopen("logs/latest.log", "w+");
   if (!f) {
     perror("ERROR! Cannot open logs/latest.log file");
-    exit(0);
+    return -1;
   }
+  return 0;
 }
 
-void logging_deinit() {
+void logging_deinit(void) {
   fclose(f);
 }
 
