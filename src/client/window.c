@@ -65,14 +65,6 @@ int initWindow(MyWindow *window) {
   window->width = size.w;
   window->height = size.h;
 
-  // TODO: return raw mouse motion back?
-  // if (glfwRawMouseMotionSupported()) {
-  // 	glfwSetInputMode(window->window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
-  // 	info("Raw mouse motion mode enabled.");
-  // } else {
-  // 	warning("The system does not support raw mouse motion mode.");
-  // }
-
   RGFW_window_mouseHold(window->window, RGFW_AREA(0, 0));
 
   RGFW_window_makeCurrent(window->window);

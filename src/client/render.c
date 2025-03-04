@@ -1,28 +1,22 @@
 #define GLAD_GL_IMPLEMENTATION
+#define _GNU_SOURCE
 
 #include "render.h"
 #include "logs.h"
 #include "shader.h"
 #include <cglm/cglm.h>
 
+#define DEFAULT_RENDER_DISTANCE 4
+
 uint32_t render_create_shader(void) {
-  uint32_t vertex_shader =
-      compile_shader("shaders/default.vert", GL_VERTEX_SHADER);
-  if (!vertex_shader) {
-    return 0;
-  }
+  uint32_t vertex_shader = compile_shader("shaders/default.vert", GL_VERTEX_SHADER);
+  if (!vertex_shader) return 0;
 
-  uint32_t fragment_shader =
-      compile_shader("shaders/default.frag", GL_FRAGMENT_SHADER);
-  if (!fragment_shader) {
-    return 0;
-  }
+  uint32_t fragment_shader = compile_shader("shaders/default.frag", GL_FRAGMENT_SHADER);
+  if (!fragment_shader) return 0;
 
-  uint32_t shader_program =
-      compile_shader_program(vertex_shader, fragment_shader);
-  if (!shader_program) {
-    return 0;
-  }
+  uint32_t shader_program = compile_shader_program(vertex_shader, fragment_shader);
+  if (!shader_program) return 0;
 
   // После линкинга в шейдерной программе они больше не нужны
   glDeleteShader(vertex_shader);
@@ -81,18 +75,12 @@ void render(const Renderer *renderer) {
   glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  if (*renderer->polygon_mode) {
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-  } else {
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-  }
+  glPolygonMode(GL_FRONT_AND_BACK, renderer->polygon_mode ? GL_FILL : GL_LINE);
 
   mat4 projection;
-  glm_perspective_default((float)*renderer->width / (float)*renderer->height,
-                          projection);
+  glm_perspective_default((float)*renderer->width / (float)*renderer->height, projection);
   glm_persp_move_far(projection, renderer->render_distance * CHUNK_SIZE);
-  int projection_location =
-      glGetUniformLocation(renderer->shader_program, "projection");
+  int projection_location = glGetUniformLocation(renderer->shader_program, "projection");
 
   int model_location = glGetUniformLocation(renderer->shader_program, "model");
 
@@ -110,8 +98,7 @@ void render(const Renderer *renderer) {
 
   for (size_t i = 0; i < renderer->VAOs.size; i++) {
     const Mesh *mesh = &renderer->meshes.data[i];
-    if (!mesh->visible)
-      continue;
+    if (!mesh->visible) continue;
     mat4 model;
     vec4 translation = {renderer->camera->position->x + mesh->position.x,
                        -renderer->camera->position->y + mesh->position.y,
@@ -134,17 +121,19 @@ int loadGL(GLADloadfunc func) {
     error("Failed to initialize OpenGL context.");
     return -1;
   }
-  info("OpenGL loaded successfully.");
+
+  char *string;
+  if (0 > asprintf(&string, "OpenGL loaded successfully. Version: %d", version)) return 0;
+  info(string);
+  free(string);
   return 0;
 }
-
-#define RENDER_DISTANCE 4
 
 Renderer renderer_init(const MyWindow *window, const Camera *camera) {
   Renderer renderer = {
       &window->polygon_mode,    render_create_shader(),
       &window->width,           &window->height,
-      RENDER_DISTANCE,          MeshVector_init(0, 64),
+      DEFAULT_RENDER_DISTANCE,          MeshVector_init(0, 64),
       UInt32Vector_init(0, 64), SizeVector_init(0, 64),
       SizeVector_init(0, 64),   camera,
   };
@@ -162,14 +151,8 @@ size_t SizeVector_find(SizeVector *vec, size_t value) {
 }
 
 void chunks_load_unload_system(Renderer *renderer, struct World *world) {
-  // Сейчас это работает ужасно, но когда появится отдельный поток для генерации
-  // чанков можно будет запрашивать генерацию чанков только во время
-  // передвижения игрока.
-  // static Vec3 last_pos = {0};
-  // if (vec3_length(vec3_sub(*renderer->camera->position, last_pos)) < 0.01)
-    // return;
   Vec3 last_pos = *renderer->camera->position;
-  world_getChunkCube(&renderer->should_load, world, last_pos, RENDER_DISTANCE);
+  world_getChunkCube(&renderer->should_load, world, last_pos, renderer->render_distance);
 
   for (size_t i = 0; i < renderer->should_load.size; i++) {
     size_t index = renderer->should_load.data[i];
