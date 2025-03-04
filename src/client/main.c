@@ -1,18 +1,18 @@
-#define RGFW_EXPORT
-
 #include "logs.h"
 #include "player.h"
 #include "render.h"
+#include "window.h"
+
+#define TITLE "Voxels"
+#define WIDTH 800
+#define HEIGHT 600
 
 int main(void) {
   logging_init();
-  MyWindow window = createWindow(800, 600);
-  if (initWindow(&window) != 0) {
-    return -1;
-  }
+  window_create(TITLE, WIDTH, HEIGHT);
 
   if (loadGL((GLADloadfunc)getProcAddress) != 0) {
-    windowClose(&window);
+    window_close();
     return -1;
   }
 
@@ -25,36 +25,27 @@ int main(void) {
       .direction = {0.0f, 0.0f, 0.0f},
   };
   Camera camera = {&player.position, &player.direction, &player.speed};
-  Renderer renderer = renderer_init(&window, &camera);
-
-  render_preparation(window.width, window.height);
+  Renderer renderer = renderer_init(&camera);
 
   info("The program has been fully initialized. Starting the game loop...");
-
-  double start = 0.0f;
-  double end = 0.0f;
-  double dt = 0.0f;
-  while (!windowShouldClose(&window)) {
-    dt = end - start;
-    start = getTime();
+  while (!window_shouldClose()) {
+    float dt = window_clock();
 
     // EVENTS
-    window.dx = 0, window.dy = 0;
-    RGFW_window_checkEvents(window.window, 0);
+    window_mouseAbsorb();
+    window_pollEvents();
 
     // LOGIC
-    camera_update(&camera, window.keys, window.dx, window.dy, dt);
+    camera_update(&camera, dt);
     chunks_load_unload_system(&renderer, world);
 
     // RENDER
     render(&renderer);
-    swapBuffer(&window);
-
-    end = getTime();
+    window_swapBuffers();
   }
   world_free(world);
   renderer_free(&renderer);
-  windowClose(&window);
+  window_close();
   info("The program has terminated.");
   logging_deinit();
 

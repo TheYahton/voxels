@@ -4,6 +4,7 @@
 #include "render.h"
 #include "logs.h"
 #include "shader.h"
+#include "window.h"
 #include <cglm/cglm.h>
 
 #define DEFAULT_RENDER_DISTANCE 4
@@ -64,21 +65,16 @@ uint32_t render_create_vao(const Mesh *mesh) {
   return VAO;
 }
 
-void render_preparation(int width, int height) {
-  glViewport(0, 0, width, height);
-
-  glEnable(GL_DEPTH_TEST);
-  glEnable(GL_CULL_FACE);
-}
-
 void render(const Renderer *renderer) {
   glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  glPolygonMode(GL_FRONT_AND_BACK, renderer->polygon_mode ? GL_FILL : GL_LINE);
+  // glPolygonMode(GL_FRONT_AND_BACK, renderer->polygon_mode ? GL_FILL : GL_LINE);
 
   mat4 projection;
-  glm_perspective_default((float)*renderer->width / (float)*renderer->height, projection);
+  int width, height;
+  window_getSize(&width, &height);
+  glm_perspective_default((float)width / (float)height, projection);
   glm_persp_move_far(projection, renderer->render_distance * CHUNK_SIZE);
   int projection_location = glGetUniformLocation(renderer->shader_program, "projection");
 
@@ -129,16 +125,18 @@ int loadGL(GLADloadfunc func) {
   return 0;
 }
 
-Renderer renderer_init(const MyWindow *window, const Camera *camera) {
-  Renderer renderer = {
-      &window->polygon_mode,    render_create_shader(),
-      &window->width,           &window->height,
-      DEFAULT_RENDER_DISTANCE,          MeshVector_init(0, 64),
-      UInt32Vector_init(0, 64), SizeVector_init(0, 64),
-      SizeVector_init(0, 64),   camera,
+Renderer renderer_init(const Camera *camera) {
+  glEnable(GL_DEPTH_TEST);
+  glEnable(GL_CULL_FACE);
+  return (Renderer) {
+    .shader_program = render_create_shader(),
+    .render_distance = DEFAULT_RENDER_DISTANCE,
+    .meshes = MeshVector_init(0, 64),
+    .VAOs = UInt32Vector_init(0, 64),
+    .loaded = SizeVector_init(0, 64),
+    .should_load = SizeVector_init(0, 64),
+    .camera = camera,
   };
-
-  return renderer;
 }
 
 size_t SizeVector_find(SizeVector *vec, size_t value) {

@@ -9,6 +9,5 @@ typedef struct {
   float *speed;
 } Camera;
 
-void camera_update(Camera *camera, bool keys[1024], float dx, float dy,
-                   float dt);
+void camera_update(Camera *camera, float dt);
 #endif // _CAMERA_H

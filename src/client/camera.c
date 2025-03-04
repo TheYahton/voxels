@@ -1,5 +1,3 @@
-#define RGFW_EXPORT
-#include <RGFW.h>
 #include <math.h>
 
 #ifndef M_PI_2
@@ -7,13 +5,15 @@
 #endif
 
 #include "camera.h"
+#include "window.h"
 
-void camera_update(Camera *camera, bool keys[1024], float dx, float dy,
-                   float dt) {
+void camera_update(Camera *camera, float dt) {
+  float dx, dy;
+  window_getMouse(&dx, &dy);
   // Update camera rotation
   {
-    int up = keys[RGFW_up] - keys[RGFW_down];
-    int left = keys[RGFW_left] - keys[RGFW_right];
+    int up = window_isPressed(WKEY_UP) - window_isPressed(WKEY_DOWN);
+    int left = window_isPressed(WKEY_LEFT) - window_isPressed(WKEY_RIGHT);
 
     camera->direction->y += up * dt;
     camera->direction->x += left * dt;
@@ -25,9 +25,9 @@ void camera_update(Camera *camera, bool keys[1024], float dx, float dy,
 
   // Update camera position
   {
-    int forward = keys[RGFW_w] - keys[RGFW_s];
-    int left = keys[RGFW_a] - keys[RGFW_d];
-    int up = keys[RGFW_space] - keys[RGFW_shiftL];
+    int forward = window_isPressed(WKEY_W) - window_isPressed(WKEY_S);
+    int left = window_isPressed(WKEY_A) - window_isPressed(WKEY_D);
+    int up = window_isPressed(WKEY_SPACE) - window_isPressed(WKEY_SHIFTL);
 
     camera->position->z += (forward * cos(camera->direction->x) -
                             left * sin(camera->direction->x)) *

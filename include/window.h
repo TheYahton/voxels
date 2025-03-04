@@ -1,24 +1,32 @@
-#include <RGFW.h>
+#ifndef _WINDOW_H
+#define _WINDOW_H
 
 #include <stdbool.h>
 
-#ifndef _WINDOW_H
-#define _WINDOW_H
-typedef struct {
-  RGFW_window *window;
-  int width, height;
-  bool keys[1024];
-  bool polygon_mode;
-  float dx, dy;
-} MyWindow;
+enum Key {
+  WKEY_UP,
+  WKEY_DOWN,
+  WKEY_RIGHT,
+  WKEY_LEFT,
+  WKEY_W,
+  WKEY_A,
+  WKEY_S,
+  WKEY_D,
+  WKEY_SPACE,
+  WKEY_SHIFTL,
+};
 
 void *getProcAddress(const char *name);
-MyWindow createWindow(int width, int height);
-int initWindow(MyWindow *window);
-void getWindowSize(MyWindow *window, int *width, int *height);
-void swapBuffer(MyWindow *window);
-bool windowShouldClose(MyWindow *window);
-void windowClose(MyWindow *window);
-void windowPollEvents(MyWindow *window);
-double getTime(void);
+bool window_create(const char *name, int width, int height);
+void window_close(void);
+float window_clock(void);
+void window_getSize(int *width, int *height);
+void window_getMouse(float *dx, float *dy);
+void window_mouseAbsorb(void);
+double window_getTime(void);
+bool window_isPressed(enum Key);
+void window_pollEvents(void);
+void window_swapBuffers(void);
+bool window_shouldClose(void);
+
 #endif // _WINDOW_H
