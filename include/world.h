@@ -7,7 +7,7 @@
 
 typedef struct Chunk Chunk;
 
-Vectorize(Chunk*, ChunkVector)
+Vectorize(Chunk *, ChunkVector);
 
 struct Task {
   int x;

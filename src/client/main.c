@@ -2,6 +2,7 @@
 #include "player.h"
 #include "render.h"
 #include "window.h"
+#include "world.h"
 
 #define TITLE "Voxels"
 #define WIDTH 800

@@ -5,6 +5,7 @@
 #include "logs.h"
 #include "shader.h"
 #include "window.h"
+#include "world.h"
 
 #include "../../cglm/include/cglm/cglm.h"
 

@@ -3,7 +3,6 @@
 
 #include "chunk.h"
 #include "utils.h"
-#include "world.h"
 
 #include <stdbool.h>
 
@@ -13,7 +12,7 @@ typedef struct {
   uint32_t normal;   // 4 bytes
 } Vertex;            // 20 bytes
 
-Vectorize(Vertex, Vertices)
+Vectorize(Vertex, Vertices);
 
 typedef struct {
   Vertices vertices;    // 20 bytes
@@ -25,6 +24,6 @@ typedef struct {
 Mesh chunk_genmesh(const struct Chunk *chunk);
 void mesh_free(Mesh *mesh);
 
-Vectorize(Mesh, MeshVector)
+Vectorize(Mesh, MeshVector);
 
 #endif // _MESH_H

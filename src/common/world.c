@@ -9,8 +9,8 @@
 #include <unistd.h>
 #include <math.h>
 
-VectorImpl(Chunk*, ChunkVector);
-VectorImpl(struct Task, Tasks);
+VectorImpl(Chunk *, ChunkVector)
+VectorImpl(struct Task, Tasks)
 
 static int mod(int a, int b) {
   int r = a % b;

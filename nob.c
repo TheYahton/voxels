@@ -5,9 +5,9 @@
 #define NOB_IMPLEMENTATION
 #include "nob.h"
 
-#define WARNINGS "-std=c99", "-Wall", "-Wextra"
+#define WARNINGS "-std=c99", "-Wall", "-Wextra", "-pedantic"
 
-const char* COMMON_FILES[] = {"chunk", "logs", "player", "utils", "world"};
+const char* COMMON_FILES[] = {"chunk", "logs", "utils", "world"};
 
 const char* CLIENT_FILES[] = {"main", "camera", "mesh", "render", "shader", "window"};
 

@@ -1,11 +1,12 @@
-#ifndef _GLAD_H
-#define _GLAD_H
+#ifndef _RENDER_H
+#define _RENDER_H
+
 #include <glad/gl.h>
-#endif // _GLAD_H
 
 #define RGFW_EXPORT
 #include "camera.h"
 #include "mesh.h"
+#include "world.h"
 #include <stdbool.h>
 
 typedef struct {
@@ -26,3 +27,5 @@ Renderer renderer_init(const Camera *camera);
 void renderer_free(Renderer *renderer);
 void render(const Renderer *renderer);
 int loadGL(GLADloadfunc func);
+
+#endif // _RENDER_H

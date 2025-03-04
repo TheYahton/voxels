@@ -1,4 +1,3 @@
-// #include <cglm/cglm.h>
 #include <stddef.h>
 
 #ifndef _UTILS_H
@@ -26,7 +25,7 @@ Vec3i vec3i_muli(Vec3i, int);
     size_t step;                                                               \
   } name;                                                                      \
   name name##_init(size_t capacity, size_t step);                              \
-  void name##_append(name *vec, type value);
+  void name##_append(name *vec, type value)
 
 #ifdef _VECTOR_IMPL
 #include <stdlib.h>
@@ -52,7 +51,9 @@ Vec3i vec3i_muli(Vec3i, int);
 #endif // _VECTOR_IMPL
 
 #include <stdint.h>
-Vectorize(float, FloatVector) Vectorize(unsigned int, UnsignedIntVector)
-    Vectorize(uint32_t, UInt32Vector) Vectorize(size_t, SizeVector)
+Vectorize(float, FloatVector);
+Vectorize(unsigned int, UnsignedIntVector);
+Vectorize(uint32_t, UInt32Vector);
+Vectorize(size_t, SizeVector);
 
 #endif // _UTILS_H
