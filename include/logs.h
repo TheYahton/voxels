@@ -1,4 +1,6 @@
-int logging_init(void);
+#include <stdbool.h>
+
+bool logging_init(void);
 void logging_deinit(void);
 void info(const char *text);
 void warning(const char *text);

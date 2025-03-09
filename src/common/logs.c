@@ -23,14 +23,14 @@ static void formatted_time(char *buffer) {
 
 FILE *f;
 
-int logging_init(void) {
+bool logging_init(void) {
   lmkdir("logs");
   f = fopen("logs/latest.log", "w+");
   if (!f) {
     perror("ERROR! Cannot open logs/latest.log file");
-    return -1;
+    return 0;
   }
-  return 0;
+  return 1;
 }
 
 void logging_deinit(void) {

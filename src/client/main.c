@@ -7,6 +7,7 @@
 #define TITLE "Voxels"
 #define WIDTH 800
 #define HEIGHT 600
+#define PLAYER_SPEED 40.0f
 
 int main(void) {
   if (!logging_init()) {
@@ -24,7 +25,7 @@ int main(void) {
       .position = {0.0f, 2.0f, 0.0f},
       .velocity = {0.0f, 0.0f, 0.0f},
       .acceleration = {0.0f, 0.0f, 0.0f},
-      .speed = 40.0f,
+      .speed = PLAYER_SPEED,
       .direction = {0.0f, 0.0f, 0.0f},
   };
   Camera camera = {&player.position, &player.direction, &player.speed};
