@@ -10,10 +10,12 @@
 void camera_update(Camera *camera, float dt) {
   float dx, dy;
   window_getMouse(&dx, &dy);
+  bool *keys = window_getKeys();
+
   // Update camera rotation
   {
-    int up = window_isPressed(WKEY_UP) - window_isPressed(WKEY_DOWN);
-    int left = window_isPressed(WKEY_LEFT) - window_isPressed(WKEY_RIGHT);
+    int up = keys[WKEY_UP] - keys[WKEY_DOWN];
+    int left = keys[WKEY_LEFT] - keys[WKEY_RIGHT];
 
     camera->direction->y += up * dt;
     camera->direction->x += left * dt;
@@ -25,9 +27,9 @@ void camera_update(Camera *camera, float dt) {
 
   // Update camera position
   {
-    int forward = window_isPressed(WKEY_W) - window_isPressed(WKEY_S);
-    int left = window_isPressed(WKEY_A) - window_isPressed(WKEY_D);
-    int up = window_isPressed(WKEY_SPACE) - window_isPressed(WKEY_SHIFTL);
+    int forward = keys[WKEY_W] - keys[WKEY_S];
+    int left = keys[WKEY_A] - keys[WKEY_D];
+    int up = keys[WKEY_SPACE] - keys[WKEY_SHIFTL];
 
     camera->position->z += (forward * cos(camera->direction->x) -
                             left * sin(camera->direction->x)) *

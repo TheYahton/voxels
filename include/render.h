@@ -25,7 +25,7 @@ uint32_t render_create_shader(void);
 uint32_t render_create_vao(const Mesh *mesh);
 Renderer renderer_init(const Camera *camera);
 void renderer_free(Renderer *renderer);
-void render(const Renderer *renderer);
+void render(const Renderer *renderer, int width, int height);
 int loadGL(GLADloadfunc func);
 
 #endif // _RENDER_H

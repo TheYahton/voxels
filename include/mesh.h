@@ -2,7 +2,6 @@
 #define _MESH_H
 
 #include "chunk.h"
-#include "utils.h"
 
 #include <stdbool.h>
 

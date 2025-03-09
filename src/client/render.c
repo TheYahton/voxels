@@ -4,8 +4,6 @@
 #include "render.h"
 #include "logs.h"
 #include "shader.h"
-#include "window.h"
-#include "world.h"
 
 #include "../../cglm/include/cglm/cglm.h"
 
@@ -67,15 +65,13 @@ uint32_t render_create_vao(const Mesh *mesh) {
   return VAO;
 }
 
-void render(const Renderer *renderer) {
+void render(const Renderer *renderer, int width, int height) {
   glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   // glPolygonMode(GL_FRONT_AND_BACK, renderer->polygon_mode ? GL_FILL : GL_LINE);
 
   mat4 projection;
-  int width, height;
-  window_getSize(&width, &height);
   glm_perspective_default((float)width / (float)height, projection);
   glm_persp_move_far(projection, renderer->render_distance * CHUNK_SIZE);
   int projection_location = glGetUniformLocation(renderer->shader_program, "projection");

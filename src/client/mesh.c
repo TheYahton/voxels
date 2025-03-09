@@ -1,6 +1,5 @@
 #define _VECTOR_IMPL
 #include "mesh.h"
-#include "chunk.h"
 
 #define clockwise_indices(vec, size)                                           \
   UInt32Vector_append(vec, size + 0);                                          \

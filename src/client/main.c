@@ -16,6 +16,7 @@ int main(void) {
   window_create(TITLE, WIDTH, HEIGHT);
 
   if (loadGL((GLADloadfunc)getProcAddress) != 0) {
+    error("Cannot load OpenGL.");
     window_close();
     return -1;
   }
@@ -38,13 +39,15 @@ int main(void) {
     // EVENTS
     window_mouseAbsorb();
     window_pollEvents();
+    int width, height;
+    window_getSize(&width, &height);
 
     // LOGIC
     camera_update(&camera, dt);
     chunks_load_unload_system(&renderer, world);
 
     // RENDER
-    render(&renderer);
+    render(&renderer, width, height);
     window_swapBuffers();
   }
   world_free(world);
@@ -63,6 +66,7 @@ int main(void) {
 
 // PERFORMANCE (MULTITHREADING): some microfreeze happen. Find a cause and annihilate.
 
+// TODO (RENDER): return back the ability to change the current rendering mode (wireframe)
 // TODO (DEBUG): hot reloading (hi Zozin)
 // TODO (WORLDGEN): world generation using simplex noise
 // TODO (PHYSICS): basic physics (gravitation, air resistance)

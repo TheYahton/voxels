@@ -3,7 +3,7 @@
 
 #include <stdbool.h>
 
-enum Key {
+typedef char WKey; enum {
   WKEY_UP,
   WKEY_DOWN,
   WKEY_RIGHT,
@@ -20,11 +20,12 @@ void *getProcAddress(const char *name);
 bool window_create(const char *name, int width, int height);
 void window_close(void);
 float window_clock(void);
+void *window_getKeys(void);
 void window_getSize(int *width, int *height);
 void window_getMouse(float *dx, float *dy);
 void window_mouseAbsorb(void);
 double window_getTime(void);
-bool window_isPressed(enum Key);
+bool window_isPressed(WKey);
 void window_pollEvents(void);
 void window_swapBuffers(void);
 bool window_shouldClose(void);
