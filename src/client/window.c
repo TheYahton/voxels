@@ -16,7 +16,7 @@ static void mouse_callback(RGFW_window*, RGFW_point, RGFW_point);
 static void resize_callback(RGFW_window*, RGFW_rect);
 
 u8 wkey2rgfw(char wkey) {
-  unsigned char rgfw_key;
+  unsigned char rgfw_key = 0;
   switch (wkey) {
   case WKEY_UP:     rgfw_key = RGFW_up; break;
   case WKEY_DOWN:   rgfw_key = RGFW_down; break;
@@ -33,7 +33,7 @@ u8 wkey2rgfw(char wkey) {
 }
 
 u8 rgfw2wkey(u8 rgfw_key) {
-  unsigned char wkey;
+  unsigned char wkey = 0;
   switch (rgfw_key) {
   case RGFW_up:     wkey = WKEY_UP; break;
   case RGFW_down:   wkey = WKEY_DOWN; break;

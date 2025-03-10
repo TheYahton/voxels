@@ -25,7 +25,7 @@ void *test(void *ptr) {
   while (running) {
     if (world->exit) running = false;
     pthread_mutex_lock(&world->mutex);
-    if (world->tasks.size > 0) {
+    while (world->tasks.size > 0) {
       struct Task task = world->tasks.data[world->tasks.size-1];
       world->tasks.size--;
       pthread_mutex_unlock(&world->mutex);
@@ -34,6 +34,7 @@ void *test(void *ptr) {
       ChunkVector_append(&world->chunks, chunk);
     }
     pthread_mutex_unlock(&world->mutex);
+    usleep(10000); // 10ms
   }
   return NULL;
 }

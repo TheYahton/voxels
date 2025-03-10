@@ -4,6 +4,7 @@
 #include <stdbool.h>
 
 typedef char WKey; enum {
+  WKEY_NULL,
   WKEY_UP,
   WKEY_DOWN,
   WKEY_RIGHT,
