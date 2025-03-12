@@ -162,4 +162,6 @@ void world_free(struct World *world) {
   for (size_t i = 0; i < world->chunks.size; i++)
     chunk_free(world->chunks.data[i]);
   free(world->chunks.data);
+  free(world->tasks.data);
+  free(world);
 }

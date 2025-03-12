@@ -29,4 +29,7 @@ uint8_t chunk_get(const struct Chunk *chunk, uint8_t x, uint8_t y, uint8_t z) {
   return chunk->data[x + y * CHUNK_SIZE + z * CHUNK_SIZE * CHUNK_SIZE];
 }
 
-void chunk_free(struct Chunk *chunk) { free(chunk->data); }
+void chunk_free(struct Chunk *chunk) {
+  free(chunk->data);
+  free(chunk);
+}
