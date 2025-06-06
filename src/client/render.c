@@ -32,8 +32,8 @@ uint32_t render_create_shader(void) {
 }
 
 uint32_t render_create_vao(const Mesh *mesh) {
-  const Vertices *vertices = &mesh->vertices;
-  const UInt32Vector *indices = &mesh->indices;
+  const struct Vertices *vertices = &mesh->vertices;
+  const struct UInt32Array *indices = &mesh->indices;
 
   // WARNING: A DUNGER STARTS!
   uint32_t VAO; // Vertex Attribute Object(?)
@@ -134,15 +134,15 @@ Renderer renderer_init(const Camera *camera) {
   return (Renderer) {
     .shader_program = render_create_shader(),
     .render_distance = DEFAULT_RENDER_DISTANCE,
-    .meshes = MeshVector_init(0, 64),
-    .VAOs = UInt32Vector_init(0, 64),
-    .loaded = SizeVector_init(0, 64),
-    .should_load = SizeVector_init(0, 64),
+    .meshes = {0},
+    .VAOs = {0},
+    .loaded = {0},
+    .should_load = {0},
     .camera = camera,
   };
 }
 
-size_t SizeVector_find(SizeVector *vec, size_t value) {
+size_t SizeArray_find(struct SizeArray *vec, size_t value) {
   for (size_t i = 0; i < vec->size; i++) {
     if (vec->data[i] == value) {
       return i;
@@ -158,13 +158,13 @@ void chunks_load_unload_system(Renderer *renderer, struct World *world) {
   for (size_t i = 0; i < renderer->should_load.size; i++) {
     size_t index = renderer->should_load.data[i];
     pthread_mutex_lock(&world->mutex);
-    Chunk *chunk = world->chunks.data[index];
-    if (SizeVector_find(&renderer->loaded, index) == SIZE_MAX) {
-      MeshVector_append(&renderer->meshes, chunk_genmesh(chunk));
+    Chunk *chunk = &world->chunks.data[index];
+    if (SizeArray_find(&renderer->loaded, index) == SIZE_MAX) {
+      DArray_push(&renderer->meshes, chunk_genmesh(chunk));
       size_t mesh_index = renderer->meshes.size - 1;
-      UInt32Vector_append(&renderer->VAOs, render_create_vao(&renderer->meshes.data[mesh_index]));
+      DArray_push(&renderer->VAOs, render_create_vao(&renderer->meshes.data[mesh_index]));
       chunk->mesh_index = mesh_index;
-      SizeVector_append(&renderer->loaded, index);
+      DArray_push(&renderer->loaded, index);
     }
     pthread_mutex_unlock(&world->mutex);
   }
@@ -172,8 +172,8 @@ void chunks_load_unload_system(Renderer *renderer, struct World *world) {
   for (size_t i = 0; i < renderer->loaded.size; i++) {
     size_t loaded_index = renderer->loaded.data[i];
     pthread_mutex_lock(&world->mutex);
-    const Chunk *chunk = world->chunks.data[loaded_index];
-    if (SizeVector_find(&renderer->should_load, loaded_index) == SIZE_MAX) {
+    const Chunk *chunk = &world->chunks.data[loaded_index];
+    if (SizeArray_find(&renderer->should_load, loaded_index) == SIZE_MAX) {
       renderer->meshes.data[chunk->mesh_index].visible = false;
     } else {
       renderer->meshes.data[chunk->mesh_index].visible = true;

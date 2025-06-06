@@ -16,41 +16,35 @@ Vec3 vec3_divf(Vec3, float);
 Vec3 vec3_norm(Vec3);
 Vec3i vec3i_muli(Vec3i, int);
 
-#define Vectorize(type, name)                                                  \
-  typedef struct {                                                             \
-    type *data;                                                                \
-    size_t capacity;                                                           \
-    size_t size;                                                               \
-    size_t step;                                                               \
-  } name;                                                                      \
-  name name##_init(size_t capacity, size_t step);                              \
-  void name##_append(name *vec, type value)
+struct UInt32Array {
+  size_t size;
+  size_t capacity;
+  uint32_t *data;
+};
 
-#ifdef VECTOR_IMPL
-#define VectorImpl(type, name)                                                 \
-  name name##_init(size_t capacity, size_t step) {                             \
-    type *data = (type *)malloc(capacity * sizeof(type));                      \
-    return (name){                                                             \
-        data,                                                                  \
-        capacity,                                                              \
-        0,                                                                     \
-        step,                                                                  \
-    };                                                                         \
-  }                                                                            \
-                                                                               \
-  void name##_append(name *vec, type value) {                                  \
-    if (vec->size >= vec->capacity) {                                          \
-      vec->capacity += vec->step;                                              \
-      vec->data = (type *)realloc(vec->data, vec->capacity * sizeof(type));    \
-    }                                                                          \
-    vec->data[vec->size] = value;                                              \
-    vec->size++;                                                               \
-  }
-#endif // VECTOR_IMPL
+struct SizeArray {
+  size_t size;
+  size_t capacity;
+  size_t *data;
+};
 
-Vectorize(float, FloatVector);
-Vectorize(unsigned int, UnsignedIntVector);
-Vectorize(uint32_t, UInt32Vector);
-Vectorize(size_t, SizeVector);
+#define DArray_get(arr, i) ((arr)->data + (i))
+// #define DArray_push(arr, item) DArray_append(arr, item, 1)
+#define DArray_push(arr, item) do {\
+  if ((arr)->size + 1 > (arr)->capacity) DArray_extend((arr), 1 - ((arr)->capacity - (arr)->size));\
+  (arr)->data[(arr)->size++] = (item);\
+} while (0)
+// Copy the data somewhere before next push or append.
+#define DArray_pop(arr) DArray_get(arr, --(arr)->size)
+#define DArray_free(arr) free((arr).data)
+#define DArray_extend(arr, n) do {\
+  (arr)->capacity += (n);\
+  (arr)->data = realloc((arr)->data, sizeof((arr)->data[0]) * (arr)->capacity);\
+} while (0)
+#define DArray_append(arr, src, n) do {\
+  if ((arr)->size + (n) > (arr)->capacity) DArray_extend((arr), (n) - ((arr)->capacity - (arr)->size));\
+  memcpy(DArray_get((arr), (arr)->size), (src), (n) * sizeof((arr)->data[0]));\
+  (arr)->size += (n);\
+} while (0)
 
 #endif // UTILS_H

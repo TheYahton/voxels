@@ -8,20 +8,16 @@
 #include <unistd.h>
 #include <math.h>
 
-#define VECTOR_IMPL
 #include "world.h"
 #include "chunk.h"
 #include "utils.h"
-
-VectorImpl(Chunk *, ChunkVector)
-VectorImpl(struct Task, Tasks)
 
 static int mod(int a, int b) {
   int r = a % b;
   return r < 0 ? r + b : r;
 }
 
-static Chunk *generateChunk(int cx, int cy, int cz);
+static Chunk generateChunk(int cx, int cy, int cz);
 
 void *test(void *ptr) {
   struct World *world = ptr;
@@ -33,9 +29,9 @@ void *test(void *ptr) {
       struct Task task = world->tasks.data[world->tasks.size-1];
       world->tasks.size--;
       pthread_mutex_unlock(&world->mutex);
-      Chunk *chunk = generateChunk(task.x, task.y, task.z);
+      Chunk chunk = generateChunk(task.x, task.y, task.z);
       pthread_mutex_lock(&world->mutex);
-      ChunkVector_append(&world->chunks, chunk);
+      DArray_push(&world->chunks, chunk);
     }
     pthread_mutex_unlock(&world->mutex);
     usleep(10000); // 10ms
@@ -50,17 +46,17 @@ struct World *world_init(void) {
   pthread_mutex_t m;
   pthread_mutex_init(&m, NULL);
   *world = (struct World) {
-    ChunkVector_init(0, 64),
-    Tasks_init(64, 64),
-    thread,
-    m,
-    false,
+    .chunks = {0},
+    .tasks = {0},
+    .thread = thread,
+    .mutex = m,
+    .exit = false,
   };
   return world;
 }
 
-static Chunk *generateChunk(int cx, int cy, int cz) {
-  Chunk *chunk = chunk_init(cx, cy, cz);
+static Chunk generateChunk(int cx, int cy, int cz) {
+  Chunk chunk = chunk_init(cx, cy, cz);
   VoxelType voxel = mod(cx, 5) + 1;
 
   for (size_t i = 0; i < CHUNK_CSIZE; i++) {
@@ -74,7 +70,7 @@ static Chunk *generateChunk(int cx, int cy, int cz) {
     int dz = z - CHUNK_SIZE / 2;
     int squared_dist = dx * dx + dy * dy + dz * dz;
     if (squared_dist < CHUNK_SIZE * CHUNK_SIZE / 16) {
-      chunk->data[i] = voxel;
+      chunk.data[i] = voxel;
     }
   }
 
@@ -87,7 +83,7 @@ static size_t world_getChunk(struct World *world, int x, int y, int z) {
   pthread_mutex_lock(&world->mutex);
   size_t size = world->chunks.size;
   for (size_t i = 0; i < size; i++) {
-    Chunk *chunk = world->chunks.data[i];
+    Chunk *chunk = &world->chunks.data[i];
     if (chunk->position.x == x && chunk->position.y == y && chunk->position.z == z) {
       pthread_mutex_unlock(&world->mutex);
       return i;
@@ -109,7 +105,7 @@ uint8_t world_getVoxel(struct World *world, int x, int y, int z) {
   size_t chunk_index = world_getChunk(world, chunkX, chunkY, chunkZ);
   Chunk *chunk = NULL;
   if (chunk_index != SIZE_MAX) {
-    chunk = world->chunks.data[chunk_index];
+    chunk = &world->chunks.data[chunk_index];
   }
   return chunk_get(chunk, voxelX, voxelY, voxelZ);
 }
@@ -126,7 +122,7 @@ void world_setVoxel(struct World *world, int x, int y, int z, uint8_t value) {
   size_t chunk_index = world_getChunk(world, chunkX, chunkY, chunkZ);
   Chunk *chunk = NULL;
   if (chunk_index != SIZE_MAX) {
-    chunk = world->chunks.data[chunk_index];
+    chunk = &world->chunks.data[chunk_index];
   }
   chunk_set(chunk, voxelX, voxelY, voxelZ, value);
 }
@@ -139,7 +135,7 @@ void world_orderChunk(struct World *world, int x, int y, int z) {
     struct Task task = world->tasks.data[i];
     if (task.x == x && task.y == y && task.z == z) { found = true; break; }
   }
-  if (!found) Tasks_append(&world->tasks, (struct Task) { x, y, z });
+  if (!found) { struct Task t = { x, y, z }; DArray_push(&world->tasks, t); }
   pthread_mutex_unlock(&world->mutex);
 }
 
@@ -152,7 +148,7 @@ size_t world_getChunkOrGenerate(struct World *world, int x, int y, int z) {
 // Adds chunks around given position to vector
 // If needed chunks are not generated then it'll generate them.
 // WARNING: This function is very slow because it calls `world_getChunk()`
-void world_getChunkCube(SizeVector *vec, struct World *world, Vec3 around, int radius) {
+void world_getChunkCube(struct SizeArray *vec, struct World *world, Vec3 around, int radius) {
   int chunkX = floorf((-around.x + CHUNK_SIZE / 2.0f) / CHUNK_SIZE);
   int chunkY = floorf((around.y + CHUNK_SIZE / 2.0f) / CHUNK_SIZE);
   int chunkZ = floorf((-around.z + CHUNK_SIZE / 2.0f) / CHUNK_SIZE);
@@ -161,7 +157,7 @@ void world_getChunkCube(SizeVector *vec, struct World *world, Vec3 around, int r
       for (int z = -radius; z < radius; z++) {
         size_t chunk_index = world_getChunkOrGenerate(world, chunkX + x, chunkY + y, chunkZ + z);
         if (chunk_index == SIZE_MAX) continue;
-        SizeVector_append(vec, chunk_index);
+	DArray_push(vec, chunk_index);
       }
     }
   }
@@ -170,9 +166,7 @@ void world_getChunkCube(SizeVector *vec, struct World *world, Vec3 around, int r
 void world_free(struct World *world) {
   world->exit = true;
   pthread_join(world->thread, NULL);
-  for (size_t i = 0; i < world->chunks.size; i++)
-    chunk_free(world->chunks.data[i]);
-  free(world->chunks.data);
-  free(world->tasks.data);
+  DArray_free(world->chunks);
+  DArray_free(world->tasks);
   free(world);
 }

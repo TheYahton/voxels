@@ -5,7 +5,11 @@
 
 typedef struct Chunk Chunk;
 
-Vectorize(Chunk *, ChunkVector);
+struct ChunkArray {
+  size_t size;
+  size_t capacity;
+  Chunk *data;
+};
 
 struct Task {
   int x;
@@ -13,11 +17,15 @@ struct Task {
   int z;
 };
 
-Vectorize(struct Task, Tasks);
+struct TaskArray {
+  size_t size;
+  size_t capacity;
+  struct Task *data;
+};
 
 struct World {
-  ChunkVector chunks;
-  Tasks tasks;
+  struct ChunkArray chunks;
+  struct TaskArray tasks;
   pthread_t thread;
   pthread_mutex_t mutex;
   bool exit;
@@ -26,7 +34,7 @@ struct World {
 struct World *world_init(void);
 uint8_t world_getVoxel(struct World *world, int x, int y, int z);
 void world_setVoxel(struct World *world, int x, int y, int z, uint8_t value);
-void world_getChunkCube(SizeVector *vec, struct World *world, Vec3 around,
+void world_getChunkCube(struct SizeArray *vec, struct World *world, Vec3 around,
                         int radius);
 void world_free(struct World *world);
 

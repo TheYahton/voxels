@@ -9,18 +9,26 @@ typedef struct {
   uint32_t normal;
 } Vertex;
 
-Vectorize(Vertex, Vertices);
+struct Vertices {
+  size_t size;
+  size_t capacity;
+  Vertex *data;
+};
 
 typedef struct {
-  Vertices vertices;
-  UInt32Vector indices;
+  struct Vertices vertices;
+  struct UInt32Array indices;
   bool visible;
   Vec3i position;
 } Mesh;
 
+struct MeshArray {
+  size_t size;
+  size_t capacity;
+  Mesh *data;
+};
+
 Mesh chunk_genmesh(const struct Chunk *chunk);
 void mesh_free(Mesh *mesh);
-
-Vectorize(Mesh, MeshVector);
 
 #endif /* MESH_H */

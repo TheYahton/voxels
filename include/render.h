@@ -8,10 +8,10 @@
 typedef struct {
   uint32_t shader_program;
   unsigned int render_distance;
-  MeshVector meshes;
-  UInt32Vector VAOs;
-  SizeVector loaded;
-  SizeVector should_load;
+  struct MeshArray meshes;
+  struct UInt32Array VAOs;
+  struct SizeArray loaded;
+  struct SizeArray should_load;
   const Camera *camera;
 } Renderer;
 

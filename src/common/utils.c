@@ -3,7 +3,6 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-#define VECTOR_IMPL
 #include "utils.h"
 
 float vec3_length(Vec3 v) { return sqrt(v.x * v.x + v.y * v.y + v.z * v.z); }
@@ -46,6 +45,3 @@ Vec3i vec3i_muli(Vec3i v, int s) {
 // 		printf("\n");
 // 	}
 // }
-
-VectorImpl(float, FloatVector) VectorImpl(unsigned int, UnsignedIntVector)
-    VectorImpl(uint32_t, UInt32Vector) VectorImpl(size_t, SizeVector)

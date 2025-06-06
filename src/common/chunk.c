@@ -4,14 +4,12 @@
 
 #include "chunk.h"
 
-struct Chunk *chunk_init(int x, int y, int z) {
-  struct Chunk *chunk = malloc(sizeof(struct Chunk));
-  *chunk = (struct Chunk) {
+struct Chunk chunk_init(int x, int y, int z) {
+  struct Chunk chunk = {
       .position = {x, y, z},
-      .data = (uint8_t *)malloc(CHUNK_CSIZE * sizeof(uint8_t)),
       .mesh_index = -1,
+      .data = {0},
   };
-  memset(chunk->data, 0, CHUNK_CSIZE * sizeof(char));
   return chunk;
 }
 
@@ -28,9 +26,4 @@ uint8_t chunk_get(const struct Chunk *chunk, uint8_t x, uint8_t y, uint8_t z) {
     return -1;
   }
   return chunk->data[x + y * CHUNK_SIZE + z * CHUNK_SIZE * CHUNK_SIZE];
-}
-
-void chunk_free(struct Chunk *chunk) {
-  free(chunk->data);
-  free(chunk);
 }

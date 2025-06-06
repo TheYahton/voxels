@@ -3,26 +3,23 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-#define VECTOR_IMPL
 #include "mesh.h"
 
 #define clockwise_indices(vec, size)                                           \
-  UInt32Vector_append(vec, size + 0);                                          \
-  UInt32Vector_append(vec, size + 1);                                          \
-  UInt32Vector_append(vec, size + 2);                                          \
-  UInt32Vector_append(vec, size + 3);                                          \
-  UInt32Vector_append(vec, size + 2);                                          \
-  UInt32Vector_append(vec, size + 1);
+  DArray_push(vec, size + 0);                                          \
+  DArray_push(vec, size + 1);                                          \
+  DArray_push(vec, size + 2);                                          \
+  DArray_push(vec, size + 3);                                          \
+  DArray_push(vec, size + 2);                                          \
+  DArray_push(vec, size + 1);
 
 #define aclockwise_indices(vec, size)                                          \
-  UInt32Vector_append(vec, size + 0);                                          \
-  UInt32Vector_append(vec, size + 2);                                          \
-  UInt32Vector_append(vec, size + 1);                                          \
-  UInt32Vector_append(vec, size + 3);                                          \
-  UInt32Vector_append(vec, size + 1);                                          \
-  UInt32Vector_append(vec, size + 2);
-
-VectorImpl(Mesh, MeshVector) VectorImpl(Vertex, Vertices)
+  DArray_push(vec, size + 0);                                          \
+  DArray_push(vec, size + 2);                                          \
+  DArray_push(vec, size + 1);                                          \
+  DArray_push(vec, size + 3);                                          \
+  DArray_push(vec, size + 1);                                          \
+  DArray_push(vec, size + 2);
 
 #define getFace(a, b, c, n)                                                    \
   temp = chunk_get(chunk, x + a, y + b, z + c);                                \
@@ -32,8 +29,8 @@ VectorImpl(Mesh, MeshVector) VectorImpl(Vertex, Vertices)
 
 Mesh chunk_genmesh(const struct Chunk *chunk) {
   Mesh mesh = {
-      .vertices = Vertices_init(sizeof(Vertex) * 4, sizeof(Vertex) * 4),
-      .indices = UInt32Vector_init(0, 64),
+      .vertices = {0},
+      .indices = {0},
       .visible = true,
       vec3i_muli(chunk->position, CHUNK_SIZE),
   };
@@ -78,7 +75,8 @@ Mesh chunk_genmesh(const struct Chunk *chunk) {
         // FIX: если chunk_get вместо world_getVoxel то на границах чанков проблемы.
         // VoxelType voxel = world_getVoxel(world, x, y, z);
         VoxelType voxel = chunk_get(chunk, x, y, z);
-        #define magic(n, a, b, c) Vertices_append(&mesh.vertices, (Vertex){{x + a, y + b, z + c}, voxel, n})
+	Vertex v;
+        #define magic(n, a, b, c) v = (Vertex){{x + a, y + b, z + c}, voxel, n}; DArray_push(&mesh.vertices, v)
         if (curr) {
           if ((curr & 32)) {
             magic(0, 1, 0, 0);
