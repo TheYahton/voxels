@@ -131,8 +131,26 @@ void world_setVoxel(struct World *world, int x, int y, int z, uint8_t value) {
   chunk_set(chunk, voxelX, voxelY, voxelZ, value);
 }
 
+void world_orderChunk(struct World *world, int x, int y, int z) {
+  bool found = false;
+  pthread_mutex_lock(&world->mutex);
+  // TODO: switch to smth like Tasks_find(...)
+  for (size_t i = 0; i < world->tasks.size; i++) {
+    struct Task task = world->tasks.data[i];
+    if (task.x == x && task.y == y && task.z == z) { found = true; break; }
+  }
+  if (!found) Tasks_append(&world->tasks, (struct Task) { x, y, z });
+  pthread_mutex_unlock(&world->mutex);
+}
+
+size_t world_getChunkOrGenerate(struct World *world, int x, int y, int z) {
+  size_t chunk_index = world_getChunk(world, x, y, z);
+  if (chunk_index == SIZE_MAX) world_orderChunk(world, x, y, z);
+  return chunk_index;
+}
+
 // Adds chunks around given position to vector
-// If needed chunks are not generated then it'll generate it.
+// If needed chunks are not generated then it'll generate them.
 // WARNING: This function is very slow because it calls `world_getChunk()`
 void world_getChunkCube(SizeVector *vec, struct World *world, Vec3 around, int radius) {
   int chunkX = floorf((-around.x + CHUNK_SIZE / 2.0f) / CHUNK_SIZE);
@@ -141,20 +159,9 @@ void world_getChunkCube(SizeVector *vec, struct World *world, Vec3 around, int r
   for (int x = -radius; x < radius; x++) {
     for (int y = -radius; y < radius; y++) {
       for (int z = -radius; z < radius; z++) {
-        int rx = chunkX + x, ry = chunkY + y, rz = chunkZ + z;
-        size_t chunk_index = world_getChunk(world, rx, ry, rz);
-        if (chunk_index != SIZE_MAX) {
-          SizeVector_append(vec, chunk_index);
-        } else {
-          bool here = false;
-          pthread_mutex_lock(&world->mutex);
-          for (size_t i = 0; i < world->tasks.size; i++) {
-            struct Task task = world->tasks.data[i];
-            if (task.x == rx && task.y == ry && task.z == rz) here = true;
-          }
-          if (!here) Tasks_append(&world->tasks, (struct Task) {chunkX + x, chunkY + y, chunkZ + z});
-          pthread_mutex_unlock(&world->mutex);
-        }
+        size_t chunk_index = world_getChunkOrGenerate(world, chunkX + x, chunkY + y, chunkZ + z);
+        if (chunk_index == SIZE_MAX) continue;
+        SizeVector_append(vec, chunk_index);
       }
     }
   }
