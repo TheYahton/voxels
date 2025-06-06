@@ -2,8 +2,10 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include <pthread.h>
 
 #include "mesh.h"
+#include "chunk.h"
 
 #define clockwise_indices(vec, size)                                           \
   DArray_push(vec, size + 0);                                          \
@@ -27,7 +29,10 @@
     result = n | result;                                                       \
   }
 
-Mesh chunk_genmesh(const struct Chunk *chunk) {
+Mesh chunk_genmesh(struct World *world, size_t index) {
+  pthread_mutex_lock(&world->mutex);
+  struct Chunk *chunk = &world->chunks.data[index];
+
   Mesh mesh = {
       .vertices = {0},
       .indices = {0},
@@ -125,6 +130,7 @@ Mesh chunk_genmesh(const struct Chunk *chunk) {
       }
     }
   }
+  pthread_mutex_unlock(&world->mutex);
 
   return mesh;
 }

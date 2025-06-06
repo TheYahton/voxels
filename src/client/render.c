@@ -9,6 +9,7 @@
 #include "render.h"
 #include "logs.h"
 #include "shader.h"
+#include "chunk.h"
 
 #include "../../cglm/include/cglm/cglm.h"
 
@@ -157,28 +158,33 @@ void chunks_load_unload_system(Renderer *renderer, struct World *world) {
 
   for (size_t i = 0; i < renderer->should_load.size; i++) {
     size_t index = renderer->should_load.data[i];
-    pthread_mutex_lock(&world->mutex);
-    Chunk *chunk = &world->chunks.data[index];
     if (SizeArray_find(&renderer->loaded, index) == SIZE_MAX) {
-      DArray_push(&renderer->meshes, chunk_genmesh(chunk));
+      DArray_push(&renderer->meshes, chunk_genmesh(world, index));
       size_t mesh_index = renderer->meshes.size - 1;
       DArray_push(&renderer->VAOs, render_create_vao(&renderer->meshes.data[mesh_index]));
+
+      pthread_mutex_lock(&world->mutex);
+      Chunk *chunk = &world->chunks.data[index];
       chunk->mesh_index = mesh_index;
+      pthread_mutex_unlock(&world->mutex);
+
       DArray_push(&renderer->loaded, index);
     }
-    pthread_mutex_unlock(&world->mutex);
   }
 
   for (size_t i = 0; i < renderer->loaded.size; i++) {
     size_t loaded_index = renderer->loaded.data[i];
+
     pthread_mutex_lock(&world->mutex);
     const Chunk *chunk = &world->chunks.data[loaded_index];
-    if (SizeArray_find(&renderer->should_load, loaded_index) == SIZE_MAX) {
-      renderer->meshes.data[chunk->mesh_index].visible = false;
-    } else {
-      renderer->meshes.data[chunk->mesh_index].visible = true;
-    }
+    size_t mesh_index = chunk->mesh_index;
     pthread_mutex_unlock(&world->mutex);
+
+    if (SizeArray_find(&renderer->should_load, loaded_index) == SIZE_MAX) {
+      renderer->meshes.data[mesh_index].visible = false;
+    } else {
+      renderer->meshes.data[mesh_index].visible = true;
+    }
   }
 
   renderer->should_load.size = 0;
@@ -186,10 +192,10 @@ void chunks_load_unload_system(Renderer *renderer, struct World *world) {
 
 void renderer_free(Renderer *renderer) {
   for (size_t i = 0; i < renderer->meshes.size; i++) {
-    free(renderer->meshes.data[i].vertices.data);
-    free(renderer->meshes.data[i].indices.data);
+    DArray_free(renderer->meshes.data[i].vertices);
+    DArray_free(renderer->meshes.data[i].indices);
   }
-  free(renderer->meshes.data);
-  free(renderer->should_load.data);
-  free(renderer->loaded.data);
+  DArray_free(renderer->meshes);
+  DArray_free(renderer->should_load);
+  DArray_free(renderer->loaded);
 }

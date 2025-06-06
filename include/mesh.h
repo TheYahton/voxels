@@ -1,7 +1,7 @@
 #ifndef _MESH_H
 #define _MESH_H
 
-#include "chunk.h"
+#include "world.h"
 
 typedef struct {
   float position[3];
@@ -28,7 +28,7 @@ struct MeshArray {
   Mesh *data;
 };
 
-Mesh chunk_genmesh(const struct Chunk *chunk);
+Mesh chunk_genmesh(struct World *world, size_t index);
 void mesh_free(Mesh *mesh);
 
 #endif /* MESH_H */
