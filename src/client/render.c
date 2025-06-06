@@ -1,5 +1,10 @@
-#define GLAD_GL_IMPLEMENTATION
 #define _GNU_SOURCE
+#include <stdint.h>
+#include <stdbool.h>
+#include <pthread.h>
+
+#define GLAD_GL_IMPLEMENTATION
+#include <glad/gl.h>
 
 #include "render.h"
 #include "logs.h"

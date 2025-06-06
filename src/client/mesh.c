@@ -1,4 +1,9 @@
-#define _VECTOR_IMPL
+#include <stdbool.h>
+#include <stddef.h>
+#include <stdint.h>
+#include <stdlib.h>
+
+#define VECTOR_IMPL
 #include "mesh.h"
 
 #define clockwise_indices(vec, size)                                           \

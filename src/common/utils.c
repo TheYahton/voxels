@@ -1,5 +1,9 @@
 #include <math.h>
-#define _VECTOR_IMPL
+#include <stddef.h>
+#include <stdint.h>
+#include <stdlib.h>
+
+#define VECTOR_IMPL
 #include "utils.h"
 
 float vec3_length(Vec3 v) { return sqrt(v.x * v.x + v.y * v.y + v.z * v.z); }

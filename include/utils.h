@@ -1,7 +1,6 @@
-#include <stddef.h>
+#ifndef UTILS_H
+#define UTILS_H
 
-#ifndef _UTILS_H
-#define _UTILS_H
 typedef struct {
   float x, y, z;
 } Vec3;
@@ -27,8 +26,7 @@ Vec3i vec3i_muli(Vec3i, int);
   name name##_init(size_t capacity, size_t step);                              \
   void name##_append(name *vec, type value)
 
-#ifdef _VECTOR_IMPL
-#include <stdlib.h>
+#ifdef VECTOR_IMPL
 #define VectorImpl(type, name)                                                 \
   name name##_init(size_t capacity, size_t step) {                             \
     type *data = (type *)malloc(capacity * sizeof(type));                      \
@@ -48,12 +46,11 @@ Vec3i vec3i_muli(Vec3i, int);
     vec->data[vec->size] = value;                                              \
     vec->size++;                                                               \
   }
-#endif // _VECTOR_IMPL
+#endif // VECTOR_IMPL
 
-#include <stdint.h>
 Vectorize(float, FloatVector);
 Vectorize(unsigned int, UnsignedIntVector);
 Vectorize(uint32_t, UInt32Vector);
 Vectorize(size_t, SizeVector);
 
-#endif // _UTILS_H
+#endif // UTILS_H

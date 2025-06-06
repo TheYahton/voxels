@@ -1,13 +1,17 @@
-#define _VECTOR_IMPL
-#include "world.h"
-#include "chunk.h"
-#include "utils.h"
-
+#include <stdbool.h>
+#include <stdint.h>
 #include <stdio.h>
+#include <stdlib.h>
+
 #include <pthread.h>
 #define __USE_MISC
 #include <unistd.h>
 #include <math.h>
+
+#define VECTOR_IMPL
+#include "world.h"
+#include "chunk.h"
+#include "utils.h"
 
 VectorImpl(Chunk *, ChunkVector)
 VectorImpl(struct Task, Tasks)

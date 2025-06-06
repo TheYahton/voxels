@@ -1,7 +1,8 @@
-#include "chunk.h"
-
+#include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include "chunk.h"
 
 struct Chunk *chunk_init(int x, int y, int z) {
   struct Chunk *chunk = malloc(sizeof(struct Chunk));

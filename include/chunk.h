@@ -1,5 +1,5 @@
-#ifndef _CHUNK_H
-#define _CHUNK_H
+#ifndef CHUNK_H
+#define CHUNK_H
 
 #include "utils.h"
 
@@ -10,17 +10,17 @@ typedef enum {
   Grass,
   Sand,
   Water,
-  TypeCount,
+  TypeCount
 } VoxelType;
 
 #define CHUNK_SIZE 32
 #define CHUNK_CSIZE (CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE)
 
 struct Chunk {
-  Vec3i position;    // Vec3i is 3 * 4 bytes = 12 bytes
-  uint8_t *data;     // ptr is 8 bytes
-  size_t mesh_index; // uint is 4 bytes
-}; // 24 bytes
+  Vec3i position;
+  uint8_t *data;
+  size_t mesh_index;
+};
 
 struct Chunk *chunk_init(int x, int y, int z);
 void chunk_set(struct Chunk *chunk, uint8_t x, uint8_t y, uint8_t z,
@@ -28,4 +28,4 @@ void chunk_set(struct Chunk *chunk, uint8_t x, uint8_t y, uint8_t z,
 uint8_t chunk_get(const struct Chunk *chunk, uint8_t x, uint8_t y, uint8_t z);
 void chunk_free(struct Chunk *chunk);
 
-#endif // _CHUNK_H
+#endif /* CHUNK_H */

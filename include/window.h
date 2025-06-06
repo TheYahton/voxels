@@ -1,7 +1,5 @@
-#ifndef _WINDOW_H
-#define _WINDOW_H
-
-#include <stdbool.h>
+#ifndef WINDOW_H
+#define WINDOW_H
 
 typedef char WKey; enum {
   WKEY_NULL,
@@ -31,4 +29,4 @@ void window_pollEvents(void);
 void window_swapBuffers(void);
 bool window_shouldClose(void);
 
-#endif // _WINDOW_H
+#endif /* WINDOW_H */

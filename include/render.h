@@ -1,22 +1,17 @@
-#ifndef _RENDER_H
-#define _RENDER_H
+#ifndef RENDER_H
+#define RENDER_H
 
-#include <glad/gl.h>
-
-#define RGFW_EXPORT
 #include "camera.h"
 #include "mesh.h"
 #include "world.h"
-#include <stdbool.h>
 
 typedef struct {
-  // const bool polygon_mode;
   uint32_t shader_program;
   unsigned int render_distance;
   MeshVector meshes;
   UInt32Vector VAOs;
-  SizeVector loaded;      // chunks
-  SizeVector should_load; // chunks
+  SizeVector loaded;
+  SizeVector should_load;
   const Camera *camera;
 } Renderer;
 
@@ -28,4 +23,4 @@ void renderer_free(Renderer *renderer);
 void render(const Renderer *renderer, int width, int height);
 int loadGL(GLADloadfunc func);
 
-#endif // _RENDER_H
+#endif /* RENDER_H */

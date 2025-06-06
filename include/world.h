@@ -1,8 +1,6 @@
-#ifndef _WORLD_H
-#define _WORLD_H
+#ifndef WORLD_H
+#define WORLD_H
 
-#include <pthread.h>
-#include <stdbool.h>
 #include "utils.h"
 
 typedef struct Chunk Chunk;
@@ -32,4 +30,4 @@ void world_getChunkCube(SizeVector *vec, struct World *world, Vec3 around,
                         int radius);
 void world_free(struct World *world);
 
-#endif // _WORLD_H
+#endif /* WORLD_H */
