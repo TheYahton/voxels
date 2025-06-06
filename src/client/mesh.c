@@ -31,7 +31,7 @@
 
 Mesh chunk_genmesh(struct World *world, size_t index) {
   pthread_mutex_lock(&world->mutex);
-  struct Chunk *chunk = &world->chunks.data[index];
+  struct Chunk *chunk = &DArray_get(&world->chunks, index);
 
   Mesh mesh = {
       .vertices = {0},
@@ -80,8 +80,7 @@ Mesh chunk_genmesh(struct World *world, size_t index) {
         // FIX: если chunk_get вместо world_getVoxel то на границах чанков проблемы.
         // VoxelType voxel = world_getVoxel(world, x, y, z);
         VoxelType voxel = chunk_get(chunk, x, y, z);
-	Vertex v;
-        #define magic(n, a, b, c) v = (Vertex){{x + a, y + b, z + c}, voxel, n}; DArray_push(&mesh.vertices, v)
+        #define magic(n, a, b, c) DArray_push(&mesh.vertices, (Vertex){{x + a, y + b, z + c}, voxel, n})
         if (curr) {
           if ((curr & 32)) {
             magic(0, 1, 0, 0);
@@ -136,6 +135,6 @@ Mesh chunk_genmesh(struct World *world, size_t index) {
 }
 
 void mesh_free(Mesh *mesh) {
-  free(mesh->vertices.data);
-  free(mesh->indices.data);
+  DArray_free(mesh->vertices);
+  DArray_free(mesh->indices);
 }

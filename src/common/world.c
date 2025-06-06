@@ -26,7 +26,7 @@ void *test(void *ptr) {
   while (!world.exit) {
     pthread_mutex_lock(&world.mutex);
     while (world.tasks.size > 0) {
-      struct Task task = world.tasks.data[world.tasks.size-1];
+      struct Task task = DArray_getLast(&world.tasks);
       world.tasks.size--;
       pthread_mutex_unlock(&world.mutex);
       Chunk chunk = generateChunk(task.x, task.y, task.z);
@@ -73,7 +73,7 @@ static size_t world_getChunk(struct World *world, int x, int y, int z) {
   pthread_mutex_lock(&world->mutex);
   size_t size = world->chunks.size;
   for (size_t i = 0; i < size; i++) {
-    Chunk *chunk = &world->chunks.data[i];
+    Chunk *chunk = &DArray_get(&world->chunks, i);
     if (chunk->position.x == x && chunk->position.y == y && chunk->position.z == z) {
       pthread_mutex_unlock(&world->mutex);
       return i;
@@ -95,7 +95,7 @@ uint8_t world_getVoxel(struct World *world, int x, int y, int z) {
   size_t chunk_index = world_getChunk(world, chunkX, chunkY, chunkZ);
   Chunk *chunk = NULL;
   if (chunk_index != SIZE_MAX) {
-    chunk = &world->chunks.data[chunk_index];
+    chunk = &DArray_get(&world->chunks, chunk_index);
   }
   return chunk_get(chunk, voxelX, voxelY, voxelZ);
 }
@@ -112,7 +112,7 @@ void world_setVoxel(struct World *world, int x, int y, int z, uint8_t value) {
   size_t chunk_index = world_getChunk(world, chunkX, chunkY, chunkZ);
   Chunk *chunk = NULL;
   if (chunk_index != SIZE_MAX) {
-    chunk = &world->chunks.data[chunk_index];
+    chunk = &DArray_get(&world->chunks, chunk_index);
   }
   chunk_set(chunk, voxelX, voxelY, voxelZ, value);
 }
@@ -122,10 +122,10 @@ void world_orderChunk(struct World *world, int x, int y, int z) {
   pthread_mutex_lock(&world->mutex);
   // TODO: switch to smth like Tasks_find(...)
   for (size_t i = 0; i < world->tasks.size; i++) {
-    struct Task task = world->tasks.data[i];
+    struct Task task = DArray_get(&world->tasks, i);
     if (task.x == x && task.y == y && task.z == z) { found = true; break; }
   }
-  if (!found) { struct Task t = { x, y, z }; DArray_push(&world->tasks, t); }
+  if (!found) DArray_push(&world->tasks, (struct Task) { x, y, z });
   pthread_mutex_unlock(&world->mutex);
 }
 

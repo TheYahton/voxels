@@ -69,7 +69,7 @@ int main(void) {
 // BUG (SHADERS): voxels' shadows look horrible. Maybe gamma corr or HSV/HSL
 // instead of RGB?
 
-// PERFORMANCE (MULTITHREADING): some microfreeze happen. Find a cause and annihilate.
+// PERFORMANCE (MULTITHREADING): some microfreeze happen. Find a reason and fix.
 
 // TODO (RENDER): return back the ability to change the current rendering mode (wireframe)
 // TODO (DEBUG): hot reloading (hi Zozin)
@@ -86,7 +86,6 @@ int main(void) {
 // TODO (NEW SYSTEM): level of details (LoD)
 
 // OPTIMIZE (BUILD): fully incremental build system
-// OPTIMIZE (WORLDGEN): generate chunks in second thread?
 // OPTIMIZE (MESHGEN, SHADERS): optimize vertex size: compress all data in one
 // 32 bit integer OPTIMIZE (MESHGEN): mesh generating: create 8 vertex per voxel
 // instead of 4 vertex per face (24 vertex per block) upd: after adding normales

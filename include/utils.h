@@ -28,11 +28,12 @@ struct SizeArray {
   size_t *data;
 };
 
-#define DArray_get(arr, i) ((arr)->data + (i))
+#define DArray_get(arr, i) *((arr)->data + (i))
+#define DArray_getLast(arr) DArray_get((arr), (arr)->size - 1)
 // #define DArray_push(arr, item) DArray_append(arr, item, 1)
-#define DArray_push(arr, item) do {\
+#define DArray_push(arr, ...) do {\
   if ((arr)->size + 1 > (arr)->capacity) DArray_extend((arr), 1 - ((arr)->capacity - (arr)->size));\
-  (arr)->data[(arr)->size++] = (item);\
+  (arr)->data[(arr)->size++] = (__VA_ARGS__);\
 } while (0)
 // Copy the data somewhere before next push or append.
 #define DArray_pop(arr) DArray_get(arr, --(arr)->size)
