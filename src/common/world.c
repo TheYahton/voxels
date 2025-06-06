@@ -19,40 +19,30 @@ static int mod(int a, int b) {
 
 static Chunk generateChunk(int cx, int cy, int cz);
 
+struct World world = {0};
+
 void *test(void *ptr) {
-  struct World *world = ptr;
-  bool running = true;
-  while (running) {
-    if (world->exit) running = false;
-    pthread_mutex_lock(&world->mutex);
-    while (world->tasks.size > 0) {
-      struct Task task = world->tasks.data[world->tasks.size-1];
-      world->tasks.size--;
-      pthread_mutex_unlock(&world->mutex);
+  (void) ptr;
+  while (!world.exit) {
+    pthread_mutex_lock(&world.mutex);
+    while (world.tasks.size > 0) {
+      struct Task task = world.tasks.data[world.tasks.size-1];
+      world.tasks.size--;
+      pthread_mutex_unlock(&world.mutex);
       Chunk chunk = generateChunk(task.x, task.y, task.z);
-      pthread_mutex_lock(&world->mutex);
-      DArray_push(&world->chunks, chunk);
+      pthread_mutex_lock(&world.mutex);
+      DArray_push(&world.chunks, chunk);
     }
-    pthread_mutex_unlock(&world->mutex);
+    pthread_mutex_unlock(&world.mutex);
     usleep(10000); // 10ms
   }
   return NULL;
 }
 
 struct World *world_init(void) {
-  struct World *world = malloc(sizeof(struct World));
-  pthread_t thread;
-  pthread_create(&thread, NULL, test, world);
-  pthread_mutex_t m;
-  pthread_mutex_init(&m, NULL);
-  *world = (struct World) {
-    .chunks = {0},
-    .tasks = {0},
-    .thread = thread,
-    .mutex = m,
-    .exit = false,
-  };
-  return world;
+  pthread_mutex_init(&world.mutex, NULL);
+  pthread_create(&world.thread, NULL, test, NULL);
+  return &world;
 }
 
 static Chunk generateChunk(int cx, int cy, int cz) {
@@ -168,5 +158,4 @@ void world_free(struct World *world) {
   pthread_join(world->thread, NULL);
   DArray_free(world->chunks);
   DArray_free(world->tasks);
-  free(world);
 }

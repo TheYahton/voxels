@@ -121,18 +121,23 @@ void window_close(void) {
   RGFW_window_close(win);
 }
 
-static void key_callback(RGFW_window* win, u8 key, u8 keyChar __attribute__((__unused__)), RGFW_keymod keyMod __attribute__((__unused__)), RGFW_bool pressed) {
+static void key_callback(RGFW_window* win, u8 key, u8 keyChar, RGFW_keymod keyMod, RGFW_bool pressed) {
+  (void) keyChar;
+  (void) keyMod;
   keys[rgfw2wkey(key)] = pressed;
   if (key == RGFW_q && pressed) {
     RGFW_window_setShouldClose(win, true);
   }
 }
 
-static void mouse_callback(RGFW_window *win __attribute__((__unused__)), RGFW_point point __attribute__((__unused__)), RGFW_point vector) {
+static void mouse_callback(RGFW_window *win, RGFW_point point, RGFW_point vector) {
+  (void) win;
+  (void) point;
   mouse_dx = vector.x;
   mouse_dy = vector.y;
 }
 
-static void resize_callback(RGFW_window *win __attribute__((__unused__)), RGFW_rect r) {
+static void resize_callback(RGFW_window *win, RGFW_rect r) {
+  (void) win;
   glViewport(0, 0, r.w, r.h);
 }
