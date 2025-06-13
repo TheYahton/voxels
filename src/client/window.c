@@ -60,19 +60,19 @@ bool window_create(const char *name, int width, int height) {
   RGFW_setGLHint(RGFW_glMinor, 3);
   RGFW_setGLHint(RGFW_glProfile, RGFW_glCore);
   win = RGFW_createWindow(name, (RGFW_rect){0, 0, width, height}, RGFW_windowCenter | RGFW_windowHideMouse);
-  info("The window has been initialized. The cursor is disabled.");
+  logging_log(LL_INFO, "The window has been initialized. The cursor is disabled.");
 
   RGFW_window_mouseHold(win, RGFW_AREA(0, 0));
 
   RGFW_window_makeCurrent(win);
-  info("The OpenGL context has been attached to the window.");
+  logging_log(LL_INFO, "The OpenGL context has been attached to the window.");
 
   RGFW_setKeyCallback(key_callback);
-  info("The key_callback function handles keyboard input.");
+  logging_log(LL_INFO, "The key_callback function handles keyboard input.");
   RGFW_setMousePosCallback(mouse_callback);
-  info("The mouse_callback function handles mouse input.");
+  logging_log(LL_INFO, "The mouse_callback function handles mouse input.");
   RGFW_setWindowResizedCallback(resize_callback);
-  info("The resize_callback function handles window size changes.");
+  logging_log(LL_INFO, "The resize_callback function handles window size changes.");
 
   return 0;
 }

@@ -34,7 +34,7 @@ uint32_t compile_shader(const char *path, GLenum shader_type) {
   if (!shader_source) {
     char *string;
     if (0 > asprintf(&string, "Shader compilation failed. The file \"%s\" does not exist.", path)) return 0;
-    error(string);
+    logging_log(LL_ERROR, string);
     free(string);
     return 0;
   }
@@ -52,14 +52,14 @@ uint32_t compile_shader(const char *path, GLenum shader_type) {
     glGetShaderInfoLog(shader, 512, NULL, infoLog);
     char *string;
     if (0 > asprintf(&string, "Shader compilation for %s failed.\n%s", path, infoLog)) return 0;
-    error(string);
+    logging_log(LL_ERROR, string);
     free(string);
     return 0;
   }
 
   char *string;
   if (0 > asprintf(&string, "Shader compilation for %s succeeded. ID: %d", path, shader)) return 0;
-  info(string);
+  logging_log(LL_INFO, string);
   free(string);
 
   return shader;
@@ -78,14 +78,14 @@ GLuint compile_shader_program(GLuint vertex_shader, GLuint fragment_shader) {
     glGetShaderInfoLog(shader_program, 512, NULL, infoLog);
     char *string;
     if (0 > asprintf(&string, "Shader program compilation failed.\n%s", infoLog)) return 0;
-    error(string);
+    logging_log(LL_ERROR, string);
     free(string);
     return 0;
   }
 
   char *string;
   if (0 > asprintf(&string, "Shader program compilation succeeded. ID: %d", shader_program)) return 0;
-  info(string);
+  logging_log(LL_INFO, string);
   free(string);
 
   return shader_program;

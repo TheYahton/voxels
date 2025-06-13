@@ -116,13 +116,13 @@ void render(const Renderer *renderer, int width, int height) {
 int loadGL(GLADloadfunc func) {
   int version = gladLoadGL(func);
   if (version == 0) {
-    error("Failed to initialize OpenGL context.");
+    logging_log(LL_ERROR, "Failed to initialize OpenGL context.");
     return -1;
   }
 
   char *string;
   if (0 > asprintf(&string, "OpenGL loaded successfully. Version: %d", version)) return 0;
-  info(string);
+  logging_log(LL_INFO, string);
   free(string);
   return 0;
 }

@@ -21,7 +21,7 @@ int main(void) {
   window_create(TITLE, WIDTH, HEIGHT);
 
   if (loadGL((GLADloadfunc)getProcAddress) != 0) {
-    error("Cannot load OpenGL.");
+    logging_log(LL_ERROR, "Cannot load OpenGL.");
     window_close();
     return -1;
   }
@@ -37,7 +37,7 @@ int main(void) {
   Camera camera = {&player.position, &player.direction, &player.speed, true};
   Renderer renderer = renderer_init(&camera);
 
-  info("The program has been fully initialized. Starting the game loop...");
+  logging_log(LL_INFO, "The program has been fully initialized. Starting the game loop...");
   while (!window_shouldClose()) {
     float dt = window_clock();
 
@@ -59,7 +59,7 @@ int main(void) {
   world_free(world);
   renderer_free(&renderer);
   window_close();
-  info("The program has terminated.");
+  logging_log(LL_INFO, "The program has terminated.");
   logging_deinit();
 
   return 0;
