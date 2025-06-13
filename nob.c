@@ -7,6 +7,8 @@
 
 #define STANDARD "-std=c99"
 #define WARNINGS "-Wall", "-Wextra", "-pedantic"
+#define PROF "-pg"
+#define OPT
 
 const char* COMMON_FILES[] = {"chunk", "logs", "utils", "world"};
 
@@ -31,7 +33,7 @@ bool for_macos(void) {
 
 bool build_common(Nob_Cmd *cmd, char *cc) {
   for (size_t i = 0; i < NOB_ARRAY_LEN(COMMON_FILES); i++) {
-    nob_cmd_append(cmd, cc, STANDARD, WARNINGS);
+    nob_cmd_append(cmd, cc, STANDARD, WARNINGS, OPT);
     nob_cmd_append(cmd, nob_temp_sprintf("src/common/%s.c", COMMON_FILES[i]));
     nob_cmd_append(cmd, "-I./include/");
     nob_cmd_append(cmd, "-c", "-o", nob_temp_sprintf("./build/common/%s.o", COMMON_FILES[i]));
@@ -50,7 +52,7 @@ bool build_rgfw(Nob_Cmd *cmd, char *cc) {
 bool build_client(Nob_Cmd *cmd, char *cc) {
   // COMPILE
   for (size_t i = 0; i < NOB_ARRAY_LEN(CLIENT_FILES); i++) {
-    nob_cmd_append(cmd, cc, STANDARD, WARNINGS);
+    nob_cmd_append(cmd, cc, STANDARD, WARNINGS, OPT);
     nob_cmd_append(cmd, nob_temp_sprintf("src/client/%s.c", CLIENT_FILES[i]));
     nob_cmd_append(cmd, "-I./include/");
     nob_cmd_append(cmd, "-c", "-o", nob_temp_sprintf("./build/client/%s.o", CLIENT_FILES[i]));
@@ -59,7 +61,7 @@ bool build_client(Nob_Cmd *cmd, char *cc) {
   }
 
   // LINK
-  nob_cmd_append(cmd, cc);
+  nob_cmd_append(cmd, cc, PROF, OPT);
   for (size_t i = 0; i < NOB_ARRAY_LEN(CLIENT_FILES); i++) {
     nob_cmd_append(cmd, nob_temp_sprintf("./build/client/%s.o", CLIENT_FILES[i]));
   }

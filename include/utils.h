@@ -28,7 +28,7 @@ struct SizeArray {
   size_t *data;
 };
 
-#define DArray_get(arr, i) *((arr)->data + (i))
+#define DArray_get(arr, i) ((arr)->data + (i))
 #define DArray_getLast(arr) DArray_get((arr), (arr)->size - 1)
 // #define DArray_push(arr, item) DArray_append(arr, item, 1)
 #define DArray_push(arr, ...) do {\
@@ -44,8 +44,9 @@ struct SizeArray {
 } while (0)
 #define DArray_append(arr, src, n) do {\
   if ((arr)->size + (n) > (arr)->capacity) DArray_extend((arr), (n) - ((arr)->capacity - (arr)->size));\
-  memcpy(DArray_get((arr), (arr)->size), (src), (n) * sizeof((arr)->data[0]));\
+  memcpy(DArray_getLast((arr)), (src), (n) * sizeof((arr)->data[0]));\
   (arr)->size += (n);\
 } while (0)
+#define DArray_isEmpty(arr) ((arr).size == 0)
 
 #endif // UTILS_H

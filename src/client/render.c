@@ -1,7 +1,6 @@
 #define _GNU_SOURCE
 #include <stdint.h>
 #include <stdbool.h>
-#include <pthread.h>
 
 #define GLAD_GL_IMPLEMENTATION
 #include <glad/gl.h>
@@ -96,7 +95,7 @@ void render(const Renderer *renderer, int width, int height) {
   glUniformMatrix4fv(view_location, 1, GL_FALSE, view[0]);
 
   for (size_t i = 0; i < renderer->VAOs.size; i++) {
-    const Mesh *mesh = &DArray_get(&renderer->meshes, i);
+    const Mesh *mesh = DArray_get(&renderer->meshes, i);
     if (!mesh->visible) continue;
     mat4 model;
     vec4 translation = {renderer->camera->position->x + mesh->position.x,
@@ -105,7 +104,7 @@ void render(const Renderer *renderer, int width, int height) {
     glm_mat4_identity(model);
     glm_translate(model, translation);
     glUniformMatrix4fv(model_location, 1, GL_FALSE, model[0]);
-    glBindVertexArray(DArray_get(&renderer->VAOs, i));
+    glBindVertexArray(*DArray_get(&renderer->VAOs, i));
     glDrawElements(GL_TRIANGLES, mesh->indices.size,
                    GL_UNSIGNED_INT,
                    0); // With EBO
@@ -144,7 +143,7 @@ Renderer renderer_init(const Camera *camera) {
 
 size_t SizeArray_find(struct SizeArray *vec, size_t value) {
   for (size_t i = 0; i < vec->size; i++) {
-    if (DArray_get(vec, i) == value) {
+    if (*DArray_get(vec, i) == value) {
       return i;
     }
   }
@@ -157,32 +156,28 @@ void chunks_load_unload_system(Renderer *renderer, struct World *world) {
 
   // Loading
   for (size_t i = 0; i < renderer->should_load.size; i++) {
-    size_t index = DArray_get(&renderer->should_load, i);
+    size_t index = *DArray_get(&renderer->should_load, i);
     if (SizeArray_find(&renderer->loaded, index) != SIZE_MAX) continue;
 
-    DArray_push(&renderer->meshes, chunk_genmesh(world, index));
+    DArray_push(&renderer->meshes, chunk_genmesh(DArray_get(&world->chunks, index)));
     size_t mesh_index = renderer->meshes.size - 1;
-    DArray_push(&renderer->VAOs, render_create_vao(&DArray_get(&renderer->meshes, mesh_index)));
+    DArray_push(&renderer->VAOs, render_create_vao(DArray_get(&renderer->meshes, mesh_index)));
 
-    pthread_mutex_lock(&world->mutex);
-    Chunk *chunk = &DArray_get(&world->chunks, index);
+    Chunk *chunk = DArray_get(&world->chunks, index);
     chunk->mesh_index = mesh_index;
-    pthread_mutex_unlock(&world->mutex);
 
     DArray_push(&renderer->loaded, index);
   }
 
   // Unloading
   for (size_t i = 0; i < renderer->loaded.size; i++) {
-    size_t loaded_index = DArray_get(&renderer->loaded, i);
+    size_t loaded_index = *DArray_get(&renderer->loaded, i);
 
-    pthread_mutex_lock(&world->mutex);
-    const Chunk *chunk = &DArray_get(&world->chunks, loaded_index);
+    const Chunk *chunk = DArray_get(&world->chunks, loaded_index);
     size_t mesh_index = chunk->mesh_index;
-    pthread_mutex_unlock(&world->mutex);
 
     bool found = (SizeArray_find(&renderer->should_load, loaded_index) != SIZE_MAX);
-    (DArray_get(&renderer->meshes, mesh_index)).visible = found;
+    (DArray_get(&renderer->meshes, mesh_index))->visible = found;
   }
 
   renderer->should_load.size = 0;

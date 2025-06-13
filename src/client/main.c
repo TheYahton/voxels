@@ -50,6 +50,7 @@ int main(void) {
     // LOGIC
     camera_update(&camera, dt);
     chunks_load_unload_system(&renderer, world);
+    world_tick(world);
 
     // RENDER
     render(&renderer, width, height);

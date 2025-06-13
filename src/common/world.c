@@ -2,6 +2,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include <pthread.h>
 #define __USE_MISC
@@ -21,27 +22,38 @@ static Chunk generateChunk(int cx, int cy, int cz);
 
 struct World world = {0};
 
-void *test(void *ptr) {
+void *worker(void *ptr) {
   (void) ptr;
+
   while (!world.exit) {
-    pthread_mutex_lock(&world.mutex);
-    while (world.tasks.size > 0) {
-      struct Task task = DArray_getLast(&world.tasks);
-      world.tasks.size--;
-      pthread_mutex_unlock(&world.mutex);
+    pthread_mutex_lock(&world.tasks.mutex);
+    while (!DArray_isEmpty(world.tasks)) {
+      struct Task task = *DArray_pop(&world.tasks);
+      pthread_mutex_unlock(&world.tasks.mutex);
+
       Chunk chunk = generateChunk(task.x, task.y, task.z);
-      pthread_mutex_lock(&world.mutex);
-      DArray_push(&world.chunks, chunk);
+
+      pthread_mutex_lock(&world.queue.mutex);
+      DArray_push(&world.queue.chunks, chunk);
+      pthread_mutex_unlock(&world.queue.mutex);
+
+      pthread_mutex_lock(&world.tasks.mutex);
     }
-    pthread_mutex_unlock(&world.mutex);
+    pthread_mutex_unlock(&world.tasks.mutex);
     usleep(10000); // 10ms
   }
   return NULL;
 }
 
+void world_tick(struct World *world) {
+  pthread_mutex_lock(&world->queue.mutex);
+  if (!DArray_isEmpty(world->queue.chunks)) { DArray_push(&world->chunks, *DArray_pop(&world->queue.chunks)); }
+  pthread_mutex_unlock(&world->queue.mutex);
+}
+
 struct World *world_init(void) {
-  pthread_mutex_init(&world.mutex, NULL);
-  pthread_create(&world.thread, NULL, test, NULL);
+  pthread_mutex_init(&world.tasks.mutex, NULL);
+  pthread_create(&world.thread, NULL, worker, NULL);
   return &world;
 }
 
@@ -61,6 +73,8 @@ static Chunk generateChunk(int cx, int cy, int cz) {
     int squared_dist = dx * dx + dy * dy + dz * dz;
     if (squared_dist < CHUNK_SIZE * CHUNK_SIZE / 16) {
       chunk.data[i] = voxel;
+    } else {
+      chunk.data[i] = 0;
     }
   }
 
@@ -70,16 +84,13 @@ static Chunk generateChunk(int cx, int cy, int cz) {
 // Get index in world.chunks by chunk's coordinates
 // WARNING: This function is very slow. Use it as little as possible.
 static size_t world_getChunk(struct World *world, int x, int y, int z) {
-  pthread_mutex_lock(&world->mutex);
   size_t size = world->chunks.size;
   for (size_t i = 0; i < size; i++) {
-    Chunk *chunk = &DArray_get(&world->chunks, i);
+    Chunk *chunk = DArray_get(&world->chunks, i);
     if (chunk->position.x == x && chunk->position.y == y && chunk->position.z == z) {
-      pthread_mutex_unlock(&world->mutex);
       return i;
     }
   }
-  pthread_mutex_unlock(&world->mutex);
   return -1;
 }
 
@@ -95,7 +106,7 @@ uint8_t world_getVoxel(struct World *world, int x, int y, int z) {
   size_t chunk_index = world_getChunk(world, chunkX, chunkY, chunkZ);
   Chunk *chunk = NULL;
   if (chunk_index != SIZE_MAX) {
-    chunk = &DArray_get(&world->chunks, chunk_index);
+    chunk = DArray_get(&world->chunks, chunk_index);
   }
   return chunk_get(chunk, voxelX, voxelY, voxelZ);
 }
@@ -112,21 +123,21 @@ void world_setVoxel(struct World *world, int x, int y, int z, uint8_t value) {
   size_t chunk_index = world_getChunk(world, chunkX, chunkY, chunkZ);
   Chunk *chunk = NULL;
   if (chunk_index != SIZE_MAX) {
-    chunk = &DArray_get(&world->chunks, chunk_index);
+    chunk = DArray_get(&world->chunks, chunk_index);
   }
   chunk_set(chunk, voxelX, voxelY, voxelZ, value);
 }
 
 void world_orderChunk(struct World *world, int x, int y, int z) {
   bool found = false;
-  pthread_mutex_lock(&world->mutex);
   // TODO: switch to smth like Tasks_find(...)
+  pthread_mutex_lock(&world->tasks.mutex);
   for (size_t i = 0; i < world->tasks.size; i++) {
-    struct Task task = DArray_get(&world->tasks, i);
+    struct Task task = *DArray_get(&world->tasks, i);
     if (task.x == x && task.y == y && task.z == z) { found = true; break; }
   }
   if (!found) DArray_push(&world->tasks, (struct Task) { x, y, z });
-  pthread_mutex_unlock(&world->mutex);
+  pthread_mutex_unlock(&world->tasks.mutex);
 }
 
 size_t world_getChunkOrGenerate(struct World *world, int x, int y, int z) {

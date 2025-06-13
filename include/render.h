@@ -2,8 +2,8 @@
 #define RENDER_H
 
 #include "camera.h"
-#include "mesh.h"
 #include "world.h"
+#include "mesh.h"
 
 typedef struct {
   uint32_t shader_program;
