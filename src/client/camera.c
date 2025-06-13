@@ -42,4 +42,7 @@ void camera_update(Camera *camera, float dt) {
                            *camera->speed * dt;
     camera->position->y += up * *camera->speed * dt;
   }
+
+  // Wireframe
+  if (window_wasPressed(WKEY_P)) camera->polygon_mode = !camera->polygon_mode;
 }

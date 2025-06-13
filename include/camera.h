@@ -6,6 +6,7 @@ typedef struct {
   Vec3 *position;
   Vec3 *direction;
   float *speed;
+  bool polygon_mode;
 } Camera;
 
 void camera_update(Camera *camera, float dt);

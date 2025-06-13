@@ -11,6 +11,7 @@ typedef char WKey; enum {
   WKEY_A,
   WKEY_S,
   WKEY_D,
+  WKEY_P,
   WKEY_SPACE,
   WKEY_SHIFTL,
 };
@@ -25,6 +26,7 @@ void window_getMouse(float *dx, float *dy);
 void window_mouseAbsorb(void);
 double window_getTime(void);
 bool window_isPressed(WKey);
+bool window_wasPressed(WKey);
 void window_pollEvents(void);
 void window_swapBuffers(void);
 bool window_shouldClose(void);

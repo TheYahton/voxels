@@ -34,7 +34,7 @@ int main(void) {
       .speed = PLAYER_SPEED,
       .direction = {0.0f, 0.0f, 0.0f},
   };
-  Camera camera = {&player.position, &player.direction, &player.speed};
+  Camera camera = {&player.position, &player.direction, &player.speed, true};
   Renderer renderer = renderer_init(&camera);
 
   info("The program has been fully initialized. Starting the game loop...");
@@ -72,7 +72,6 @@ int main(void) {
 
 // PERFORMANCE (MULTITHREADING): some microfreeze happen. Find a reason and fix.
 
-// TODO (RENDER): return back the ability to change the current rendering mode (wireframe)
 // TODO (DEBUG): hot reloading (hi Zozin)
 // TODO (WORLDGEN): world generation using simplex noise
 // TODO (PHYSICS): basic physics (gravitation, air resistance)

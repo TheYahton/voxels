@@ -10,6 +10,7 @@
 RGFW_window *win;
 float mouse_dx, mouse_dy;
 bool keys[256] = {0};
+void *userKeyCallback;
 
 void *getProcAddress(const char *name) { return RGFW_getProcAddress(name); }
 
@@ -29,6 +30,7 @@ u8 wkey2rgfw(char wkey) {
   case WKEY_A:      rgfw_key = RGFW_a; break;
   case WKEY_S:      rgfw_key = RGFW_s; break;
   case WKEY_D:      rgfw_key = RGFW_d; break;
+  case WKEY_P:      rgfw_key = RGFW_p; break;
   case WKEY_SPACE:  rgfw_key = RGFW_space; break;
   case WKEY_SHIFTL: rgfw_key = RGFW_shiftL; break;
   }
@@ -46,6 +48,7 @@ u8 rgfw2wkey(u8 rgfw_key) {
   case RGFW_a:      wkey = WKEY_A; break;
   case RGFW_s:      wkey = WKEY_S; break;
   case RGFW_d:      wkey = WKEY_D; break;
+  case RGFW_p:      wkey = WKEY_P; break;
   case RGFW_space:  wkey = WKEY_SPACE; break;
   case RGFW_shiftL: wkey = WKEY_SHIFTL; break;
   }
@@ -86,6 +89,10 @@ void window_swapBuffers(void) { RGFW_window_swapBuffers(win); }
 
 bool window_isPressed(WKey wkey) {
   return RGFW_isPressed(win, wkey2rgfw(wkey));
+}
+
+bool window_wasPressed(WKey wkey) {
+  return RGFW_wasPressed(win, wkey2rgfw(wkey));
 }
 
 double window_getTime(void) { return RGFW_getTimeNS() / 1000000000.0f; }
