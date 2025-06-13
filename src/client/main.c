@@ -67,11 +67,6 @@ int main(void) {
 
 // FIX (RENDER): too many VAO. When the player goes too far the app crashes. I suppose there is a limit of VAO count.
 
-// BUG (SHADERS): voxels' shadows look horrible. Maybe gamma corr or HSV/HSL
-// instead of RGB?
-
-// PERFORMANCE (MULTITHREADING): some microfreeze happen. Find a reason and fix.
-
 // TODO (DEBUG): hot reloading (hi Zozin)
 // TODO (WORLDGEN): world generation using simplex noise
 // TODO (PHYSICS): basic physics (gravitation, air resistance)
