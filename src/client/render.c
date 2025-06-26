@@ -120,10 +120,7 @@ int loadGL(GLADloadfunc func) {
     return -1;
   }
 
-  char *string;
-  if (0 > asprintf(&string, "OpenGL loaded successfully. Version: %d", version)) return 0;
-  logging_log(LL_INFO, string);
-  free(string);
+  logging_log(LL_INFO, "OpenGL loaded successfully. Version: %d", version);
   return 0;
 }
 
