@@ -42,7 +42,6 @@ int main(void) {
     float dt = window_clock();
 
     // EVENTS
-    window_mouseAbsorb();
     window_pollEvents();
     int width, height;
     window_getSize(&width, &height);
@@ -67,7 +66,6 @@ int main(void) {
 
 // FIX (RENDER): too many VAO. When the player goes too far the app crashes. I suppose there is a limit of VAO count.
 
-// TODO: mouse camera movement
 // TODO (DEBUG): hot reloading (hi Zozin)
 // TODO (WORLDGEN): world generation using simplex noise
 // TODO (PHYSICS): basic physics (gravitation, air resistance)
@@ -84,6 +82,7 @@ int main(void) {
 // TODO (RENDERING): Frustum Culling
 // TODO (LOGGING): colored
 // TODO (LOGGING): with timestamp
+// TODO (CAMERA): make mouse sensitivity changable
 
 // OPTIMIZE (BUILD): fully incremental build system
 // OPTIMIZE (MESHGEN, SHADERS): optimize vertex size: compress all data in one

@@ -1,14 +1,23 @@
 #include <stdbool.h>
+#include <stddef.h>
+#include <stdint.h>
+#include <math.h>
 
-#include "window.h"
 #include "logs.h"
+#include "utils.h"
+#include "window.h"
 
 #define RGFW_EXPORT
 #include "../../RGFW/RGFW.h"
 
+#ifndef M_PI_2
+#define M_PI_2 1.57079632679489661923 /* pi/2 */
+#endif
 
+#define MOUSE_SENSITIVITY 0.005
+ 
 RGFW_window *win;
-float mouse_dx, mouse_dy;
+float yaw = 0.0, pitch = 0.0;
 bool keys[256] = {0};
 void *userKeyCallback;
 
@@ -97,12 +106,10 @@ bool window_wasPressed(WKey wkey) {
 
 double window_getTime(void) { return RGFW_getTimeNS() / 1000000000.0f; }
 
-void window_getMouse(float *dx, float *dy) {
-  *dx = mouse_dx, *dy = mouse_dy;
-}
-
-void window_mouseAbsorb(void) {
-  mouse_dx = 0, mouse_dy = 0;
+void window_getYawPitch(float *yaw_p, float *pitch_p) {
+  pitch = fmax(fmin(pitch, M_PI_2), -M_PI_2);
+  *yaw_p = yaw;
+  *pitch_p = pitch;
 }
 
 void window_getSize(int *width, int *height) {
@@ -115,13 +122,13 @@ void* window_getKeys(void) {
   return keys;
 }
 
-// Call this function only once per tick.
+// Call this function only once per frame.
 float window_clock(void) {
-    static float last = 0;
-    float now = window_getTime();
-    float dt = now - last;
-    last = now;
-    return dt;
+  static float last = 0;
+  float now = window_getTime();
+  float dt = now - last;
+  last = now;
+  return dt;
 }
 
 void window_close(void) {
@@ -140,8 +147,8 @@ static void key_callback(RGFW_window* win, u8 key, u8 keyChar, RGFW_keymod keyMo
 static void mouse_callback(RGFW_window *win, RGFW_point point, RGFW_point vector) {
   (void) win;
   (void) point;
-  mouse_dx = vector.x;
-  mouse_dy = vector.y;
+  yaw   += vector.x * MOUSE_SENSITIVITY;
+  pitch += vector.y * MOUSE_SENSITIVITY;
 }
 
 static void resize_callback(RGFW_window *win, RGFW_rect r) {
