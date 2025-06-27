@@ -37,11 +37,3 @@ Vec3i vec3i_muli(Vec3i v, int s) {
       v.z * s,
   };
 }
-
-// void print_mat4(mat4 mat) {
-// 	for (int i = 0; i < 4; i++) {
-// 		for (int j = 0; j < 4; j++)
-// 			printf("%f ", mat[i][j]);
-// 		printf("\n");
-// 	}
-// }

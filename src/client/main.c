@@ -67,10 +67,12 @@ int main(void) {
 
 // FIX (RENDER): too many VAO. When the player goes too far the app crashes. I suppose there is a limit of VAO count.
 
+// TODO: mouse camera movement
 // TODO (DEBUG): hot reloading (hi Zozin)
 // TODO (WORLDGEN): world generation using simplex noise
 // TODO (PHYSICS): basic physics (gravitation, air resistance)
 // TODO (PHYSICS): block breaking by player
+// TODO (PHYSICS): block placement by player
 // TODO (SHADERS): ambient occlusion
 // TODO (SHADERS): a nice sky
 // TODO (NEW SYSTEM): addons/plugins/scripts
@@ -79,6 +81,9 @@ int main(void) {
 // TODO (NEW SYSTEM): cimgui or header-only alternative (player position, FPS,
 // render distance, speed, sensitivity)
 // TODO (NEW SYSTEM): level of details (LoD)
+// TODO (RENDERING): Frustum Culling
+// TODO (LOGGING): colored
+// TODO (LOGGING): with timestamp
 
 // OPTIMIZE (BUILD): fully incremental build system
 // OPTIMIZE (MESHGEN, SHADERS): optimize vertex size: compress all data in one
