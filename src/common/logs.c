@@ -11,10 +11,10 @@
 #define lmkdir(dir) mkdir(dir, 0755)
 #endif // _WIN32
 
-#define DEBUG_FORMAT "[%s] [DEBUG]: %s "
-#define INFO_FORMAT "[%s] [INFO]: %s "
-#define WARNING_FORMAT "[%s] [WARNING]: %s "
-#define ERROR_FORMAT "[%s] [ERROR]: %s "
+#define DEBUG_FORMAT "[%s] [DEBUG]: "
+#define INFO_FORMAT "[%s] [INFO]: "
+#define WARNING_FORMAT "[%s] [WARNING]: "
+#define ERROR_FORMAT "[%s] [ERROR]: "
 
 const char *LOGGING_MESSAGES[] = {
   DEBUG_FORMAT,
