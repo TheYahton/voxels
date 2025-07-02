@@ -36,6 +36,7 @@ int main(void) {
   };
   Camera camera = {&player.position, &player.direction, &player.speed, true};
   Renderer renderer = renderer_init(&camera);
+  mesh_initTempBuffers();
 
   logging_log(LL_INFO, "The program has been fully initialized. Starting the game loop...");
   while (!window_shouldClose()) {
@@ -55,6 +56,8 @@ int main(void) {
     render(&renderer, width, height);
     window_swapBuffers();
   }
+
+  mesh_deinitTempBuffers();
   world_free(world);
   renderer_free(&renderer);
   window_close();

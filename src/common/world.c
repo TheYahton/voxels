@@ -47,7 +47,10 @@ void *worker(void *ptr) {
 
 void world_tick(struct World *world) {
   pthread_mutex_lock(&world->queue.mutex);
-  if (!DArray_isEmpty(world->queue.chunks)) { DArray_push(&world->chunks, *DArray_pop(&world->queue.chunks)); }
+  if (!DArray_isEmpty(world->queue.chunks)) {
+    DArray_append(&world->chunks, world->queue.chunks.data, world->queue.chunks.size);
+    world->queue.chunks.size = 0;
+  }
   pthread_mutex_unlock(&world->queue.mutex);
 }
 

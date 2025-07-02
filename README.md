@@ -1,5 +1,5 @@
 # voxels
-A simple voxel game written in C99 with a procedurally generated world.\
+A simple voxel game written most in C99 with C11 `_Generic` feature with a procedurally generated world.\
 Uses cross-platform header-only libs: RGFW, cglm, nob.h, and glad.\
 Compiles with Clang, GCC, MinGW, and TCC.\
 Runs on Windows, Linux, and macOS.

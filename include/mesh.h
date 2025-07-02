@@ -26,6 +26,8 @@ struct MeshArray {
   Mesh *data;
 };
 
+void mesh_initTempBuffers(void);
+void mesh_deinitTempBuffers(void);
 Mesh chunk_genmesh(struct Chunk *chunk);
 void mesh_free(Mesh *mesh);
 

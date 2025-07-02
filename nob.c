@@ -5,9 +5,9 @@
 #define NOB_IMPLEMENTATION
 #include "nob.h"
 
-#define STANDARD "-std=c99"
+#define STANDARD "-std=c11"
 #define WARNINGS "-Wall", "-Wextra", "-pedantic"
-#define PROF "-pg"
+#define DEBUG "-g"
 #define OPT
 
 const char* COMMON_FILES[] = {"chunk", "logs", "utils", "world"};
@@ -61,7 +61,7 @@ bool build_client(Nob_Cmd *cmd, char *cc) {
   }
 
   // LINK
-  nob_cmd_append(cmd, cc, PROF, OPT);
+  nob_cmd_append(cmd, cc, DEBUG, OPT);
   for (size_t i = 0; i < NOB_ARRAY_LEN(CLIENT_FILES); i++) {
     nob_cmd_append(cmd, nob_temp_sprintf("./build/client/%s.o", CLIENT_FILES[i]));
   }

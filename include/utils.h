@@ -62,6 +62,7 @@ struct SizeArray {
 
 // Adds many elements from src
 #define DArray_append(arr, src, n) do {\
+  _Static_assert(_Generic(src, __typeof((arr)->data): 69, default: 0), "Types are broken, my child");\
   DArray_reserve((arr), (arr)->size + (n));\
   memcpy((arr)->data + (arr)->size, (src), (n) * sizeof((arr)->data[0]));\
   (arr)->size += (n);\

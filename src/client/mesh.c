@@ -2,9 +2,31 @@
 #include <stddef.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "chunk.h"
 #include "mesh.h"
+
+#define CUBE_FACES 6
+
+#define VERTICES_PER_FACE 4
+#define MAX_VERTICES (CHUNK_CSIZE * CUBE_FACES * VERTICES_PER_FACE)
+
+#define INDICES_PER_FACE 6
+#define MAX_INDICES  (CHUNK_CSIZE * CUBE_FACES * INDICES_PER_FACE)
+
+struct Vertices temp_vertices = {0};
+struct UInt32Array temp_indices = {0};
+
+void mesh_initTempBuffers(void) {
+    DArray_reserve(&temp_vertices, MAX_VERTICES);
+    DArray_reserve(&temp_indices, MAX_INDICES);
+}
+
+void mesh_deinitTempBuffers(void) {
+    DArray_free(temp_vertices);
+    DArray_free(temp_indices);
+}
 
 #define clockwise_indices(vec, size)                                           \
   DArray_push(vec, size + 0);                                          \
@@ -29,13 +51,6 @@
   }
 
 Mesh chunk_genmesh(struct Chunk *chunk) {
-  Mesh mesh = {
-      .vertices = {0},
-      .indices = {0},
-      .visible = true,
-      vec3i_muli(chunk->position, CHUNK_SIZE),
-  };
-
   // An array of touches of air and solid voxels.
   // One byte in this array is: 0 0 X+ X- Y+ Y- Z+ Z-
   // where X Y Z are coordinates and + - are representing inc and dec
@@ -76,55 +91,69 @@ Mesh chunk_genmesh(struct Chunk *chunk) {
         // FIX: если chunk_get вместо world_getVoxel то на границах чанков проблемы.
         // VoxelType voxel = world_getVoxel(world, x, y, z);
         VoxelType voxel = chunk_get(chunk, x, y, z);
-        #define magic(n, a, b, c) DArray_push(&mesh.vertices, (Vertex){{x + a, y + b, z + c}, voxel, n})
+        // #define magic(n, a, b, c) DArray_push(&mesh.vertices, (Vertex){{x + a, y + b, z + c}, voxel, n})
+        #define magic(n, a, b, c) DArray_push(&temp_vertices, (Vertex){{x + a, y + b, z + c}, voxel, n})
         if (curr) {
           if ((curr & 32)) {
             magic(0, 1, 0, 0);
             magic(0, 1, 1, 0);
             magic(0, 1, 0, 1);
             magic(0, 1, 1, 1);
-            clockwise_indices(&mesh.indices, mesh.vertices.size - 4);
+            clockwise_indices(&temp_indices, temp_vertices.size - 4);
           }
           if ((curr & 16)) {
             magic(1, 0, 0, 0);
             magic(1, 0, 1, 0);
             magic(1, 0, 0, 1);
             magic(1, 0, 1, 1);
-            aclockwise_indices(&mesh.indices, mesh.vertices.size - 4);
+            aclockwise_indices(&temp_indices, temp_vertices.size - 4);
           }
           if ((curr & 8)) {
             magic(2, 0, 1, 0);
             magic(2, 0, 1, 1);
             magic(2, 1, 1, 0);
             magic(2, 1, 1, 1);
-            clockwise_indices(&mesh.indices, mesh.vertices.size - 4);
+            clockwise_indices(&temp_indices, temp_vertices.size - 4);
           }
           if ((curr & 4)) {
             magic(3, 0, 0, 0);
             magic(3, 0, 0, 1);
             magic(3, 1, 0, 0);
             magic(3, 1, 0, 1);
-            aclockwise_indices(&mesh.indices, mesh.vertices.size - 4);
+            aclockwise_indices(&temp_indices, temp_vertices.size - 4);
           }
           if ((curr & 2)) {
             magic(4, 0, 0, 1);
             magic(4, 0, 1, 1);
             magic(4, 1, 0, 1);
             magic(4, 1, 1, 1);
-            aclockwise_indices(&mesh.indices, mesh.vertices.size - 4);
+            aclockwise_indices(&temp_indices, temp_vertices.size - 4);
           }
           if ((curr & 1)) {
             magic(5, 0, 0, 0);
             magic(5, 0, 1, 0);
             magic(5, 1, 0, 0);
             magic(5, 1, 1, 0);
-            clockwise_indices(&mesh.indices, mesh.vertices.size - 4);
+            clockwise_indices(&temp_indices, temp_vertices.size - 4);
           }
         }
         #undef magic
       }
     }
   }
+
+  Mesh mesh = {
+      .vertices = {0},
+      .indices = {0},
+      .visible = true,
+      vec3i_muli(chunk->position, CHUNK_SIZE),
+  };
+
+  DArray_append(&mesh.vertices, temp_vertices.data, temp_vertices.size);
+  DArray_append(&mesh.indices, temp_indices.data, temp_indices.size);
+
+  temp_vertices.size = 0;
+  temp_indices.size = 0;
 
   return mesh;
 }
