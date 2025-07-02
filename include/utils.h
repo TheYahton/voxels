@@ -50,8 +50,10 @@ struct SizeArray {
 
 // Increases the array's capacity to hold at least N elements
 #define DArray_reserve(arr, n) do {\
-  if ((n) > (arr)->capacity) (arr)->capacity = (n);\
-  (arr)->data = realloc((arr)->data, sizeof((arr)->data[0]) * (arr)->capacity);\
+  if ((n) > (arr)->capacity) {\
+    (arr)->capacity = (n);\
+    (arr)->data = realloc((arr)->data, sizeof((arr)->data[0]) * (arr)->capacity);\
+  }\
 } while (0)
 
 // Increases the array's capacity by N
