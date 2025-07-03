@@ -1,9 +1,10 @@
-#include <stdio.h>
 #include <stdarg.h>
+#include <stdbool.h>
+#include <stdio.h>
 #include <time.h>
 #include <sys/stat.h>
 
-#include "logs.h"
+#include "logging.h"
 
 #ifdef _WIN32
 #define lmkdir(dir) mkdir(dir)
@@ -27,19 +28,22 @@ static void formatted_time(char *buffer) {
   time_t timer = time(NULL);
   struct tm *tm_info = localtime(&timer);
 
-  // strftime(buffer, 26, "%Y-%m-%d %H:%M:%S", tm_info);
   strftime(buffer, 26, "%H:%M:%S", tm_info);
 }
 
 FILE *f;
+enum LoggingLevel LOGGING_LEVEL = LL_DEBUG;
 
-bool logging_init(void) {
+bool logging_init(enum LoggingLevel l) {
+  LOGGING_LEVEL = l;
+
   lmkdir("logs");
   f = fopen("logs/latest.log", "w+");
   if (!f) {
     perror("ERROR! Cannot open logs/latest.log file");
     return 0;
   }
+
   return 1;
 }
 
@@ -48,6 +52,7 @@ void logging_deinit(void) {
 }
 
 void logging_log(enum LoggingLevel ll, const char *fmt, ...) {
+  if (ll < LOGGING_LEVEL) return;
   char buffer[26];
   formatted_time(buffer);
 

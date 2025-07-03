@@ -6,7 +6,7 @@
 #include <glad/gl.h>
 
 #include "render.h"
-#include "logs.h"
+#include "logging.h"
 #include "shader.h"
 #include "chunk.h"
 
@@ -120,7 +120,7 @@ int loadGL(GLADloadfunc func) {
     return -1;
   }
 
-  logging_log(LL_INFO, "OpenGL loaded successfully. Version: %d", version);
+  logging_log(LL_DEBUG, "OpenGL loaded successfully. Version: %d", version);
   return 0;
 }
 

@@ -3,7 +3,7 @@
 #include <stdint.h>
 #include <math.h>
 
-#include "logs.h"
+#include "logging.h"
 #include "utils.h"
 #include "window.h"
 
@@ -69,19 +69,16 @@ bool window_create(const char *name, int width, int height) {
   RGFW_setGLHint(RGFW_glMinor, 3);
   RGFW_setGLHint(RGFW_glProfile, RGFW_glCore);
   win = RGFW_createWindow(name, (RGFW_rect){0, 0, width, height}, RGFW_windowCenter | RGFW_windowHideMouse);
-  logging_log(LL_INFO, "The window has been initialized. The cursor is disabled.");
 
   RGFW_window_mouseHold(win, RGFW_AREA(0, 0));
 
   RGFW_window_makeCurrent(win);
-  logging_log(LL_INFO, "The OpenGL context has been attached to the window.");
 
   RGFW_setKeyCallback(key_callback);
-  logging_log(LL_INFO, "The key_callback function handles keyboard input.");
   RGFW_setMousePosCallback(mouse_callback);
-  logging_log(LL_INFO, "The mouse_callback function handles mouse input.");
   RGFW_setWindowResizedCallback(resize_callback);
-  logging_log(LL_INFO, "The resize_callback function handles window size changes.");
+
+  logging_log(LL_DEBUG, "The window has been fully initialized");
 
   return 0;
 }

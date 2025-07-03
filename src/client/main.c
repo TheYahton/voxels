@@ -1,9 +1,10 @@
 #include <glad/gl.h>
 
 #include <stdint.h>
+#include <stdbool.h>
 #include <pthread.h>
 
-#include "logs.h"
+#include "logging.h"
 #include "player.h"
 #include "render.h"
 #include "window.h"
@@ -15,7 +16,7 @@
 #define PLAYER_SPEED 40.0f
 
 int main(void) {
-  if (!logging_init()) {
+  if (!logging_init(LL_DEBUG)) {
     return -1;
   }
   window_create(TITLE, WIDTH, HEIGHT);

@@ -10,7 +10,7 @@
 #define DEBUG "-g"
 #define OPT
 
-const char* COMMON_FILES[] = {"chunk", "logs", "utils", "world"};
+const char* COMMON_FILES[] = {"chunk", "logging", "utils", "world"};
 
 const char* CLIENT_FILES[] = {"main", "camera", "mesh", "render", "shader", "window"};
 

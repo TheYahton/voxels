@@ -1,10 +1,11 @@
 #define _GNU_SOURCE
 #include <stdio.h>
+#include <stdbool.h>
 #include <stdlib.h>
 
 #include <glad/gl.h>
 
-#include "logs.h"
+#include "logging.h"
 #include "shader.h"
 
 static char *read_file(const char *path) {
@@ -50,7 +51,7 @@ uint32_t compile_shader(const char *path, GLenum shader_type) {
     logging_log(LL_ERROR, "Shader compilation for %s failed.\n%s", path, infoLog);
     return 0;
   }
-  logging_log(LL_INFO, "Shader compilation for %s succeeded. ID: %d", path, shader);
+  logging_log(LL_DEBUG, "Shader compilation for %s succeeded. ID: %d", path, shader);
 
   return shader;
 }
@@ -69,7 +70,7 @@ GLuint compile_shader_program(GLuint vertex_shader, GLuint fragment_shader) {
     logging_log(LL_ERROR, "Shader program compilation failed.\n%s", infoLog);
     return 0;
   }
-  logging_log(LL_INFO, "Shader program compilation succeeded. ID: %d", shader_program);
+  logging_log(LL_DEBUG, "Shader program compilation succeeded. ID: %d", shader_program);
 
   return shader_program;
 }

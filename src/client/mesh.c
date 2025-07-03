@@ -6,6 +6,7 @@
 
 #include "chunk.h"
 #include "mesh.h"
+#include "logging.h"
 
 #define CUBE_FACES 6
 
@@ -20,7 +21,14 @@ struct UInt32Array temp_indices = {0};
 
 void mesh_initTempBuffers(void) {
     DArray_reserve(&temp_vertices, MAX_VERTICES);
+    logging_log(LL_DEBUG, "Allocated %.1f MB for %zu elements in temp_vertices",
+        (float)(sizeof(temp_vertices.data[0]) * temp_vertices.capacity) / (1024 * 1024),
+        temp_vertices.capacity);
+
     DArray_reserve(&temp_indices, MAX_INDICES);
+    logging_log(LL_DEBUG, "Allocated %.1f MB for %zu elements in temp_indices",
+        (float)(sizeof(temp_indices.data[0]) * temp_vertices.capacity) / (1024 * 1024),
+        temp_indices.capacity);
 }
 
 void mesh_deinitTempBuffers(void) {
